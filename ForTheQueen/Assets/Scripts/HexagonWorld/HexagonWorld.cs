@@ -1,19 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
-public class HexagonWorld : SaveableMonoBehaviour, INavigatable<Vector2Int, Vector2Int>
+public class HexagonWorld : SaveableMonoBehaviour
 {
 
     //idea: For the king mix with legends of andor bord game, with maybe settlement management from mount and blade
     //characters also have mount slot: map movespeed, combat accuracy penalties? mounted weapons?
 
-    public const int WORLD_WIDTH = 100;
+    public const int WORLD_WIDTH = 50;
 
-    public const int WORLD_HEIGHT = 100;
+    public const int WORLD_HEIGHT = 50;
 
     public const float SPACE_BETWEEN_HEXES = 0f;
 
@@ -24,12 +25,9 @@ public class HexagonWorld : SaveableMonoBehaviour, INavigatable<Vector2Int, Vect
 
     public const float HEX_RADIUS = HEX_DIAMETER / 2;
 
-    public const float HEX_SMALL_RADIUS = HEX_RADIUS / 1.5f;
-
-    public const float HEX_SMALL_SQR_RADIUS = HEX_SMALL_RADIUS * HEX_SMALL_RADIUS;
+    public static readonly float HEX_SMALL_SQR_RADIUS = Mathf.Pow(HEX_Y_SPACING / 2,2);
 
     public const float TOTAL_HEX_SPACE = SPACE_BETWEEN_HEXES + HEX_DIAMETER;
-
 
     public static TileBiom[] WORLD_BIOMS;
 
@@ -39,9 +37,15 @@ public class HexagonWorld : SaveableMonoBehaviour, INavigatable<Vector2Int, Vect
     [Save]
     protected WorldTile[,] world;
 
+    public WorldTile[,] World => world;
+
     protected int[,] isLand = new int[WORLD_WIDTH, WORLD_HEIGHT];
 
     public GameObject mapTileMarker;
+
+    public Transform tileMarkerParent;
+
+    public HexagonPathfinder pathfinder;
 
     public TileBiom[] bioms;
 
@@ -121,8 +125,8 @@ public class HexagonWorld : SaveableMonoBehaviour, INavigatable<Vector2Int, Vect
     {
         int endX = startPos.x + size.x;
         int endY = startPos.y + size.y;
-        Assert.IsTrue(endX < WORLD_WIDTH);
-        Assert.IsTrue(endY < WORLD_HEIGHT);
+        Assert.IsTrue(endX <= WORLD_WIDTH);
+        Assert.IsTrue(endY <= WORLD_HEIGHT);
 
         Continent continent = new Continent(startPos, size, distanceNoiseWeighting);
         continent.WriteContinentFactionTilesIntoWorld(world);
@@ -145,7 +149,7 @@ public class HexagonWorld : SaveableMonoBehaviour, INavigatable<Vector2Int, Vect
                     continue;
 
                 t.AddTileToMesh(verts, tris, colors);
-                t.MarkTile(mapTileMarker, transform);
+                t.MarkTile(mapTileMarker, tileMarkerParent);
             }
         }
 
@@ -167,84 +171,29 @@ public class HexagonWorld : SaveableMonoBehaviour, INavigatable<Vector2Int, Vect
         MeshCollider.sharedMesh = m;
     }
 
-    protected bool IsInBounds(Vector2Int point)
+    public bool IsInBounds(Vector2Int point)
     {
         return point.x >= 0 && point.y >= 0 && point.x < WORLD_WIDTH && point.y < WORLD_HEIGHT;
     }
 
-    protected bool FieldCanBeEntered(Vector2Int point)
+    public bool FieldCanBeEntered(Vector2Int point)
     {
         return WorldTileFromIndex(point).CanBeEntered;
     }
 
-    #region Pathfinder
-
-    public Vector2Int[] GetCircumjacent(Vector2Int field)
+    public IEnumerable<WorldTile> GetAdjencentTiles(WorldTile center, bool includeCenter = false)
     {
-        ///if a field cant be crossed (but may still be entered, e.g. enemies on map)
-        ///no neighbours will be available for this field
-        if (!world[field.x, field.y].CanBeCrossed)
-            return Array.Empty<Vector2Int>();
+        if (includeCenter)
+            yield return center;
 
-        int x = field.x;
-        int y = field.y;
-        int sign;
-        if (x % 2 == 0)
-            sign = 1;
-        else
-            sign = -1;
-
-        List<Vector2Int> neighbours = new List<Vector2Int>();
-        AddIfFieldIsAvailable(neighbours, new Vector2Int(x, y + 1));
-        AddIfFieldIsAvailable(neighbours, new Vector2Int(x, y - 1));
-        AddIfFieldIsAvailable(neighbours, new Vector2Int(x + 1, y + sign));
-        AddIfFieldIsAvailable(neighbours, new Vector2Int(x - 1, y + sign));
-        AddIfFieldIsAvailable(neighbours, new Vector2Int(x + 1, y));
-        AddIfFieldIsAvailable(neighbours, new Vector2Int(x - 1, y));
-
-        return neighbours.ToArray();
+        foreach (WorldTile tile in WorldTilesFromIndices(GetInBoundsNeighbours(center.Coordinates)))
+            yield return tile;
     }
-
-    protected void AddIfFieldIsAvailable(List<Vector2Int> list, Vector2Int field)
-    {
-        if (IsFieldAvailableForPathfinder(field))
-            list.Add(field);
-    }
-
-    public float DistanceToTarget(Vector2Int from, Vector2Int to)
-    {
-        int xDiff = Mathf.Abs(from.x - to.x);
-        int yDiff = Mathf.Max(0, Mathf.Abs(from.y - to.y) - xDiff / 2) - (xDiff % 2);
-        return xDiff + yDiff;
-    }
-
-    public float DistanceToField(Vector2Int from, Vector2Int to)
-    {
-        return world[to.x, to.y].biom.moveSpeedOnTile;
-    }
-
-    public bool ReachedTarget(Vector2Int current, Vector2Int destination)
-    {
-        return current == destination;
-    }
-
-    public bool IsEqual(Vector2Int t1, Vector2Int t2)
-    {
-        return t1.Equals(t2);
-    }
-
-    protected bool IsFieldAvailableForPathfinder(Vector2Int point)
-    {
-        return IsInBounds(point) && FieldCanBeEntered(point);
-    }
-
-
-    #endregion Pathfinder
 
     public Maybe<WorldTile> GetWorldTileFromPosition(Vector3 pos)
     {
         Vector2Int guessedIndex = GetNaiveArrayIndexFromPos(pos);
-        List<Vector2Int> neighbours = GetUnfilteredCircumjacent(guessedIndex);
+        List<Vector2Int> neighbours = GetInBoundsNeighbours(guessedIndex);
         neighbours.Add(guessedIndex);
         Maybe<Vector2Int> foundIndex = new Maybe<Vector2Int>();
         string result = "";
@@ -264,7 +213,12 @@ public class HexagonWorld : SaveableMonoBehaviour, INavigatable<Vector2Int, Vect
         return foundIndex.ApplyValueToFunction(WorldTileFromIndex);
     }
 
-    protected WorldTile WorldTileFromIndex(Vector2Int index) => world[index.x, index.y];    
+    public WorldTile WorldTileFromIndex(Vector2Int index) => world[index.x, index.y];    
+
+    public IEnumerable<WorldTile> WorldTilesFromIndices(IEnumerable<Vector2Int> indices)
+    {
+        return indices.Select(WorldTileFromIndex);
+    }
 
     protected Vector2Int GetNaiveArrayIndexFromPos(Vector3 pos)
     {
@@ -303,24 +257,9 @@ public class HexagonWorld : SaveableMonoBehaviour, INavigatable<Vector2Int, Vect
     //protected bool IsPointInside
 
 
-    public List<Vector2Int> GetUnfilteredCircumjacent(Vector2Int field)
+    public List<Vector2Int> GetInBoundsNeighbours(Vector2Int field)
     {
-        int x = field.x;
-        int y = field.y;
-        int sign;
-        if (x % 2 == 0)
-            sign = 1;
-        else
-            sign = -1;
-        List<Vector2Int> neighbours = new List<Vector2Int>() {
-            new Vector2Int(x, y + 1),
-            new Vector2Int(x, y - 1),
-            new Vector2Int(x + 1, y + sign),
-            new Vector2Int(x - 1, y + sign),
-            new Vector2Int(x + 1, y),
-            new Vector2Int(x - 1, y)
-        };
-        return neighbours;
+        return pathfinder.GetCircumjacent(field, IsInBounds).ToList();
     }
 
 

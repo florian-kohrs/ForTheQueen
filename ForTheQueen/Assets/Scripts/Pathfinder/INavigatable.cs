@@ -5,7 +5,7 @@ using UnityEngine;
 public interface INavigatable<T,J>
 {
 
-    T[] GetCircumjacent(T field);
+    IEnumerable<T> GetCircumjacent(T field);
 
     float DistanceToTarget(T from, J to);
 

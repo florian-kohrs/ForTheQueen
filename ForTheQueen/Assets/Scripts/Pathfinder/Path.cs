@@ -23,15 +23,6 @@ public class Path<T, J>
         distance = nav.DistanceToTarget(current, target);
     }
 
-    public IEnumerable<Path<T, J>> Advance()
-    {
-        IEnumerable<T> circumjacent = nav.GetCircumjacent(current);
-        return circumjacent
-            .Where(c => parent == null || !nav.IsEqual(c, parent.current))
-            .Select(c => new Path<T, J>(
-                 c, this, previousDistance + nav.DistanceToField(current, c)));
-    }
-
     public Path<T, J> Advance(T t)
     {
         return new Path<T, J>(t, this, previousDistance + nav.DistanceToField(current, t));

@@ -11,12 +11,14 @@ public class WorldTile
 
     public WorldTile(Vector2Int coordinate, int biomIndex)
     {
-        this.coordinate = coordinate;
+        this.coordinates = coordinate;
         this.biomIndex = biomIndex - 1;
         center = new Vector3(GetXPosForCoord(coordinate), 0, GetZPosForCoord(coordinate));
     }
     
-    protected Vector2Int coordinate;
+    protected Vector2Int coordinates;
+
+    public Vector2Int Coordinates => coordinates;
 
     [System.NonSerialized]
     public TileBiom biom;

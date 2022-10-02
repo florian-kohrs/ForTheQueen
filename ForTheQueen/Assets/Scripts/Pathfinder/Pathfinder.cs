@@ -106,14 +106,11 @@ public class Pathfinder<T, J>
     {
         Path<T, J> closest = GetClosest();
         usedFields.Add(closest.current);
-        T[] adjacent = nav.GetCircumjacent(closest.current);
-        for (int i = 0; i < adjacent.Length; i++)
+        IEnumerable<T> adjacent = nav.GetCircumjacent(closest.current);
+        foreach (var t in adjacent)
         {
-            T t = adjacent[i];
             if (!usedFields.Contains(t))
-            {
                 AddTailUnchecked(closest.Advance(t));
-            }
         }
     }
 
