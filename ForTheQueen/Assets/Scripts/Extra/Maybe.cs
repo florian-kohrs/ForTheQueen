@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Maybe<T> where T : struct
+public class Maybe<T> /*where T : struct*/
 {
 
-    protected T value;
+    public Maybe() { }
+
+    public Maybe(T value) { Value = value; }   
+
+    private T value;
 
     protected bool hasValue;
 
@@ -25,6 +29,14 @@ public class Maybe<T> where T : struct
             hasValue = true;
             this.value = value; 
         }
+    }
+
+    public Maybe<K> ApplyValueToFunction<K>(System.Func<T,K> f)
+    {
+        if (HasValue)
+            return new Maybe<K>(f(Value));
+        else
+            return new Maybe<K>();
     }
 
     public bool HasValue => hasValue;

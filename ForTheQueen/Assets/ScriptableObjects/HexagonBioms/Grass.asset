@@ -19,4 +19,4 @@ MonoBehaviour:
     wasAlreadyValidated: 0
     runtimeRef: {fileID: 0}
   moveSpeedOnTile: 0
-  color: {r: 0, g: 1, b: 0.2262168, a: 1}
+  color: {r: 0.09385012, g: 0.5377358, b: 0.1948124, a: 1}
