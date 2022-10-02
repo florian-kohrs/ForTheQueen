@@ -13,15 +13,16 @@ public class Maybe<T> /*where T : struct*/
 
     protected bool hasValue;
 
-    public void LazyRemoveValue()
+    public void RemoveValue()
     {
+        value = default;
         hasValue = false;
     }
 
     public T Value
     {
         get 
-        { 
+        {   
             return value; 
         }
         set 

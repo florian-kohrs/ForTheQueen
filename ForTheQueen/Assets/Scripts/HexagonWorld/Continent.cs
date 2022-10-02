@@ -32,7 +32,7 @@ public class Continent
     }
 
 
-    public void WriteContinentFactionTilesIntoWorld(WorldTile[,] world)
+    public void WriteContinentFactionTilesIntoWorld(MapTile[,] world)
     {
         for (int x = 0; x < size.x; x++)
         {
@@ -44,7 +44,7 @@ public class Continent
                     continue;
 
                 int currentY = startCoord.y + y;
-                world[currentX, currentY] = new WorldTile(new Vector2Int(currentX, currentY), currentFaction);
+                world[currentX, currentY] = new MapTile(new Vector2Int(currentX, currentY), currentFaction);
             }
         }
     }

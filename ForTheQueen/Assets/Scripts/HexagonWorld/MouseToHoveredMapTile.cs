@@ -10,7 +10,9 @@ public class MouseToHoveredMapTile : MonoBehaviour
 
     public HexagonWorld hexagonWorld;
 
-    public HexagonMarker marker;
+    public CallbackSet<IMouseTileSelectionCallback> subscribers = new CallbackSet<IMouseTileSelectionCallback>();
+
+    protected MapTile lastHovoredTile;
 
     private void Update()
     {
@@ -19,14 +21,35 @@ public class MouseToHoveredMapTile : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 2000/*, WORLD_LAYER_ID*/))
         {
-            Maybe<WorldTile> tile = hexagonWorld.GetWorldTileFromPosition(hit.point);
-            if(tile.HasValue)
+            Maybe<MapTile> tile = hexagonWorld.GetWorldTileFromPosition(hit.point);
+
+            if (tile.HasValue)
             {
-                marker.MarkHexagons(hexagonWorld.GetAdjencentTiles(tile.Value));
+                //hexagonWorld.MarkHexagons(hexagonWorld.GetAdjencentTiles(tile.Value));
             }
 
-            //calculate array position and find actual hit one by local search and check each tile if mouse pointer is inside
+            NotifySubscriberOnChange(tile);
+
+
         }
+    }
+
+    protected void NotifySubscriberOnChange(Maybe<MapTile> tile)
+    {
+        ///do nothing if the old and new tile hover are the same
+        if (tile.Value == lastHovoredTile)
+            return;
+
+        if (lastHovoredTile != null)
+        {
+            subscribers.CallForEachSubscriber(s => s.ExitTileHovered(lastHovoredTile));
+        }
+
+        if (tile.HasValue)
+        {
+            subscribers.CallForEachSubscriber(s => s.EnterTileHovered(tile.Value));
+        }
+        lastHovoredTile = tile.Value;
     }
 
 }

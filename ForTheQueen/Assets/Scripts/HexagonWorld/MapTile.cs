@@ -4,18 +4,27 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 [System.Serializable]
-public class WorldTile
+public class MapTile
 {
 
-    public WorldTile() { }
+    public MapTile() { }
 
-    public WorldTile(Vector2Int coordinate, int biomIndex)
+    public MapTile(Vector2Int coordinate, int biomIndex)
     {
         this.coordinates = coordinate;
         this.biomIndex = biomIndex - 1;
         center = new Vector3(GetXPosForCoord(coordinate), 0, GetZPosForCoord(coordinate));
     }
     
+    public void OnPlayerUncovered() { }
+
+    public void OnPlayerEntered() { }
+
+    public void OnPlayerReachedFieldAsTarget() { }
+
+    public void OnMouseStay() { }
+
+
     protected Vector2Int coordinates;
 
     public Vector2Int Coordinates => coordinates;
@@ -35,9 +44,9 @@ public class WorldTile
         CanBeEntered &= occupation.CanBeEntered;
     }
 
-    public bool CanBeCrossed { get; private set; }
+    public bool CanBeCrossed { get; private set; } = true;
 
-    public bool CanBeEntered { get; private set; }
+    public bool CanBeEntered { get; private set; } = true;
 
 
     public bool discovered = false;

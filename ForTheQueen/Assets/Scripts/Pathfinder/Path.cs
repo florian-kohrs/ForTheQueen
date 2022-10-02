@@ -47,12 +47,12 @@ public class Path<T, J>
         return distance + (accuracyFactor * previousDistance);
     }
 
-    public void BuildPath(ref IList<T> result)
+    public void BuildPath(List<T> result)
     {
         result.Insert(0, current);
         if (parent != null)
         {
-            parent.BuildPath(ref result);
+            parent.BuildPath(result);
         }
     }
 

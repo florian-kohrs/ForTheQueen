@@ -35,9 +35,9 @@ public class HexagonWorld : SaveableMonoBehaviour
     protected int seed;
 
     [Save]
-    protected WorldTile[,] world;
+    protected MapTile[,] world;
 
-    public WorldTile[,] World => world;
+    public MapTile[,] World => world;
 
     protected int[,] isLand = new int[WORLD_WIDTH, WORLD_HEIGHT];
 
@@ -46,6 +46,11 @@ public class HexagonWorld : SaveableMonoBehaviour
     public Transform tileMarkerParent;
 
     public HexagonPathfinder pathfinder;
+
+    public HexagonMarker marker;
+
+    [SerializeField]
+    protected MouseToHoveredMapTile mouseMapHover;
 
     public TileBiom[] bioms;
 
@@ -78,6 +83,8 @@ public class HexagonWorld : SaveableMonoBehaviour
         }
     }
 
+    public CallbackSet<IMouseTileSelectionCallback> GetMouseCallbackSet => mouseMapHover.subscribers;
+
     protected MeshCollider meshCollider;
 
     protected MeshCollider MeshCollider
@@ -93,7 +100,7 @@ public class HexagonWorld : SaveableMonoBehaviour
     protected override void OnFirstTimeBehaviourAwakend()
     {
         seed = UnityEngine.Random.Range(0, 99999999);
-        world = new WorldTile[WORLD_WIDTH, WORLD_HEIGHT];
+        world = new MapTile[WORLD_WIDTH, WORLD_HEIGHT];
     }
 
     private void Start()
@@ -144,7 +151,7 @@ public class HexagonWorld : SaveableMonoBehaviour
         {
             for (int z = 0; z < WORLD_HEIGHT; z++)
             {
-                WorldTile t = world[x, z];
+                MapTile t = world[x, z];
                 if (t == null)
                     continue;
 
@@ -171,6 +178,16 @@ public class HexagonWorld : SaveableMonoBehaviour
         MeshCollider.sharedMesh = m;
     }
 
+    public List<GameObject> MarkHexagons(IEnumerable<Vector2Int> coords, GameObject markerPrefab = null)
+    {
+        return MarkHexagons(MapTilesFromIndices(coords), markerPrefab);
+    }
+
+    public List<GameObject> MarkHexagons(IEnumerable<MapTile> tiles, GameObject markerPrefab = null)
+    {
+        return marker.MarkHexagons(tiles, markerPrefab);
+    }
+
     public bool IsInBounds(Vector2Int point)
     {
         return point.x >= 0 && point.y >= 0 && point.x < WORLD_WIDTH && point.y < WORLD_HEIGHT;
@@ -178,25 +195,29 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     public bool FieldCanBeEntered(Vector2Int point)
     {
-        return WorldTileFromIndex(point).CanBeEntered;
+        return MapTileFromIndex(point).CanBeEntered;
     }
 
-    public IEnumerable<WorldTile> GetAdjencentTiles(WorldTile center, bool includeCenter = false)
+    public IEnumerable<MapTile> GetAdjencentTiles(Vector2Int coord, bool includeCenter = false)
+    {
+        return GetAdjencentTiles(MapTileFromIndex(coord),includeCenter);
+    }
+
+    public IEnumerable<MapTile> GetAdjencentTiles(MapTile center, bool includeCenter = false)
     {
         if (includeCenter)
             yield return center;
 
-        foreach (WorldTile tile in WorldTilesFromIndices(GetInBoundsNeighbours(center.Coordinates)))
+        foreach (MapTile tile in MapTilesFromIndices(GetInBoundsNeighbours(center.Coordinates)))
             yield return tile;
     }
 
-    public Maybe<WorldTile> GetWorldTileFromPosition(Vector3 pos)
+    public Maybe<MapTile> GetWorldTileFromPosition(Vector3 pos)
     {
         Vector2Int guessedIndex = GetNaiveArrayIndexFromPos(pos);
         List<Vector2Int> neighbours = GetInBoundsNeighbours(guessedIndex);
         neighbours.Add(guessedIndex);
         Maybe<Vector2Int> foundIndex = new Maybe<Vector2Int>();
-        string result = "";
         foreach (var index in neighbours)
         {
             if(IsInBounds(index) && IsPointInsideHexagonSimple(index, pos))
@@ -206,18 +227,16 @@ public class HexagonWorld : SaveableMonoBehaviour
                     Debug.LogWarning("Mouse hovered detected over multiple fields. This should not happen.");
                 }
                 foundIndex.Value = index;
-                result += $"Mouse hovered over index {index} and ";
             }
         }
-        Debug.Log(result);
-        return foundIndex.ApplyValueToFunction(WorldTileFromIndex);
+        return foundIndex.ApplyValueToFunction(MapTileFromIndex);
     }
 
-    public WorldTile WorldTileFromIndex(Vector2Int index) => world[index.x, index.y];    
+    public MapTile MapTileFromIndex(Vector2Int index) => world[index.x, index.y];    
 
-    public IEnumerable<WorldTile> WorldTilesFromIndices(IEnumerable<Vector2Int> indices)
+    public IEnumerable<MapTile> MapTilesFromIndices(IEnumerable<Vector2Int> indices)
     {
-        return indices.Select(WorldTileFromIndex);
+        return indices.Select(MapTileFromIndex);
     }
 
     protected Vector2Int GetNaiveArrayIndexFromPos(Vector3 pos)
@@ -241,7 +260,7 @@ public class HexagonWorld : SaveableMonoBehaviour
     /// <returns></returns>
     public bool IsPointInsideHexagonSimple(Vector2Int coord, Vector3 point)
     {
-        Vector3 relativePos = point - WorldTileFromIndex(coord).CenterPos;
+        Vector3 relativePos = point - MapTileFromIndex(coord).CenterPos;
         float sqrDist = Vector3.SqrMagnitude(relativePos);
         return sqrDist < HEX_SMALL_SQR_RADIUS;
     }

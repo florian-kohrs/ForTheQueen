@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,18 +51,17 @@ public class Pathfinder<T, J>
         return result;
     }
 
-
-    public static IList<T> FindPath(INavigatable<T, J> assistant, T start, J target, PathAccuracy accuracy)
+    public static List<T> FindPath(INavigatable<T, J> map, T start, J target, PathAccuracy accuracy = PathAccuracy.Perfect)
     {
-        return new Pathfinder<T, J>(assistant, start, target, accuracy).GetPath();
+        return new Pathfinder<T, J>(map, start, target, accuracy).GetPath();
     }
 
-    private Pathfinder(INavigatable<T, J> assistant, T start, J target, PathAccuracy accuracy, float estimatedStepProgress = 0.5f)
+    private Pathfinder(INavigatable<T, J> map, T start, J target, PathAccuracy accuracy, float estimatedStepProgress = 0.5f)
     {
         this.start = start;
         this.target = target;
         pathAccuracy = AccuracyFactor(accuracy);
-        nav = assistant;
+        nav = map;
         float estimatedLength = nav.DistanceToTarget(start, target);
         int estimatedQueueSize = (int)Mathf.Clamp(estimatedStepProgress * estimatedLength * (1 - (pathAccuracy / 2)), 10, 10000);
         pathTails = new BinaryHeap<float, Path<T, J>>(float.MinValue, float.MaxValue, estimatedQueueSize);
@@ -75,22 +75,22 @@ public class Pathfinder<T, J>
 
     protected T start;
 
-    protected IList<T> GetPath()
+    protected List<T> GetPath()
     {
         AddTailUnchecked(new Path<T, J>(nav, start, target));
         return BuildPath();
     }
-
-    protected IList<T> BuildPath()
+    int count = 0;
+    protected List<T> BuildPath()
     {
-        int count = 0;
+        count = 0;
         while (HasTail && !ReachedTarget)
         {
             count++;
             AdvanceClosest();
         }
-        IList<T> result = new List<T>();
-        pathTails.Peek().BuildPath(ref result);
+        List<T> result = new List<T>();
+        pathTails.Peek().BuildPath(result);
         if (ReachedTarget)
         {
             Debug.Log("found path after: " + count + " iterations of length " + result.Count);
@@ -104,13 +104,21 @@ public class Pathfinder<T, J>
 
     public void AdvanceClosest()
     {
-        Path<T, J> closest = GetClosest();
-        usedFields.Add(closest.current);
-        IEnumerable<T> adjacent = nav.GetCircumjacent(closest.current);
-        foreach (var t in adjacent)
+        try
         {
-            if (!usedFields.Contains(t))
-                AddTailUnchecked(closest.Advance(t));
+            Path<T, J> closest = GetClosest();
+            usedFields.Add(closest.current);
+            IEnumerable<T> adjacent = nav.GetCircumjacent(closest.current);
+            foreach (var t in adjacent)
+            {
+                if (!usedFields.Contains(t))
+                    AddTailUnchecked(closest.Advance(t)); 
+            }
+        }
+        catch (Exception x)
+        {
+            Debug.Log($"Found no path after {count} iterations");
+            throw x;
         }
     }
 
@@ -127,7 +135,18 @@ public class Pathfinder<T, J>
         return closest;
     }
 
-    public bool ReachedTarget => nav.ReachedTarget(pathTails.Peek().current, target);
+    public Path<T, J> PeekUnusedClosest()
+    {
+        while(usedFields.Contains(pathTails.Peek().current))
+        {
+            pathTails.Dequeue();
+        }
+
+        return pathTails.Peek();
+    }
+
+
+    public bool ReachedTarget => nav.ReachedTarget(PeekUnusedClosest().current, target);
 
 
     public BinaryHeap<float, Path<T, J>> pathTails;
@@ -137,7 +156,7 @@ public class Pathfinder<T, J>
 
     public void AddTailUnchecked(Path<T, J> p)
     {
-        pathTails.Enqueue(p.TotalEstimatedMinimumDistance(pathAccuracy), p);
+        pathTails.Enqueue(p.TotalMinimumDistance, p);
     }
 
     protected bool TryGetClosestField(out Path<T, J> path)

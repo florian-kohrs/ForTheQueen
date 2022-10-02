@@ -7,14 +7,7 @@ using UnityEngine;
 /// <typeparam name="T">the type which stores the data for this saveable monobehaviour</typeparam>
 public abstract class SaveableMonoBehaviour : BaseSaveableMonoBehaviour
 {
-   
-    /// <summary>
-    /// the delegate is used, to unsubscribe from all events, when the script (gameobject) is destroyed,
-    /// to avoid the event source reference destroyed objects
-    /// </summary>
-    private delegate void OnScriptDestroy();
-    private event OnScriptDestroy onDestroyEvent;
-    
+
     [Save]
     private bool isEnabled;
 
@@ -44,24 +37,6 @@ public abstract class SaveableMonoBehaviour : BaseSaveableMonoBehaviour
     }
 
     /// <summary>
-    /// use this method to subscribe to events, so all registered events will be unsubscribed
-    /// when the object is being destroyed
-    /// An example of usage: "subscribeEvent(delegate { inventoryController.onItemEquiped += onItemEquipEvent; },
-    /// delegate { inventoryController.onItemEquiped -= onItemEquipEvent; });"
-    /// </summary>
-    /// <param name="subscribe"></param>
-    /// <param name="unsubscribe"></param>
-    public void subscribeEvent(Action subscribe, Action unsubscribe)
-    {
-        subscribe();
-
-        onDestroyEvent += () =>
-        {
-            unsubscribe();
-        };
-    }
-
-    /// <summary>
     /// is called when the game was loaded, and the script is fully 
     /// initiated 
     /// </summary>
@@ -83,7 +58,6 @@ public abstract class SaveableMonoBehaviour : BaseSaveableMonoBehaviour
     /// </summary>
     protected virtual void BehaviourLoaded() { }
  
-    protected virtual void onDestroy() { }
     
     /// <summary>
     /// do not override this method by any mean with the "new" keyword, as Unity
@@ -102,14 +76,4 @@ public abstract class SaveableMonoBehaviour : BaseSaveableMonoBehaviour
         }
     }
 
-    protected void OnDestroy()
-    {
-        onDestroy();
-        if (onDestroyEvent != null)
-        {
-            onDestroyEvent();
-        }
-    }
-    
-    
 }

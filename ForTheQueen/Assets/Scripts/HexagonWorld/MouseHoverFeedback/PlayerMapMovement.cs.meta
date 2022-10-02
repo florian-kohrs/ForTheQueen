@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 59317a56e906adf439d925ccbbb82fe9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - hexagonWorld: {instanceID: 0}
+  - markerPrefab: {fileID: 2503613699086788810, guid: e3996abf8cba1fd4fbdf818956799517,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

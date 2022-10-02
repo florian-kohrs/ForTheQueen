@@ -8,7 +8,12 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
 
     public HexagonWorld world;
 
-    protected WorldTile[,] World => world.World;
+    protected MapTile[,] World => world.World;
+
+    public List<Vector2Int> GetPath(Vector2Int start, Vector2Int end)
+    {
+        return Pathfinder<Vector2Int, Vector2Int>.FindPath(this, start, end);
+    }
 
     public IEnumerable<Vector2Int> GetCircumjacent(Vector2Int field)
     {
@@ -50,7 +55,7 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
     public float DistanceToTarget(Vector2Int from, Vector2Int to)
     {
         int xDiff = Mathf.Abs(from.x - to.x);
-        int yDiff = Mathf.Max(0, Mathf.Abs(from.y - to.y) - xDiff / 2) - (xDiff % 2);
+        int yDiff = Mathf.Max(0, Mathf.Abs(from.y - to.y) - xDiff / 2 - (xDiff % 2));
         return xDiff + yDiff;
     }
 
@@ -63,7 +68,7 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
 
     public float DistanceToField(Vector2Int from, Vector2Int to)
     {
-        return World[to.x, to.y].biom.moveSpeedOnTile;
+        return 1;// World[to.x, to.y].biom.moveSpeedOnTile;
     }
 
     public bool ReachedTarget(Vector2Int current, Vector2Int destination)

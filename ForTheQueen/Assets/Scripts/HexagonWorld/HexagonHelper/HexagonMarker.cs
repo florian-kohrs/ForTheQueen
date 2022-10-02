@@ -5,24 +5,35 @@ using UnityEngine;
 public class HexagonMarker : MonoBehaviour
 {
 
-    public GameObject hexagonPrefab;
+    public GameObject defaultMarkerPrefab;
+
+    protected GameObject currentMarkerPrefab;
 
     protected List<GameObject> activeMarkers = new List<GameObject>();
 
-    public void MarkHexagons(IEnumerable<WorldTile> tiles, bool deleteOldMarks = true)
+    public List<GameObject> MarkHexagons(IEnumerable<MapTile> tiles)
     {
-        if (deleteOldMarks)
-            DeleteOldMarks();
+        return MarkHexagons(tiles, defaultMarkerPrefab);
+    }
+
+    public List<GameObject> MarkHexagons(IEnumerable<MapTile> tiles, GameObject markerPrefab)
+    {
+        currentMarkerPrefab = markerPrefab;
+        if (currentMarkerPrefab == null)
+            currentMarkerPrefab = defaultMarkerPrefab;
+
+        DeleteOldMarks();
 
         foreach (var h in tiles)
         {
             SpawnMarkerAt(h.CenterPos);
         }
+        return activeMarkers;
     }
 
     protected void SpawnMarkerAt(Vector3 pos)
     {
-        GameObject marker = Instantiate(hexagonPrefab,transform);
+        GameObject marker = Instantiate(currentMarkerPrefab, transform);
         marker.transform.position = pos + Vector3.up * 0.05f;
         activeMarkers.Add(marker);
     }
@@ -33,6 +44,7 @@ public class HexagonMarker : MonoBehaviour
         {
             Destroy(m);
         }
+        activeMarkers.Clear();
     }
 
 }
