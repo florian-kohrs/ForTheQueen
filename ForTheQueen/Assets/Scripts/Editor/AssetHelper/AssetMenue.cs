@@ -20,4 +20,10 @@ public class AssetMenue : MonoBehaviour
         AssetCreator.CreateAsset<TileBiom>(BASE_FOLDER_NAME + "HexagonBioms");
     }
 
+    [MenuItem("Assets/Create/Custom/Map/Town")]
+    public static void NewTown()
+    {
+        AssetCreator.CreateAsset<TownScriptableObject>(BASE_FOLDER_NAME + "Town");
+    }
+
 }

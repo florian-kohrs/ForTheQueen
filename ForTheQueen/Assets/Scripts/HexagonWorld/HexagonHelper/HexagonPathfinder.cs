@@ -25,7 +25,7 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
         return GetCircumjacent(field, IsFieldAvailableForPathfinder);
     }
 
-    public IEnumerable<Vector2Int> GetCircumjacent(Vector2Int field, Predicate<Vector2Int> p)
+    public static IEnumerable<Vector2Int> GetCircumjacent(Vector2Int field, Predicate<Vector2Int> p)
     {
         int x = field.x;
         int y = field.y;
@@ -46,7 +46,7 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
         return neighbours.ToArray();
     }
 
-    protected void AddIfFieldIsAvailable(List<Vector2Int> list, Vector2Int field, Predicate<Vector2Int> p)
+    protected static void AddIfFieldIsAvailable(List<Vector2Int> list, Vector2Int field, Predicate<Vector2Int> p)
     {
         if (p(field))
             list.Add(field);
@@ -59,6 +59,36 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
         return xDiff + yDiff;
     }
 
+    public static IEnumerable<Vector2Int> GetNeighboursInDistance(Vector2Int start, int distance)
+    {
+        return GetNeighboursInDistance(start, distance, _=>true);
+    }
+
+    public static IEnumerable<Vector2Int> GetNeighboursInDistance(Vector2Int start, int distance, Predicate<Vector2Int> p)
+    {
+        yield return start;
+        Stack<Vector2Int> activeIteration = new Stack<Vector2Int>();
+        Stack<Vector2Int> nextIteration = new Stack<Vector2Int>();
+        nextIteration.Push(start);
+        HashSet<Vector2Int> seen = new HashSet<Vector2Int>() { start};
+        for (int i = 0; i < distance; i++)
+        {
+            activeIteration = nextIteration;
+            nextIteration = new Stack<Vector2Int>();
+            while (activeIteration.Count > 0)
+            {
+                Vector2Int current = activeIteration.Pop();
+                foreach (var item in GetCircumjacent(current, p))
+                {
+                    if (seen.Contains(item))
+                        continue;
+                    yield return item;
+                    seen.Add(item);
+                    nextIteration.Push(current);
+                }
+            } 
+        }
+    }
 
     protected bool IsFieldAvailableForPathfinder(Vector2Int point)
     {

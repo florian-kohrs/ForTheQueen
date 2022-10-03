@@ -10,4 +10,6 @@ public class MovementMapMarker : MonoBehaviour
 
     public MeshRenderer hexagonOverlayRenderer;
 
+    //public Emission GlowEffect;
+
 }

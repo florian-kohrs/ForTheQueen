@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Rand
@@ -18,6 +19,11 @@ public class Rand
     public static T PickOne<T>(IList<T> ts)
     {
         return ts[Random.Range(0, ts.Count)];
+    }
+
+    public static T PickOne<T>(ICollection<T> ts)
+    {
+        return ts.Skip(Random.Range(0, ts.Count - 1)).First();
     }
 
     public static T PickOne<T>(IList<T> ts, out int index)

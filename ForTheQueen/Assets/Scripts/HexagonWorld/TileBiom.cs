@@ -6,10 +6,11 @@ using UnityEngine;
 public class TileBiom : SaveableScriptableObject
 {
 
-    public float moveSpeedOnTile = 1;
+    public float maxMovementOnBiom = 1;
 
     public Color color;
 
-    public bool CanMoveOnTile => moveSpeedOnTile > 0;
+    public List<TownScriptableObject> townsInBiom;
+
 
 }

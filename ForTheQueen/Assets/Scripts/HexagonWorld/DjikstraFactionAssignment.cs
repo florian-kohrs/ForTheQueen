@@ -29,21 +29,23 @@ public class DjikstraFactionAssignment
             }
         }
     }
-
+     
     protected static void InitialFactionAssignment()
     {
         int widthIndex = currentContinent.GetLength(0) - 1;
         int heightIndex = currentContinent.GetLength(1) - 1;
         currentContinentSize = new Vector2Int(widthIndex + 1, heightIndex + 1);
-        currentContinent[0, 0] = 1;
-        currentContinent[widthIndex, 0] = 2;
-        currentContinent[0, heightIndex] = 3;
-        currentContinent[widthIndex, heightIndex] = 4;
 
-        candidates.Enqueue(new Vector2Int(0, 0));
-        candidates.Enqueue(new Vector2Int(widthIndex, 0));
-        candidates.Enqueue(new Vector2Int(0, heightIndex));
-        candidates.Enqueue(new Vector2Int(widthIndex, heightIndex));
+        StartKingdomAt(2, 0, 1);
+        StartKingdomAt(widthIndex - 5, 0, 2);
+        StartKingdomAt(1, heightIndex - 1, 3);
+        StartKingdomAt(widthIndex - 1, heightIndex - 3, 4);
+    }
+
+    protected static void StartKingdomAt(int x, int y, int index)
+    {
+        currentContinent[x, y] = index;
+        candidates.Enqueue(new Vector2Int(x, y));
     }
 
     protected static IEnumerable<Vector2Int> GetNeighboursOf(Vector2Int p)

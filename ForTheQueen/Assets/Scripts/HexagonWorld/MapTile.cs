@@ -9,11 +9,10 @@ public class MapTile
 
     public MapTile() { }
 
-    public MapTile(Vector2Int coordinate, int biomIndex)
+    public MapTile(Vector2Int coordinates)
     {
-        this.coordinates = coordinate;
-        this.biomIndex = biomIndex - 1;
-        center = new Vector3(GetXPosForCoord(coordinate), 0, GetZPosForCoord(coordinate));
+        this.coordinates = coordinates;
+        center = new Vector3(GetXPosForCoord(coordinates), 0, GetZPosForCoord(coordinates));
     }
     
     public void OnPlayerUncovered() { }
@@ -34,12 +33,23 @@ public class MapTile
 
     public int biomIndex;
 
+    public int AdaptedBiomIndex => biomIndex - 1;
+
+    public bool IsWater => biomIndex == 0;
+
     [SerializeField]
-    protected List<ITileOccupation> occupations;
+    protected List<ITileOccupation> occupations = new List<ITileOccupation>();
+
+    public void AddAndSpawnTileOccupation(ITileOccupation occupation, Transform parent)
+    {
+        AddTileOccupation(occupation);
+        occupation.SpawnOccupation(parent);
+    }
 
     public void AddTileOccupation(ITileOccupation occupation)
     {
         occupations.Add(occupation);
+        occupation.MapTile = this;
         CanBeCrossed &= occupation.CanBeCrossed;
         CanBeEntered &= occupation.CanBeEntered;
     }
@@ -70,6 +80,8 @@ public class MapTile
 
     public void AddTileToMesh(List<Vector3> verts, List<int> tris, List<Color> colors)
     {
+        if (IsWater)
+            return;
         AddHexagonTriangles(tris, verts.Count);
         AddHexagonVerticesToVerts(verts);
         AddHexagonColor(colors);
@@ -77,6 +89,9 @@ public class MapTile
 
     public void MarkTile(GameObject prefab, Transform parent)
     {
+        if (IsWater)
+            return;
+
         tileMarker = GameObject.Instantiate(prefab, parent);
         tileMarker.transform.position = CenterPos;
     }
@@ -143,7 +158,7 @@ public class MapTile
 
     protected void AddHexagonColor(List<Color> colors)
     {
-        Color c = HexagonWorld.WORLD_BIOMS[biomIndex].color;
+        Color c = HexagonWorld.WORLD_BIOMS[AdaptedBiomIndex].color;
         float colorRandomRange = 0.045f;
         c.r += Random.Range(-colorRandomRange, colorRandomRange) * c.r;
         c.g += Random.Range(-colorRandomRange, colorRandomRange) * c.g;

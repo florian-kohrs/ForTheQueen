@@ -12,9 +12,9 @@ public class HexagonWorld : SaveableMonoBehaviour
     //idea: For the king mix with legends of andor bord game, with maybe settlement management from mount and blade
     //characters also have mount slot: map movespeed, combat accuracy penalties? mounted weapons?
 
-    public const int WORLD_WIDTH = 50;
+    public const int WORLD_WIDTH = 100;
 
-    public const int WORLD_HEIGHT = 50;
+    public const int WORLD_HEIGHT = 100;
 
     public const float SPACE_BETWEEN_HEXES = 0f;
 
@@ -28,6 +28,8 @@ public class HexagonWorld : SaveableMonoBehaviour
     public static readonly float HEX_SMALL_SQR_RADIUS = Mathf.Pow(HEX_Y_SPACING / 2,2);
 
     public const float TOTAL_HEX_SPACE = SPACE_BETWEEN_HEXES + HEX_DIAMETER;
+
+    public const float TILE_IS_WATER_BELOW_VALUE = 40;
 
     public static TileBiom[] WORLD_BIOMS;
 
@@ -109,11 +111,24 @@ public class HexagonWorld : SaveableMonoBehaviour
         CreateWorld();
     }
 
+    protected void InitializeWorld()
+    {
+        for (int x = 0; x < WORLD_WIDTH; x++)
+        {
+            for (int y = 0; y < WORLD_HEIGHT; y++)
+            {
+                MapTile t = new MapTile(new Vector2Int(x, y));
+                world[x, y] = t;
+            }
+        }
+    }
+
     //sprite for hexagon markings
 
     public void CreateWorld()
     {
-        CreateContinentAt(new Vector2Int(0, 0), new Vector2Int(50, 50));
+        InitializeWorld();
+        CreateContinentAt(new Vector2Int(5,5 ), new Vector2Int(50, 50));
         BuildWorldMesh();
     }
 
@@ -135,8 +150,9 @@ public class HexagonWorld : SaveableMonoBehaviour
         Assert.IsTrue(endX <= WORLD_WIDTH);
         Assert.IsTrue(endY <= WORLD_HEIGHT);
 
-        Continent continent = new Continent(startPos, size, distanceNoiseWeighting);
+        Continent continent = new Continent(this, WORLD_BIOMS, startPos, size, distanceNoiseWeighting);
         continent.WriteContinentFactionTilesIntoWorld(world);
+        continent.SpawnObjectsForAllKingdoms();
     }
 
 
@@ -152,9 +168,6 @@ public class HexagonWorld : SaveableMonoBehaviour
             for (int z = 0; z < WORLD_HEIGHT; z++)
             {
                 MapTile t = world[x, z];
-                if (t == null)
-                    continue;
-
                 t.AddTileToMesh(verts, tris, colors);
                 t.MarkTile(mapTileMarker, tileMarkerParent);
             }
@@ -278,7 +291,7 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     public List<Vector2Int> GetInBoundsNeighbours(Vector2Int field)
     {
-        return pathfinder.GetCircumjacent(field, IsInBounds).ToList();
+        return HexagonPathfinder.GetCircumjacent(field, IsInBounds).ToList();
     }
 
 

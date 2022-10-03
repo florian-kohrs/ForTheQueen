@@ -7,9 +7,8 @@ public class PlayerTileOccupation : TileOccupationCreature
 
     public override bool CanBeCrossed => true;
 
-    public override void OnPlayerMouseHover()
+    public override void OnPlayerEntered()
     {
-        
+        ///Maybe move player to the side a bit
     }
-
 }

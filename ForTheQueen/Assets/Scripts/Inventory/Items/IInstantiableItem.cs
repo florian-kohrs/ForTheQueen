@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInstantiableItem : IItem
+public interface IInstantiableItem
 {
 
     GameObject GetItemInstance(Transform parent);

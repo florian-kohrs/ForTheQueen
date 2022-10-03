@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class PlayerMapMovement : MonoBehaviour, IMouseTileSelectionCallback
+public class PlayerMapMovement : PunLocalBehaviour, IMouseTileSelectionCallback
 {
 
     public HexagonWorld hexagonWorld;
@@ -21,7 +22,7 @@ public class PlayerMapMovement : MonoBehaviour, IMouseTileSelectionCallback
         hexagonWorld.marker.DeleteOldMarks();
     }
 
-    private void Start()
+    protected override void OnStart()
     {
         hexagonWorld.GetMouseCallbackSet.AddSubscriber(this);
     }
@@ -34,19 +35,24 @@ public class PlayerMapMovement : MonoBehaviour, IMouseTileSelectionCallback
     public void DisplayPath(Vector2Int start, Vector2Int end)
     {
         List<Vector2Int> path = hexagonWorld.pathfinder.GetPath(start, end);
-        List<GameObject> markers = hexagonWorld.MarkHexagons(path, markerPrefab);
+        List<GameObject> markers = hexagonWorld.MarkHexagons(path.Skip(1), markerPrefab);
 
         int count = 1;
         foreach (GameObject marker in markers)
         {
             MovementMapMarker m = marker.GetComponent<MovementMapMarker>();
-            m.distanceText.text = count.ToString();
 
             Color displayColor;
-            if (count < restMovementInTurn)
+            if (count <= restMovementInTurn)
+            {
                 displayColor = Color.green;
+                m.distanceText.text = (restMovementInTurn-count).ToString();
+            }
             else
+            {
+                m.distanceText.text = string.Empty;
                 displayColor = Color.gray;
+            }
 
             displayColor.a = 0.7f;
             m.hexagonOverlayRenderer.material.color = displayColor;
@@ -55,11 +61,9 @@ public class PlayerMapMovement : MonoBehaviour, IMouseTileSelectionCallback
         }
     }
 
-
     private void OnDestroy()
     {
         hexagonWorld.GetMouseCallbackSet.RemoveSubscriber(this);
     }
-
 
 }
