@@ -78,11 +78,11 @@ public class UiInventory : Inventory, IInterfaceMask
         {
             if (IsOpen)
             {
-                interfaceController.RemoveMask_(this);
+                interfaceController.RemoveMask(this);
             }
             else
             {
-                interfaceController.AddMask_(this);
+                interfaceController.AddMask(this);
             }
         }
         ClickEvent();

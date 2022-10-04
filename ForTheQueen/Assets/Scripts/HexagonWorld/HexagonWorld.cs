@@ -20,6 +20,9 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     public const float HEX_DIAMETER = 10f;
 
+    public const float WORLD_TOTAL_WIDTH = WORLD_WIDTH * HEX_DIAMETER;
+    public const float WORLD_TOTAL_HEIGHT = WORLD_HEIGHT * HEX_DIAMETER;
+
     public static readonly float HEX_Y_SPACING = Mathf.Sin(Mathf.Deg2Rad * 60) * HEX_DIAMETER;
     public static readonly float HEX_X_SPACING = Mathf.Cos(Mathf.Deg2Rad * 60) * HEX_DIAMETER * 1.5f;
 

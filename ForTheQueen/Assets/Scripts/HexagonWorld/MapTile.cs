@@ -15,13 +15,30 @@ public class MapTile
         center = new Vector3(GetXPosForCoord(coordinates), 0, GetZPosForCoord(coordinates));
     }
     
-    public void OnPlayerUncovered() { }
+    public void OnPlayerUncovered() 
+    {
+        occupations.ForEach(occupation => occupation.OnPlayerUncovered());
+    }
 
-    public void OnPlayerEntered() { }
+    public void OnPlayerReachedFieldAsTarget() 
+    {
+        occupations.ForEach(occupation => occupation.OnPlayerReachedFieldAsTarget());
+    }
 
-    public void OnPlayerReachedFieldAsTarget() { }
+    public void OnPlayerEntered() 
+    {
+        occupations.ForEach(occupation => occupation.OnPlayerMouseHover());
+    }
 
-    public void OnMouseStay() { }
+    public void OnMouseStay() 
+    {
+        occupations.ForEach(occupation => occupation.OnPlayerMouseHover());
+    }
+
+    public void OnMouseExit() 
+    {
+        occupations.ForEach(occupation => occupation.OnPlayerMouseExit());
+    }
 
 
     protected Vector2Int coordinates;

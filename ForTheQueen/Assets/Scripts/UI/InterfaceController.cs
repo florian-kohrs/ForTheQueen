@@ -5,15 +5,21 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InterfaceController : MonoBehaviour
+public class InterfaceController
 {
 
     private static InterfaceController instance;
 
-    private void Awake()
+    public static InterfaceController Instance => instance;
+
+    static InterfaceController()
+    {
+        instance = new InterfaceController();
+    }
+
+    protected InterfaceController()
     {
         GameManagerPun.SetInterfaceController(this);
-        instance = this;
     }
 
     protected HashSet<IInterfaceMask> allInterfaceMasks = new HashSet<IInterfaceMask>();
@@ -39,12 +45,7 @@ public class InterfaceController : MonoBehaviour
     //private IEnumerator textDismisser;
 
 
-    public static void AddMask(IInterfaceMask mask, bool closeAllOtherMasks = false)
-    {
-        instance.AddMask_(mask, closeAllOtherMasks);
-    }
-
-    public void AddMask_(IInterfaceMask mask, bool closeAllOtherMasks = false)
+    public void AddMask(IInterfaceMask mask, bool closeAllOtherMasks = false)
     {
         if (closeAllOtherMasks)
         {
@@ -59,7 +60,7 @@ public class InterfaceController : MonoBehaviour
     {
         foreach(IInterfaceMask m in activeMasks)
         {
-            RemoveMask_(m);
+            RemoveMask(m);
         }
         activeMasks.Clear();
     }
@@ -87,12 +88,7 @@ public class InterfaceController : MonoBehaviour
         }
     }
 
-    public static void RemoveMask(IInterfaceMask mask)
-    {
-        instance.RemoveMask_(mask);
-    }
-
-    public void RemoveMask_(IInterfaceMask mask)
+    public void RemoveMask(IInterfaceMask mask)
     {
         activeMasks.Remove(mask);
         mask.Close();

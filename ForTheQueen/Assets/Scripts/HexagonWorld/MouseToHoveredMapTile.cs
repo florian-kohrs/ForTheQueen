@@ -6,6 +6,8 @@ using UnityEngine;
 public class MouseToHoveredMapTile : MonoBehaviour
 {
 
+    protected const float TIME_BEFORE_MOUSE_STAY_EVENT = 0.5f;
+
     protected static int WORLD_LAYER_ID = 7;
 
     public HexagonWorld hexagonWorld;
@@ -13,6 +15,10 @@ public class MouseToHoveredMapTile : MonoBehaviour
     public CallbackSet<IMouseTileSelectionCallback> subscribers = new CallbackSet<IMouseTileSelectionCallback>();
 
     protected MapTile lastHovoredTile;
+
+    protected float timeOnHoveredTile;
+
+    protected bool calledTileHover;
 
     private void Update()
     {
@@ -34,22 +40,41 @@ public class MouseToHoveredMapTile : MonoBehaviour
         }
     }
 
+    protected void ResetTileMouseHover()
+    {
+        if (calledTileHover)
+            lastHovoredTile.OnMouseExit();
+        timeOnHoveredTile = 0;
+        calledTileHover = false;
+    }
+
     protected void NotifySubscriberOnChange(Maybe<MapTile> tile)
     {
-        ///do nothing if the old and new tile hover are the same
+        ///increase tile mouse hover time if old and new hover is the same
         if (tile.Value == lastHovoredTile)
-            return;
-
-        if (lastHovoredTile != null)
         {
-            subscribers.CallForEachSubscriber(s => s.ExitTileHovered(lastHovoredTile));
+            timeOnHoveredTile += Time.deltaTime;
+            if (tile.HasValue && timeOnHoveredTile > TIME_BEFORE_MOUSE_STAY_EVENT && !calledTileHover)
+            {
+                calledTileHover = true;
+                lastHovoredTile.OnMouseStay();
+            }
         }
+        else 
+        { 
+            ResetTileMouseHover();
 
-        if (tile.HasValue)
-        {
-            subscribers.CallForEachSubscriber(s => s.EnterTileHovered(tile.Value));
+            if (lastHovoredTile != null)
+            {
+                subscribers.CallForEachSubscriber(s => s.ExitTileHovered(lastHovoredTile));
+            }
+
+            if (tile.HasValue)
+            {
+                subscribers.CallForEachSubscriber(s => s.EnterTileHovered(tile.Value));
+            }
+            lastHovoredTile = tile.Value;
         }
-        lastHovoredTile = tile.Value;
     }
 
 }

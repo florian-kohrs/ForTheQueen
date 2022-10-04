@@ -19,7 +19,7 @@ public class GameMenue : InterfaceMask
 
     public void Continue()
     {
-        InterfaceController.RemoveMask(this);
+        interfaceController.RemoveMask(this);
     }
 
     public void OpenSettings()
@@ -36,14 +36,24 @@ public class GameMenue : InterfaceMask
 
     public override CursorLockMode CursorMode => CursorLockMode.None;
 
+    protected override void OnOpen()
+    {
+        GameManagerPun.FreezeCamera();
+    }
+
+    protected override void OnClose()
+    {
+        GameManagerPun.UnfreezeCamera();
+    }
+
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             if (IsOpen)
-                interfaceController.RemoveMask_(this);
+                interfaceController.RemoveMask(this);
             else
-                interfaceController.AddMask_(this);
+                interfaceController.AddMask(this);
         }
     }
 

@@ -41,7 +41,7 @@ public class GameManagerPun
         {
             if (interfaceController == null)
             {
-                interfaceController = GameObject.FindObjectOfType<InterfaceController>();
+                interfaceController = InterfaceController.Instance;
             }
             return interfaceController;
         }

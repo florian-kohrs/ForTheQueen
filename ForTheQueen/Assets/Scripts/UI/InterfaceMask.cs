@@ -22,7 +22,7 @@ public abstract class InterfaceMask : MonoBehaviour, IInterfaceMask
     protected void Start()
     {
         maskRoot.SetActive(false);
-        interfaceController = GameManagerPun.GetPlayerComponent<InterfaceController>();
+        interfaceController = InterfaceController.Instance;
         interfaceController.AddPossibleInterfaceMask(this);
     }
 

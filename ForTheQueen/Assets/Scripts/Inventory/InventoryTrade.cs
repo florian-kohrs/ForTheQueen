@@ -45,7 +45,7 @@ public class InventoryTrade : MonoBehaviour, IInterfaceMask
         playerTradingItems = new Dictionary<InventoryItemRef, int>();
         npcTradingItems = new Dictionary<InventoryItemRef, int>();
         
-        InterfaceController.AddMask(this, true);
+        InterfaceController.Instance.AddMask(this, true);
 
         UpdateTrade();
     }

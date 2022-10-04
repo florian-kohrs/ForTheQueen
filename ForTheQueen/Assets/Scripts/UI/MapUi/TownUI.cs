@@ -13,7 +13,7 @@ public class TownUI : AdaptableInterfaceMask<Town>
 
     public void LeaveTown()
     {
-        interfaceController.RemoveMask_(this);
+        interfaceController.RemoveMask(this);
     }
 
     public void OpenMarket()
@@ -31,10 +31,10 @@ public class TownUI : AdaptableInterfaceMask<Town>
 
     }
 
-    protected override void AdaptUITo(Town value)
+    protected override void AdaptUITo(Town value, Vector3 pos)
     {
         townImage.sprite = value.OccupationObject.townSprite;
         townName.text = value.TownName;
-        interfaceController.AddMask_(this);
+        interfaceController.AddMask(this);
     }
 }

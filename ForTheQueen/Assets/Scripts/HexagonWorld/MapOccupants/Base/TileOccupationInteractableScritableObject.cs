@@ -7,6 +7,9 @@ public class TileOccupationInteractableScritableObject : TileOccupationScritable
 
     public string occupationName;
 
-    public Sprite hoverBackgroundSprite;
+    [TextArea]
+    public string description;
+
+    public Color hoverBackgroundSpriteColor = Color.white;
 
 }
