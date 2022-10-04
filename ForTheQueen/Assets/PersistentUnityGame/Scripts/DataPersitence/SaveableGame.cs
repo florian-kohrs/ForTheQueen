@@ -192,9 +192,7 @@ public class SaveableGame
     {
         SaveableGame.GameDataController = gameDataController;
 
-        SaveableScene loadedScene = GameDataController.LoadSaveable<SaveableScene>
-                (FolderSystem.getSceneSavePath(GameName,
-                CurrentSceneName));
+        SaveableScene loadedScene = GameDataController.LoadSaveable<SaveableScene>(ActiveScenePath);
 
         ///reset scene list so no changes made before loading are interfering
         AllScenes = new List<SaveableScene>();
@@ -206,6 +204,8 @@ public class SaveableGame
         ///load new scene
         SceneManager.LoadScene(CurrentSceneName);
     }
+
+    public string ActiveScenePath => FolderSystem.getSceneSavePath(GameName,CurrentSceneName);
 
     /// <summary>
     /// calls "saveScene" for the current scene

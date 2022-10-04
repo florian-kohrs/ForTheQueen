@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
 public class Continent 
 {
 
@@ -29,13 +28,16 @@ public class Continent
 
     protected HexagonWorld world;
 
-    public Continent(HexagonWorld world, TileBiom[] kingdomsOnContinent, Vector2Int startCoord, Vector2Int size, AnimationCurve distanceNoiseWeighting)
+    protected System.Random rand;
+
+    public Continent(HexagonWorld world, int seed, TileBiom[] kingdomsOnContinent, Vector2Int startCoord, Vector2Int size, AnimationCurve distanceNoiseWeighting)
     {
+        rand = new System.Random(seed);
         this.world = world;
         this.kingdomsOnContinent = kingdomsOnContinent;
         this.startCoord = startCoord;
         this.size = size;
-        offset = default;// new Vector2Int(Random.Range(0, 9999), Random.Range(0, 99999));
+        offset = new Vector2Int(rand.Next(0,999999), rand.Next(0, 999999));
         this.distanceNoiseWeighting = distanceNoiseWeighting;
         continentFactionAssignment = new int[size.x, size.y];
         BuildContinent();
@@ -67,7 +69,7 @@ public class Continent
         
         foreach (var townObject in biom.townsInBiom)
         {
-            MapTile t = Rand.PickOne(kingdomTiles);
+            MapTile t = Rand.PickOne(kingdomTiles, rand);
             Town town = new Town(townObject);
             t.AddAndSpawnTileOccupation(town, world.transform);
             foreach (var item in world.MapTilesFromIndices(HexagonPathfinder.GetNeighboursInDistance(t.Coordinates, MIN_DISTANCE_BETWEEN_TOWNS)))

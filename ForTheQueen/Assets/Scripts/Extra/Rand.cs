@@ -26,6 +26,11 @@ public class Rand
         return ts.Skip(Random.Range(0, ts.Count - 1)).First();
     }
 
+    public static T PickOne<T>(ICollection<T> ts, System.Random rand)
+    {
+        return ts.Skip(rand.Next(0, ts.Count - 1)).First();
+    }
+
     public static T PickOne<T>(IList<T> ts, out int index)
     {
         index = Random.Range(0, ts.Count);

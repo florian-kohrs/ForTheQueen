@@ -5,11 +5,14 @@ using UnityEngine;
 public abstract class BaseSaveableMonoBehaviour : BaseSaveableObject, ITransformObject
 {
 
+    // <summary>
+    // this bool indicates that the script was in the saved component list, thus it wont be destroyed.
+    // All not loaded saveable scripts, which were attached to the created prefab will be destroyed.
+    // </summary>
     /// <summary>
-    /// this bool indicates that the script was in the saved component list, thus it wont be destroyed.
-    /// All not loaded saveable scripts, which were attached to the created prefab will be destroyed.
+    /// Is true if this behaviour has been loaded from a saved game
     /// </summary>
-    public bool WasCreated { get; set; }
+    public bool WasLoaded { get; set; }
     
     public object getTransformedValue()
     {

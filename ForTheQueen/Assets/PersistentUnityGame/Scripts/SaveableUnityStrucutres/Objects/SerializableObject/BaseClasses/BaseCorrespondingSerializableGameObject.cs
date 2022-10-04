@@ -160,7 +160,7 @@ public abstract class BaseCorrespondingSerializableGameObject :
         foreach (BaseSaveableMonoBehaviour saveableMonoBehaviour
             in saveableGameObject.GetComponents<BaseSaveableMonoBehaviour>())
         {
-            if (!saveableMonoBehaviour.WasCreated)
+            if (!saveableMonoBehaviour.WasLoaded)
             {
                 UnityEngine.Object.Destroy(saveableMonoBehaviour);
             }

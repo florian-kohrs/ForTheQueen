@@ -17,7 +17,7 @@ public class SaveableMonoBehaviourContainer : SaveableUnityData
 
     protected override void componentAdded(ISaveableComponent c)
     {
-        ((BaseSaveableMonoBehaviour)c).WasCreated = true;
+        ((BaseSaveableMonoBehaviour)c).WasLoaded = true;
     }
 
     protected override void componentRestored(ISaveableComponent c, IComponentAssigner assigner)

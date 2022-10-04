@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[SerializeField]
+[Serializable]
 public abstract class TileOccupation<T> : ITileOccupation where T : TileOccupationScritableObject
 {
 
@@ -10,14 +11,30 @@ public abstract class TileOccupation<T> : ITileOccupation where T : TileOccupati
 
     public TileOccupation(T occupationObject) 
     {
-        this.occupationObject = occupationObject;
+        OccupationObject = occupationObject;
     }
 
-    protected T occupationObject;
+    [NonSerialized]
+    private T occupationObject;
 
-    public T OccupationObject => occupationObject;
+    protected AssetPolyRef<T> savedScriptableObject;
 
-    [System.NonSerialized]
+    public T OccupationObject
+    {
+        get
+        {
+            if(occupationObject == null)
+                occupationObject = savedScriptableObject.RuntimeRef;
+            return occupationObject;
+        }
+        set
+        {
+            occupationObject = value;
+            savedScriptableObject = new AssetPolyRef<T>() { RuntimeRef = occupationObject };
+        }
+    }
+
+    [NonSerialized]
     protected GameObject mapOccupationInstance;
 
     public MapTile mapTile;

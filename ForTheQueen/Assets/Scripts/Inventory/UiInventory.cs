@@ -4,9 +4,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UiInventory : Inventory, IInterfaceMask
+public class UiInventory : SaveableMonoBehaviour, IInterfaceMask
 {
     
+    public Inventory inventory;
+
     public GameObject slotPrefab;
 
     private List<InventorySlot> slots = new List<InventorySlot>();
@@ -63,7 +65,7 @@ public class UiInventory : Inventory, IInterfaceMask
 
     public override void OnAwake()
     {
-        OnInventoryChanged = InventoryChanged;
+        inventory.OnInventoryChanged = InventoryChanged;
         base.OnAwake();
     }
 
@@ -92,14 +94,14 @@ public class UiInventory : Inventory, IInterfaceMask
     {
         if (GameManagerPun.AllowPlayerActions)
         {
-            for (int i = 1; i <= currentDisplayedItems.Count; i++)
-            {
-                if (Input.GetKeyDown(i.ToString()))
-                {
-                    EquipItem(currentDisplayedItems[i - 1]);
-                    break;
-                }
-            }
+            //for (int i = 1; i <= currentDisplayedItems.Count; i++)
+            //{
+            //    if (Input.GetKeyDown(i.ToString()))
+            //    {
+            //        EquipItem(currentDisplayedItems[i - 1]);
+            //        break;
+            //    }
+            //}
         }
     }
 
@@ -122,9 +124,9 @@ public class UiInventory : Inventory, IInterfaceMask
 
     private void DisplayAllItems()
     {
-        Vector2 size = InventorySize;
-        ItemDisplayer.Fill(R, slotPrefab, uiMask.transform, items, slots, 
-            INVENTORY_SLOT_SIZE, INVENTORY_SLOT_SPACE, ClickEvent, HoverEvent,HoverExitEvent);
+        //Vector2 size = InventorySize;
+        //ItemDisplayer.Fill(R, slotPrefab, uiMask.transform, items, slots, 
+        //    INVENTORY_SLOT_SIZE, INVENTORY_SLOT_SPACE, ClickEvent, HoverEvent,HoverExitEvent);
     }
 
 
@@ -132,7 +134,7 @@ public class UiInventory : Inventory, IInterfaceMask
     {
         currentDisplayedItems = new List<EquipableItem>();
         int count = 0;
-        foreach (EquipableItem e in items.Keys.Select(r => r.RuntimeRef).Where(i => i is EquipableItem))
+        foreach (EquipableItem e in inventory.items.Keys.Select(r => r.RuntimeRef).Where(i => i is EquipableItem))
         {
             currentDisplayedItems.Add(e);
             inventorySprites[count].transform.parent.gameObject.SetActive(true);

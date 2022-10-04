@@ -527,10 +527,44 @@ public class GamePersistence
         GetInstance().LoadGame_(name);
     }
 
+    public static byte[] ObjectToByteArray(Object obj)
+    {
+        using var ms = new MemoryStream();
+        new BinaryFormatter().Serialize(ms, obj);
+        return ms.ToArray();
+    }
+
+    public static T ByteArrayToObject<T>(byte[] arrBytes)
+    {
+        using var memStream = new MemoryStream();
+        memStream.Write(arrBytes, 0, arrBytes.Length);
+        memStream.Seek(0, SeekOrigin.Begin);
+        var obj = new BinaryFormatter().Deserialize(memStream);
+        return (T)obj;
+    }
+
+    public static byte[] GetActiveLoadedSceneByteArray()
+    {
+        return instance.WorkOnFileStreamOfSaveable(instance.currentGame.ActiveScenePath, f =>
+           {
+               using (MemoryStream ms = new MemoryStream())
+               {
+                   f.CopyTo(ms);
+                   return ms.ToArray();
+               }
+           }
+        );
+    }
+
     private void LoadGame_(string name)
     {
-        LoadGame_(allSavedGames.IndexOf
-            (allSavedGames.Where(game => game.GameName == name).First()));
+        LoadGame_(instance.GameNameToIndex(name));
+    }
+
+    protected int GameNameToIndex(string name)
+    {
+        return allSavedGames.IndexOf
+            (allSavedGames.Where(game => game.GameName == name).First());
     }
 
     public static bool IsValidSavedGame(string gameName)
@@ -588,9 +622,13 @@ public class GamePersistence
             currentGame = allSavedGames[index];
 
             currentGame.loadGame(this);
-       
-
         }
+    }
+
+    protected SaveableGame GetSavedGame(int index)
+    {
+        return LoadSaveable<SaveableGame>
+                (FolderSystem.getGameSavePath(allSavedGames[index].GameName));
     }
 
     private void Clear()
@@ -615,15 +653,17 @@ public class GamePersistence
     /// <returns></returns>
     public T LoadSaveable<T>(string path)
     {
+        return WorkOnFileStreamOfSaveable(path, (f) => (T)new BinaryFormatter().Deserialize(f));
+    }
+
+    public T WorkOnFileStreamOfSaveable<T>(string path, System.Func<FileStream, T> f)
+    {
         T result = default;
         //Debug.Log("loadthis." + path);
         if (File.Exists(path))
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            using (FileStream file = File.OpenRead(path))
-            {
-                result = (T)bf.Deserialize(file);
-            }
+            using FileStream file = File.OpenRead(path);
+            result = f(file);
         }
         else
         {

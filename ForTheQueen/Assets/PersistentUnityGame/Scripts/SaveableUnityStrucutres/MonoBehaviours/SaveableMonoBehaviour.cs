@@ -62,7 +62,7 @@ public abstract class SaveableMonoBehaviour : BaseSaveableMonoBehaviour
     /// <summary>
     /// do not override this method by any mean with the "new" keyword, as Unity
     /// wont call this method anymore, which is essential for saving this script.
-    /// Use the virutal function "onAwake" instead!! Be aware tho that "onAwake" is 
+    /// Use the virutal function "OnAwake" instead!! Be aware tho that "OnAwake" is 
     /// not called, when the game is loaded. In this case the method "behaviourLoaded" will
     /// be called.
     /// </summary>

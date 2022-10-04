@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     [Save]
     protected int seed;
+
+    protected System.Random seedGenerator;
 
     [Save]
     protected MapTile[,] world;
@@ -102,20 +105,36 @@ public class HexagonWorld : SaveableMonoBehaviour
         }
     }
 
-    protected override void OnFirstTimeBehaviourAwakend()
-    {
-        seed = UnityEngine.Random.Range(0, 99999999);
-        world = new MapTile[WORLD_WIDTH, WORLD_HEIGHT];
-    }
-
     private void Start()
     {
-        WORLD_BIOMS = bioms;
-        CreateWorld();
+        if(WasLoaded)
+        {
+            LoadSavedWorld();
+        }
+        else
+        {
+            CreateWorld();
+        }
     }
+
+    protected void LoadSavedWorld()
+    {
+        if (!PhotonNetworkExtension.IsMasterClient)
+            return;
+
+        PunBroadcastCommunication.SafeRPC(
+            nameof(PunBroadcastCommunication.Instance.CreateWorld),
+            RpcTarget.Others,
+            () => PunBroadcastCommunication.Instance.CreateWorld(seed),
+            seed);
+        byte[] savedData = GamePersistence.GetActiveLoadedSceneByteArray();
+    }
+
+    //protected void GenerateSavedWorld()
 
     protected void InitializeWorld()
     {
+        world = new MapTile[WORLD_WIDTH, WORLD_HEIGHT];
         for (int x = 0; x < WORLD_WIDTH; x++)
         {
             for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -126,10 +145,29 @@ public class HexagonWorld : SaveableMonoBehaviour
         }
     }
 
-    //sprite for hexagon markings
-
     public void CreateWorld()
     {
+        seed = UnityEngine.Random.Range(0, 99999999);
+        CreateWorld(seed);
+    }
+
+    public void CreateWorld(int seed)
+    {
+        if (!PhotonNetworkExtension.IsMasterClient)
+            return;
+
+        PunBroadcastCommunication.SafeRPC(
+            nameof(PunBroadcastCommunication.Instance.CreateWorld), 
+            RpcTarget.Others, 
+            ()=>PunBroadcastCommunication.Instance.CreateWorld(seed),
+            seed);
+    }
+
+    public void SpawnWorldWithSeed(int seed)
+    {
+        this.seed = seed;
+        WORLD_BIOMS = bioms;
+        seedGenerator = new System.Random(seed);
         InitializeWorld();
         CreateContinentAt(new Vector2Int(5,5 ), new Vector2Int(50, 50));
         BuildWorldMesh();
@@ -153,7 +191,7 @@ public class HexagonWorld : SaveableMonoBehaviour
         Assert.IsTrue(endX <= WORLD_WIDTH);
         Assert.IsTrue(endY <= WORLD_HEIGHT);
 
-        Continent continent = new Continent(this, WORLD_BIOMS, startPos, size, distanceNoiseWeighting);
+        Continent continent = new Continent(this, seedGenerator.Next(), WORLD_BIOMS, startPos, size, distanceNoiseWeighting);
         continent.WriteContinentFactionTilesIntoWorld(world);
         continent.SpawnObjectsForAllKingdoms();
     }

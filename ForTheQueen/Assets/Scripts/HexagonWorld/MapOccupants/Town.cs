@@ -10,10 +10,10 @@ public class Town : TileInteractableOccupation<TownScriptableObject>
 
     public Town(TownScriptableObject town) : base(town)
     { }
-
+    
     public Inventory itemsToSell;
 
-    public string TownName => occupationObject.occupationName;
+    public string TownName => OccupationObject.occupationName;
 
     public override void OnPlayerEntered()
     {
@@ -28,6 +28,7 @@ public class Town : TileInteractableOccupation<TownScriptableObject>
     {
     }
 
+    [System.NonSerialized]
     protected GenericMouseHoverInfo hoverInfo;
 
     protected GenericMouseHoverInfo HoverInfo
