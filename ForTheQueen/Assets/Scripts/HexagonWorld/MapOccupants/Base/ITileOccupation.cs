@@ -5,15 +5,17 @@ using UnityEngine;
 public interface ITileOccupation
 {
 
-    void OnPlayerMouseHover();
+    void OnPlayerMouseHover(Hero p);
 
-    void OnPlayerMouseExit();
+    void OnPlayerMouseExit(Hero p);
 
-    void OnPlayerUncovered();
+    void OnPlayerUncovered(Hero p);
 
-    void OnPlayerEntered();
+    void OnPlayerEntered(Hero p);
 
-    void OnPlayerReachedFieldAsTarget();
+    void OnPlayerLeftFieldAfterStationary(Hero p);
+
+    void OnPlayerReachedFieldAsTarget(Hero p);
 
     MapTile MapTile { set; }
 

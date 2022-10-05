@@ -54,15 +54,18 @@ public abstract class TileOccupation<T> : ITileOccupation where T : TileOccupati
     public abstract bool CanBeCrossed { get; }
     public abstract bool CanBeEntered { get; }
 
-    public abstract void OnPlayerMouseExit();
-    public abstract void OnPlayerEntered();
-    public abstract void OnPlayerMouseHover();
-    public abstract void OnPlayerReachedFieldAsTarget();
-    public abstract void OnPlayerUncovered();
+    public abstract void OnPlayerMouseExit(Hero p);
+    public abstract void OnPlayerEntered(Hero p);
+    public abstract void OnPlayerMouseHover(Hero p);
+    public abstract void OnPlayerReachedFieldAsTarget(Hero p);
+    public abstract void OnPlayerUncovered(Hero p);
 
     public void SpawnOccupation(Transform parent)
     {
         mapOccupationInstance = OccupationObject.Spawn(parent);
         mapOccupationInstance.transform.localPosition += MapTile.CenterPos;
     }
+
+    public virtual void OnPlayerLeftFieldAfterStationary(Hero p) { }
+
 }

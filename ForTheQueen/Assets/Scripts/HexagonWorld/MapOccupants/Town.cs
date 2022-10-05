@@ -15,16 +15,21 @@ public class Town : TileInteractableOccupation<TownScriptableObject>
 
     public string TownName => OccupationObject.occupationName;
 
-    public override void OnPlayerEntered()
+    public override void OnPlayerEntered(Hero p)
     {
     }
 
-    public override void OnPlayerReachedFieldAsTarget()
+    public override void OnPlayerReachedFieldAsTarget(Hero p)
     {
-        throw new System.NotImplementedException();
+        p.OnEnterCity();
     }
 
-    public override void OnPlayerUncovered()
+    public override void OnPlayerLeftFieldAfterStationary(Hero p)
+    {
+        p.OnExitCity();
+    }
+
+    public override void OnPlayerUncovered(Hero p)
     {
     }
 
@@ -42,13 +47,13 @@ public class Town : TileInteractableOccupation<TownScriptableObject>
     }
 
 
-    public override void OnPlayerMouseHover()
+    public override void OnPlayerMouseHover(Hero p)
     {
         HoverInfo.AdaptUI(OccupationObject, MapTile.CenterPos);
         InterfaceController.Instance.AddMask(HoverInfo);
     }
 
-    public override void OnPlayerMouseExit()
+    public override void OnPlayerMouseExit(Hero p)
     {
         InterfaceController.Instance.RemoveMask(HoverInfo);
     }

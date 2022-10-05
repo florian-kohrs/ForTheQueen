@@ -4,7 +4,8 @@ using UnityEngine;
 
 public interface IMouseTileSelectionCallback
 {
-    void EnterTileHovered(MapTile tile);
+
+    void BeginTileHover(MapTile tile);
 
     void ExitTileHovered(MapTile tile);
 

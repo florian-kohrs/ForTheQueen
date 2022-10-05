@@ -15,29 +15,34 @@ public class MapTile
         this.coordinates = coordinates;
     }
     
-    public void OnPlayerUncovered() 
+    public void OnPlayerUncovered(Hero p) 
     {
-        occupations.ForEach(occupation => occupation.OnPlayerUncovered());
+        occupations.ForEach(occupation => occupation.OnPlayerUncovered(p));
     }
 
-    public void OnPlayerReachedFieldAsTarget() 
+    public void OnPlayerReachedFieldAsTarget(Hero p) 
     {
-        occupations.ForEach(occupation => occupation.OnPlayerReachedFieldAsTarget());
+        occupations.ForEach(occupation => occupation.OnPlayerReachedFieldAsTarget(p));
     }
 
-    public void OnPlayerEntered() 
+    public void OnPlayerLeftAfterStationary(Hero p)
     {
-        occupations.ForEach(occupation => occupation.OnPlayerMouseHover());
+        occupations.ForEach(occupation => occupation.OnPlayerLeftFieldAfterStationary(p));
     }
 
-    public void OnMouseStay() 
+    public void OnPlayerEntered(Hero p) 
     {
-        occupations.ForEach(occupation => occupation.OnPlayerMouseHover());
+        occupations.ForEach(occupation => occupation.OnPlayerMouseHover(p));
     }
 
-    public void OnMouseExit() 
+    public void OnMouseStay(Hero p) 
     {
-        occupations.ForEach(occupation => occupation.OnPlayerMouseExit());
+        occupations.ForEach(occupation => occupation.OnPlayerMouseHover(p));
+    }
+
+    public void OnMouseExit(Hero p) 
+    {
+        occupations.ForEach(occupation => occupation.OnPlayerMouseExit(p));
     }
 
 

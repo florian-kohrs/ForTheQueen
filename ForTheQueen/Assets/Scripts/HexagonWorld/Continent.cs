@@ -76,6 +76,10 @@ public class Continent
             {
                 kingdomTiles.Remove(item);
             }
+            if(town.OccupationObject.isStartTown)
+            {
+                Heros.SpawnHeros(town.MapTile);
+            }
         }
     }
 
@@ -124,31 +128,6 @@ public class Continent
     protected void BuildContinent()
     {
         DjikstraFactionAssignment.AssignFactionForContinent(continentFactionAssignment);
-        MakeBorderMoreNatural();
-    }
-
-
-    protected void MakeBorderMoreNatural()
-    {
-
-    }
-
-
-    protected bool IsTileLand(Vector2Int pos, Vector2Int size)
-    {
-        float distance = DistanceToBorder(pos, size);
-        float influence = distanceNoiseWeighting.Evaluate(distance);
-        if (influence <= 0)
-            return true;
-
-        //float noise = NoiseAt(pos) * influence
-        //return noise;
-        return true;
-    }
-
-    protected float DistanceToBorder(Vector2Int pos, Vector2Int size)
-    {
-        return 0;
     }
 
 }

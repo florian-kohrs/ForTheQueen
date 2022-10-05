@@ -43,7 +43,7 @@ public class MouseToHoveredMapTile : MonoBehaviour
     protected void ResetTileMouseHover()
     {
         if (calledTileHover)
-            lastHovoredTile.OnMouseExit();
+            lastHovoredTile.OnMouseExit(null);
         timeOnHoveredTile = 0;
         calledTileHover = false;
     }
@@ -57,7 +57,7 @@ public class MouseToHoveredMapTile : MonoBehaviour
             if (tile.HasValue && timeOnHoveredTile > TIME_BEFORE_MOUSE_STAY_EVENT && !calledTileHover)
             {
                 calledTileHover = true;
-                lastHovoredTile.OnMouseStay();
+                lastHovoredTile.OnMouseStay(null);
             }
         }
         else 
@@ -71,7 +71,7 @@ public class MouseToHoveredMapTile : MonoBehaviour
 
             if (tile.HasValue)
             {
-                subscribers.CallForEachSubscriber(s => s.EnterTileHovered(tile.Value));
+                subscribers.CallForEachSubscriber(s => s.BeginTileHover(tile.Value));
             }
             lastHovoredTile = tile.Value;
         }

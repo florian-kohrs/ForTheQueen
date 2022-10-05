@@ -10,4 +10,6 @@ public class TownScriptableObject : TileOccupationInteractableScritableObject
 
     public Sprite townSprite;
 
+    public bool isStartTown;
+
 }

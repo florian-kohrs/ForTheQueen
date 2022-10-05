@@ -26,4 +26,10 @@ public class AssetMenue : MonoBehaviour
         AssetCreator.CreateAsset<TownScriptableObject>(BASE_FOLDER_NAME + "Town");
     }
 
+    [MenuItem("Assets/Create/Custom/Spawnables/Creauture")]
+    public static void NewCreatureReference()
+    {
+        AssetCreator.CreateAsset<SpawnableCreature>(BASE_FOLDER_NAME + "Creauture");
+    }
+
 }

@@ -11,10 +11,12 @@ public class PlayerMapMovement : PunLocalBehaviour, IMouseTileSelectionCallback
     public int restMovementInTurn = 5;
 
     public GameObject markerPrefab;
+
+    public Hero hero;
     
-    public void EnterTileHovered(MapTile tile)
+    public void BeginTileHover(MapTile tile)
     {
-        DisplayPath(new Vector2Int(0, 0), tile.Coordinates);
+        DisplayPath(hero.MapTile.Coordinates, tile.Coordinates);
     }
 
     public void ExitTileHovered(MapTile tile)
@@ -22,14 +24,15 @@ public class PlayerMapMovement : PunLocalBehaviour, IMouseTileSelectionCallback
         hexagonWorld.marker.DeleteOldMarks();
     }
 
-    protected override void OnStart()
+    private void OnEnable()
     {
         hexagonWorld.GetMouseCallbackSet.AddSubscriber(this);
     }
 
-    private void Update()
+    private void OnDisable()
     {
-        
+        hexagonWorld.marker.DeleteOldMarks();
+        hexagonWorld.GetMouseCallbackSet.RemoveSubscriber(this);
     }
 
     public void DisplayPath(Vector2Int start, Vector2Int end)
