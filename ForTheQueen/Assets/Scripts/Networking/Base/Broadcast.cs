@@ -13,7 +13,7 @@ public static class Broadcast
         {
             view.RPC(name, target, parameters);
         }
-        else
+        else if(target != RpcTarget.Others && target != RpcTarget.OthersBuffered)
         {
             callIfNotConnected?.Invoke();
         }

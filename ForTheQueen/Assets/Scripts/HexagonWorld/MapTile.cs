@@ -84,12 +84,6 @@ public class MapTile
         }
     }
 
-    public void AddAndSpawnTileOccupation(ITileOccupation occupation, Transform parent)
-    {
-        AddTileOccupation(occupation);
-        occupation.SpawnOccupation(parent);
-    }
-
     public void AddTileOccupation(ITileOccupation occupation)
     {
         occupations.Add(occupation);

@@ -71,7 +71,7 @@ public class Continent
         {
             MapTile t = Rand.PickOne(kingdomTiles, rand);
             Town town = new Town(townObject);
-            t.AddAndSpawnTileOccupation(town, world.transform);
+            t.AddTileOccupation(town);
             foreach (var item in world.MapTilesFromIndices(HexagonPathfinder.GetNeighboursInDistance(t.Coordinates, MIN_DISTANCE_BETWEEN_TOWNS)))
             {
                 kingdomTiles.Remove(item);

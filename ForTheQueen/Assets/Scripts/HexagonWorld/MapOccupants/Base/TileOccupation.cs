@@ -62,7 +62,7 @@ public abstract class TileOccupation<T> : ITileOccupation where T : TileOccupati
 
     public void SpawnOccupation(Transform parent)
     {
-        mapOccupationInstance = occupationObject.Spawn(parent);
+        mapOccupationInstance = OccupationObject.Spawn(parent);
         mapOccupationInstance.transform.localPosition += MapTile.CenterPos;
     }
 }

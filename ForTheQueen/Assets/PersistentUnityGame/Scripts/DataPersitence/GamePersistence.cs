@@ -527,7 +527,7 @@ public class GamePersistence
         GetInstance().LoadGame_(name);
     }
 
-    public static byte[] ObjectToByteArray(Object obj)
+    public static byte[] ObjectToByteArray(object obj)
     {
         using var ms = new MemoryStream();
         new BinaryFormatter().Serialize(ms, obj);
@@ -543,18 +543,18 @@ public class GamePersistence
         return (T)obj;
     }
 
-    public static byte[] GetActiveLoadedSceneByteArray()
-    {
-        return instance.WorkOnFileStreamOfSaveable(instance.currentGame.ActiveScenePath, f =>
-           {
-               using (MemoryStream ms = new MemoryStream())
-               {
-                   f.CopyTo(ms);
-                   return ms.ToArray();
-               }
-           }
-        );
-    }
+    //public static byte[] GetActiveLoadedSceneByteArray()
+    //{
+    //    return instance.WorkOnFileStreamOfSaveable(instance.currentGame.ActiveScenePath, f =>
+    //       {
+    //           using (MemoryStream ms = new MemoryStream())
+    //           {
+    //               f.CopyTo(ms);
+    //               return ms.ToArray();
+    //           }
+    //       }
+    //    );
+    //}
 
     private void LoadGame_(string name)
     {

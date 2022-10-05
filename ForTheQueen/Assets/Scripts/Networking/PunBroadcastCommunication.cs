@@ -24,13 +24,13 @@ public class PunBroadcastCommunication : MonoBehaviourPun
     [PunRPC]
     public void CreateWorld(int seed)
     {
-        world.SpawnWorldWithSeed(seed);
+        world.CreateWorldWithSeed(seed);
     }
 
-    //[PunRPC]
-    //public void LoadWorld(byte[] savedFile)
-    //{
-    //    world.SpawnWorldWithSeed();
-    //}
+    [PunRPC]
+    public void LoadWorld(byte[] map)
+    {
+        world.LoadWorld(map);
+    }
 
 }

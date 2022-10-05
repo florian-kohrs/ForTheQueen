@@ -37,13 +37,12 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     public static TileBiom[] WORLD_BIOMS;
 
-    [Save]
-    protected int seed;
-
     protected System.Random seedGenerator;
 
     [Save]
     protected MapTile[,] world;
+
+    public Transform mapOccupationParent;
 
     public MapTile[,] World => world;
 
@@ -122,15 +121,30 @@ public class HexagonWorld : SaveableMonoBehaviour
         if (!PhotonNetworkExtension.IsMasterClient)
             return;
 
+        byte[] map = GamePersistence.ObjectToByteArray(world);
         PunBroadcastCommunication.SafeRPC(
-            nameof(PunBroadcastCommunication.Instance.CreateWorld),
+            nameof(PunBroadcastCommunication.Instance.LoadWorld),
             RpcTarget.Others,
-            () => PunBroadcastCommunication.Instance.CreateWorld(seed),
-            seed);
-        byte[] savedData = GamePersistence.GetActiveLoadedSceneByteArray();
+            () => PunBroadcastCommunication.Instance.LoadWorld(map),
+            map);
+        LoadWorld(map);
     }
 
-    //protected void GenerateSavedWorld()
+    public void LoadWorld(byte[] map)
+    {
+        LoadWorld(GamePersistence.ByteArrayToObject<MapTile[,]>(map));
+    }
+
+    protected void LoadWorld(MapTile[,] map)
+    {
+        world = map;
+        BuildWorld();
+    }
+
+    protected void BuildWorld()
+    {
+        BuildWorldMeshAndMapObjects();
+    }
 
     protected void InitializeWorld()
     {
@@ -147,7 +161,7 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     public void CreateWorld()
     {
-        seed = UnityEngine.Random.Range(0, 99999999);
+        int seed = UnityEngine.Random.Range(0, 99999999);
         CreateWorld(seed);
     }
 
@@ -161,16 +175,16 @@ public class HexagonWorld : SaveableMonoBehaviour
             RpcTarget.Others, 
             ()=>PunBroadcastCommunication.Instance.CreateWorld(seed),
             seed);
+        CreateWorldWithSeed(seed);
     }
 
-    public void SpawnWorldWithSeed(int seed)
+    public void CreateWorldWithSeed(int seed)
     {
-        this.seed = seed;
         WORLD_BIOMS = bioms;
         seedGenerator = new System.Random(seed);
         InitializeWorld();
         CreateContinentAt(new Vector2Int(5,5 ), new Vector2Int(50, 50));
-        BuildWorldMesh();
+        BuildWorld();
     }
 
     protected int GetBiomAt(int x, int y)
@@ -197,7 +211,7 @@ public class HexagonWorld : SaveableMonoBehaviour
     }
 
 
-    protected void BuildWorldMesh()
+    protected void BuildWorldMeshAndMapObjects()
     {
         Mesh m = new Mesh();
         List<Vector3> verts = new List<Vector3>();
@@ -211,6 +225,7 @@ public class HexagonWorld : SaveableMonoBehaviour
                 MapTile t = world[x, z];
                 t.AddTileToMesh(verts, tris, colors);
                 t.MarkTile(mapTileMarker, tileMarkerParent);
+                t.SpawnAllTileOccupations(mapOccupationParent);
             }
         }
 
