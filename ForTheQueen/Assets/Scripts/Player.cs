@@ -19,15 +19,30 @@ public class Player : MonoBehaviour
 
     protected Hero currentActiveHero;
 
-    public static Hero CurrentActiveHero => LocalPlayer.currentActiveHero;
-
-    //public CallbackSet<IOnMyPlayerTurnStatusChangesCallbacks> onPlayerTurnStatusChange;
-
-    [PunRPC]
-    public void BeginPlayersHeroTurn(int heroId)
+    public static Hero CurrentActiveHero
     {
-        currentActiveHero = Heros.GetHeroFromID(heroId);
+        get
+        {
+            if (LocalPlayer.currentActiveHero == null)
+                LocalPlayer.currentActiveHero = Heroes.GetCurrentActiveHero();
+            return LocalPlayer.currentActiveHero;
+        }
+    }
+
+    public CallbackSet<IPlayerTurnStateListener> onPlayerTurnStatusChange = new CallbackSet<IPlayerTurnStateListener>();
+
+    public static CallbackSet<IPlayerTurnStateListener> PlayerTurnStateCallbackSet => LocalPlayer.onPlayerTurnStatusChange;
+
+    public void BeginPlayersHeroTurn(int index)
+    {
+        currentActiveHero = Heroes.GetHeroFromID(index);
         currentActiveHero.StartHerosTurn();
+        ContinueHerosTurn();
+    }
+
+    public void ContinueHerosTurn()
+    {
+        currentActiveHero = Heroes.GetCurrentActiveHero();
         isMyTurn = currentActiveHero.IsMine;
         if (isMyTurn)
         {

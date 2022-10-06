@@ -44,16 +44,6 @@ public class GameMenue : InterfaceMask
 
     public override bool BlockPlayerPassiveAction => true;
 
-    protected override void OnOpen()
-    {
-        GameManager.FreezeCamera();
-    }
-
-    protected override void OnClose()
-    {
-        GameManager.UnfreezeCamera();
-    }
-
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))

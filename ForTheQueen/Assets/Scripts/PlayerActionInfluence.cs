@@ -43,4 +43,12 @@ public abstract class PlayerActionInfluence : MonoBehaviour
             GameManager.blockPlayerPassiveAction.Remove(this);
     }
 
+    protected void OnDestroy()
+    {
+        RemoveInfluence();
+        BeforeDestroy();
+    }
+
+    protected virtual void BeforeDestroy() { }
+
 }

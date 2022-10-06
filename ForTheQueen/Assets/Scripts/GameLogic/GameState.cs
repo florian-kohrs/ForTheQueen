@@ -6,41 +6,57 @@ using UnityEngine;
 public class GameState : MonoBehaviour
 {
 
-    protected int herosTurn;
+    private int activeHeroId;
 
     public static HexagonWorld world;
 
+    public CallbackSet<IPlayerTurnStateListener> turnListener;
 
     private void Start()
     {
-        StartPlayersTurn();
+        Hero currentActive = Heroes.GetCurrentActiveHero();
+        if(currentActive == null)
+        {
+            activeHeroId = 0;
+            StartHerosTurn();
+        }
+        else
+        {
+            activeHeroId = currentActive.heroIndex;
+            ContinueHeroesTurn();
+        }
     }
 
-    protected void NextHerosTurn()
+    protected void ProgressInitiativeTimeline()
     {
-        herosTurn++;
-        herosTurn %= Heros.NUMBER_PLAYERS;
-        if(herosTurn == 0)
+        activeHeroId++;
+        activeHeroId %= Heroes.NUMBER_PLAYERS;
+        if(activeHeroId == 0)
         {
-            EndDay();
+            EndCurrentRound();
         }
     }
 
     public void EndCurrentHerosTurn()
     {
-        NextHerosTurn();
-        StartPlayersTurn();
+        Heroes.GetCurrentActiveHero().EndHerosTurn();
+        ProgressInitiativeTimeline();
+        StartHerosTurn();
     }
 
-    protected void StartPlayersTurn()
+    protected void StartHerosTurn()
     {
-        Player.LocalPlayer.BeginPlayersHeroTurn(herosTurn);
+        Player.LocalPlayer.BeginPlayersHeroTurn(activeHeroId);
     }
 
-    protected void EndDay()
+    protected void ContinueHeroesTurn()
+    {
+        Player.LocalPlayer.ContinueHerosTurn();
+    }
+
+    protected void EndCurrentRound()
     {
 
     }
-
 
 }

@@ -20,6 +20,7 @@ public class MapMovementAnimation : MapAnimation
         if (path.Count == 0)
         {
             h.MapTile.OnPlayerReachedFieldAsTarget(h);
+            onAnimationEnded?.Invoke();
         }
         else
         {
@@ -58,9 +59,9 @@ public class MapMovementAnimation : MapAnimation
 
     public override bool BlockCameraMovement => false;
 
-    public override bool BlockPlayerMovement => movingHero.IsMine;
+    public override bool BlockPlayerMovement => true;
 
-    public override bool BlockPlayerActiveAction => movingHero.IsMine;
+    public override bool BlockPlayerActiveAction => true;
 
     public override bool BlockPlayerPassiveAction => false;
 

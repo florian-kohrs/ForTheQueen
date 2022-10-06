@@ -25,12 +25,14 @@ public class InterfaceController
     protected HashSet<IInterfaceMask> allInterfaceMasks = new HashSet<IInterfaceMask>();
 
     public void AddPossibleInterfaceMask(IInterfaceMask mask) => allInterfaceMasks.Add(mask);
+    public void RemovePossibleInterfaceMask(IInterfaceMask mask) => allInterfaceMasks.Remove(mask);
 
     public static T GetInterfaceMask<T>() where T : IInterfaceMask
     {
         Type requestedType = typeof(T);
         return (T)instance.allInterfaceMasks.Where(m => m.GetType().IsEquivalentTo(requestedType)).FirstOrDefault();
     }
+
 
     private HashSet<IInterfaceMask> activeMasks = 
         new HashSet<IInterfaceMask>();

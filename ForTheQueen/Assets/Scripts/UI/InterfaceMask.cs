@@ -35,6 +35,10 @@ public abstract class InterfaceMask : PlayerActionInfluence, IInterfaceMask
     
     public virtual bool DominantMask => false;
 
+    protected override void BeforeDestroy()
+    {
+        interfaceController.RemovePossibleInterfaceMask(this);
+    }
 
     protected virtual void OnClose() { }
 

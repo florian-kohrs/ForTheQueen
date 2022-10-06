@@ -12,7 +12,7 @@ public abstract class MapAnimation : PlayerActionInfluence
         animations.Add(this);
     }
 
-    protected static List<MapAnimation> animations = new List<MapAnimation>();
+    protected static HashSet<MapAnimation> animations = new HashSet<MapAnimation>();
 
     public static T GetAnimationOfType<T>() where T : MapAnimation
     {
@@ -35,6 +35,11 @@ public abstract class MapAnimation : PlayerActionInfluence
     {
         RemoveInfluence();
         onAnimationDone?.Invoke();
+    }
+
+    protected override void BeforeDestroy()
+    {
+        animations.Remove(this);
     }
 
 }

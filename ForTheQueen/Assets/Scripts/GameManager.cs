@@ -202,7 +202,7 @@ public class GameManager
     {
         get
         {
-            return GameIsNotFrozen && blockPlayerActiveAction.Count == 0;
+            return GameIsNotFrozen && Player.IsMyTurn && blockPlayerActiveAction.Count == 0;
         }
     }
 

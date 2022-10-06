@@ -26,7 +26,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 
     protected bool isInAnimation;
 
-    protected List<GameObject> mapMarkers;
+    protected List<GameObject> mapMarkers = new List<GameObject>();
 
     public void BeginTileHover(MapTile tile)
     {
@@ -47,6 +47,12 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 
     protected void ClearPathDisplay()
     {
+        if(mapMarkers == null)
+        {
+            Debug.LogWarning("Map markers are null. is that important?");
+            return;
+        }
+
         foreach (var item in mapMarkers)
         {
             Destroy(item);
@@ -57,7 +63,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
     [PunRPC]
     public void MoveTowardsClickedTile(List<Vector2Int> path, int heroIndex)
     {
-        Hero h = Heros.GetHeroFromID(heroIndex);
+        Hero h = Heroes.GetHeroFromID(heroIndex);
         MapMovementAnimation moveAnim = MapAnimation.GetAnimationOfType<MapMovementAnimation>();
         moveAnim.AnimateMovement(path, h, HexagonWorld, OnEndMovement);
     }

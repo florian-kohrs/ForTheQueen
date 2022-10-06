@@ -78,7 +78,7 @@ public class Continent
             }
             if(town.OccupationObject.isStartTown)
             {
-                Heros.SpawnHeros(town.MapTile);
+                Heroes.SpawnHeros(town.MapTile);
             }
         }
     }

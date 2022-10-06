@@ -8,10 +8,13 @@ using UnityEngine;
 public class Hero : ITileOccupation
 {
 
-    public Hero() { }
-
-    public Hero(SpawnableCreature heroPrefab)
+    public Hero() 
     {
+    }
+
+    public Hero(SpawnableCreature heroPrefab, int heroIndex) : this()
+    {
+        this.heroIndex = heroIndex;
         this.heroPrefab = new AssetPolyRef<SpawnableCreature>() { RuntimeRef = heroPrefab};
     }
 
@@ -30,9 +33,17 @@ public class Hero : ITileOccupation
 
     public PlayerLooks looks;
 
-    public MapTile MapTile { get; set; }
+    public MapTile MapTile
+    {
+        get => mapTile;
+        set => mapTile = value;
+    }
 
-    public bool isPlayersTurn;
+    public MapTile mapTile;
+
+    protected bool isHerosTurn;
+
+    public bool IsHerosTurn => isHerosTurn; 
 
     [NonSerialized]
     protected GameObject heroObject;
@@ -53,7 +64,13 @@ public class Hero : ITileOccupation
     public void StartHerosTurn()
     {
         interuptMovement = false;
+        isHerosTurn = true;
         GenerateMovement();
+    }
+
+    public void EndHerosTurn()
+    {
+        isHerosTurn = false;
     }
 
     public void GenerateMovement()
@@ -103,6 +120,7 @@ public class Hero : ITileOccupation
 
     public void SpawnOccupation(Transform parent)
     {
+        Heroes.heroes[heroIndex] = this;
         heroObject = GameObject.Instantiate(heroPrefab.RuntimeRef.prefab, parent);
         //playerObject = looks.SpawnPlayer();
         heroObject.transform.position = MapTile.CenterPos;
