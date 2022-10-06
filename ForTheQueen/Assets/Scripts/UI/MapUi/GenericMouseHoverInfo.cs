@@ -12,7 +12,15 @@ public class GenericMouseHoverInfo : AdaptableInterfaceMask<TileOccupationIntera
     public TextMeshProUGUI titleText;
 
     public TextMeshProUGUI descriptionText;
-    
+
+    public override bool BlockCameraMovement => false;
+
+    public override bool BlockPlayerMovement => false;
+
+    public override bool BlockPlayerActiveAction => false;
+
+    public override bool BlockPlayerPassiveAction => false;
+
     protected override void AdaptUITo(TileOccupationInteractableScritableObject value, Vector3 pos)
     {
         RectTransform rect = GetComponent<RectTransform>();
@@ -24,6 +32,5 @@ public class GenericMouseHoverInfo : AdaptableInterfaceMask<TileOccupationIntera
         newPos.z += rect.sizeDelta.y * rect.localScale.z + HexagonWorld.HEX_DIAMETER / 2;
         newPos.x -= rect.sizeDelta.x / 2 * rect.localScale.x;
         transform.position = newPos;
-        //transform.LookAt(Camera.main.transform);
     }
 }

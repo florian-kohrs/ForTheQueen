@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -65,6 +66,8 @@ public class MapTile
 
     public bool discovered = false;
 
+    public bool ContainsTown => occupations.Where(o => o.GetType() == typeof(Town)).Any();
+
     public Vector3 CenterPos
     { 
         get
@@ -95,6 +98,13 @@ public class MapTile
         occupation.MapTile = this;
         CanBeCrossed &= occupation.CanBeCrossed;
         CanBeEntered &= occupation.CanBeEntered;
+    }
+
+    public void RemoveTileOccupation(ITileOccupation occupation)
+    {
+        occupations.Remove(occupation);
+        //CanBeCrossed &= occupation.CanBeCrossed;
+        //CanBeEntered &= occupation.CanBeEntered;
     }
 
 

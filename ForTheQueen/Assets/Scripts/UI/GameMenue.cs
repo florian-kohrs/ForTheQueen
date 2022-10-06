@@ -36,14 +36,22 @@ public class GameMenue : InterfaceMask
 
     public override CursorLockMode CursorMode => CursorLockMode.None;
 
+    public override bool BlockCameraMovement => true;
+
+    public override bool BlockPlayerMovement => true;
+
+    public override bool BlockPlayerActiveAction => true;
+
+    public override bool BlockPlayerPassiveAction => true;
+
     protected override void OnOpen()
     {
-        GameManagerPun.FreezeCamera();
+        GameManager.FreezeCamera();
     }
 
     protected override void OnClose()
     {
-        GameManagerPun.UnfreezeCamera();
+        GameManager.UnfreezeCamera();
     }
 
     private void Update()

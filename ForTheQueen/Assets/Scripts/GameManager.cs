@@ -3,37 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManagerPun
+public class GameManager
 {
 
-    static GameManagerPun()
+    static GameManager()
     {
         SceneManager.activeSceneChanged += delegate
         {
-            instance = new GameManagerPun();
+            instance = new GameManager();
         };
     }
 
-    private GameManagerPun()
+    private GameManager()
     {
         Time.timeScale = 1;
     }
 
     private bool isGameFrozen;
 
-    private bool isMovementBlocked;
 
-    private bool isPlayerMovementBlocked;
-    
-    private bool isActionBlocked;
+    public static HashSet<object> blockCameraMovement = new HashSet<object>();
 
-    private bool isPlayerActionBlocked;
+    public static HashSet<object> blockPlayerMovement = new HashSet<object>();
 
-    private bool isCameraBlocked;
+    public static HashSet<object> blockPlayerActiveAction = new HashSet<object>();
 
-    private GameObject player;
+    public static HashSet<object> blockPlayerPassiveAction = new HashSet<object>();
+
+
 
     private InterfaceController interfaceController;
+
+    public static bool IsMyTurn => Player.IsMyTurn;
 
     private InterfaceController InterfaceController
     {
@@ -64,7 +65,7 @@ public class GameManagerPun
     {
         get
         {
-            if(instance.playerMainCamera == null)
+            if (instance.playerMainCamera == null)
             {
                 instance.playerMainCamera = Camera.main;
             }
@@ -84,24 +85,19 @@ public class GameManagerPun
     //    }
     //}
 
-    private static GameManagerPun GM
+    private static GameManager GM
     {
         get
         {
-            if(instance == null)
+            if (instance == null)
             {
-                instance = new GameManagerPun();
+                instance = new GameManager();
             }
             return instance;
         }
     }
 
-    private static GameManagerPun instance;
-
-    public static void ResetPlayerRef()
-    {
-        GM.player = null;
-    }
+    private static GameManager instance;
 
     public static Vector3 PlayerLookDirection
     {
@@ -112,34 +108,16 @@ public class GameManagerPun
     }
 
 
-    public static GameObject Player
-    {
-        get
-        {
-            if(GM.player == null)
-            {
-                GM.player = GameObject.FindGameObjectWithTag("Player");
-            }
-            return GM.player;
-        }
-    }
-
-    public static T GetPlayerComponent<T>() where T: Component
-    {
-        return Player?.GetComponentInChildren<T>();
-    }
-
-
     public static void FreezeCamera()
     {
-        GM.isCameraBlocked = true;
+        blockCameraMovement.Add(instance);
     }
 
     public static void FreezePlayer()
     {
         FreezeCamera();
         DisablePlayerMovement();
-        DisablePlayerActions();
+        DisableAllPlayerActions();
     }
 
     public static void UnfreezePlayer()
@@ -151,14 +129,14 @@ public class GameManagerPun
 
     public static void UnfreezeCamera()
     {
-        GM.isCameraBlocked = false;
+        blockCameraMovement.Remove(instance);
     }
 
     public static bool CanCameraMove
     {
         get
         {
-            return GameIsNotFrozen && !GM.isCameraBlocked;
+            return GameIsNotFrozen && blockCameraMovement.Count == 0;
         }
     }
 
@@ -184,55 +162,55 @@ public class GameManagerPun
 
     public static void DisablePlayerMovement()
     {
-        GM.isPlayerMovementBlocked = true;
+        blockPlayerMovement.Add(instance);
     }
 
     public static void EnablePlayerMovement()
     {
-        GM.isPlayerMovementBlocked = false;
+        blockPlayerMovement.Remove(instance);
     }
 
     public static bool AllowPlayerMovement
     {
         get
         {
-            return GameIsNotFrozen && !GM.isPlayerMovementBlocked;
+            return GameIsNotFrozen && blockPlayerMovement.Count == 0;
         }
     }
 
-    public static void DisableActions()
-    {
-        GM.isActionBlocked = true;
-    }
-
-    public static void EnableActions()
-    {
-        GM.isActionBlocked = false;
-    }
-
-    public static bool AllowActions
+    public static bool AllowCameraMovement
     {
         get
         {
-            return GameIsNotFrozen && !GM.isActionBlocked;
+            return GameIsNotFrozen && blockCameraMovement.Count == 0;
         }
     }
 
-    public static void DisablePlayerActions()
+    public static void DisableAllPlayerActions()
     {
-        GM.isPlayerActionBlocked = true;
+        blockPlayerActiveAction.Add(instance);
+        blockPlayerPassiveAction.Add(instance);
     }
 
     public static void EnablePlayerActions()
     {
-        GM.isPlayerActionBlocked = false;
+        blockPlayerActiveAction.Remove(instance);
+        blockPlayerPassiveAction.Remove(instance);
     }
 
-    public static bool AllowPlayerActions
+    public static bool AllowPlayerActiveActions
     {
         get
         {
-            return GameIsNotFrozen && !GM.isPlayerActionBlocked;
+            return GameIsNotFrozen && blockPlayerActiveAction.Count == 0;
+        }
+    }
+
+    public static bool AllowPlayerPassiveActions
+    {
+        get
+        {
+            return GameIsNotFrozen && blockPlayerPassiveAction.Count == 0;
         }
     }
 

@@ -76,7 +76,7 @@ public class UiInventory : SaveableMonoBehaviour, IInterfaceMask
 
     protected void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab) && GameManagerPun.AllowPlayerActions)
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (IsOpen)
             {
@@ -92,7 +92,7 @@ public class UiInventory : SaveableMonoBehaviour, IInterfaceMask
 
     protected void ClickEvent()
     {
-        if (GameManagerPun.AllowPlayerActions)
+       // if (GameManager.AllowPlayerActions)
         {
             //for (int i = 1; i <= currentDisplayedItems.Count; i++)
             //{
@@ -109,7 +109,7 @@ public class UiInventory : SaveableMonoBehaviour, IInterfaceMask
 
     public void Open()
     {
-        GameManagerPun.FreezeCamera();
+        GameManager.FreezeCamera();
         uiMask.SetActive(true);
         DisplayAllItems();
     }
@@ -117,7 +117,7 @@ public class UiInventory : SaveableMonoBehaviour, IInterfaceMask
     public void Close()
     {
         uiMask.SetActive(false);
-        GameManagerPun.UnfreezeCamera();
+        GameManager.UnfreezeCamera();
     }
 
     private int StartXSlotPosition => INVENTORY_SLOT_SPACE + INVENTORY_SLOT_SIZE / 2;

@@ -145,12 +145,12 @@ public class InventoryTrade : MonoBehaviour, IInterfaceMask
     public void Open()
     {
         tradeUI.SetActive(true);
-        GameManagerPun.FreezePlayer();
+        GameManager.FreezePlayer();
     }
 
     public void Close()
     {
         tradeUI.SetActive(false);
-        GameManagerPun.UnfreezePlayer();
+        GameManager.UnfreezePlayer();
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class InterfaceMask : MonoBehaviour, IInterfaceMask
+public abstract class InterfaceMask : PlayerActionInfluence, IInterfaceMask
 {
 
     public GameObject maskRoot;
@@ -15,6 +15,7 @@ public abstract class InterfaceMask : MonoBehaviour, IInterfaceMask
 
     public void Open()
     {
+        ApplyInfluence();
         maskRoot.SetActive(true);
         OnOpen();
     }
@@ -34,10 +35,12 @@ public abstract class InterfaceMask : MonoBehaviour, IInterfaceMask
     
     public virtual bool DominantMask => false;
 
+
     protected virtual void OnClose() { }
 
     public void Close()
     {
+        RemoveInfluence();
         maskRoot.SetActive(false);
         OnClose();
     }

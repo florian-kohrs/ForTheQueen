@@ -90,8 +90,6 @@ public class HexagonWorld : SaveableMonoBehaviour
         }
     }
 
-    public CallbackSet<IMouseTileSelectionCallback> GetMouseCallbackSet => mouseMapHover.subscribers;
-
     protected MeshCollider meshCollider;
 
     protected MeshCollider MeshCollider
@@ -114,6 +112,11 @@ public class HexagonWorld : SaveableMonoBehaviour
         {
             CreateWorld();
         }
+    }
+
+    public override void OnAwake()
+    {
+        GameState.world = this;
     }
 
     protected void LoadSavedWorld()

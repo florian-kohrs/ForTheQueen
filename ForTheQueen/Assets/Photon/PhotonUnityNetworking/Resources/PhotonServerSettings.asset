@@ -42,6 +42,9 @@ MonoBehaviour:
   - CreateWorld
   - LoadWorld
   - UpdatePlayerLooks
+  - BeginPlayersHeroTurn
+  - EndCurrentPlayersTurn
+  - MoveTowardsClickedTile
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

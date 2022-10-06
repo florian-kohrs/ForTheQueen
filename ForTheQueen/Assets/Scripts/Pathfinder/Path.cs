@@ -49,9 +49,9 @@ public class Path<T, J>
 
     public void BuildPath(List<T> result)
     {
-        result.Insert(0, current);
         if (parent != null)
         {
+            result.Insert(0, current);
             parent.BuildPath(result);
         }
     }

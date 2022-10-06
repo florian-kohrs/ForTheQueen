@@ -16,6 +16,8 @@ public class PunBroadcastCommunication : MonoBehaviourPun
 
     public HexagonWorld world;
 
+    public GameState gameState;
+
     public static void SafeRPC(string name, RpcTarget target, Action callIfNotConnected, params object[] parameters)
     {
         Broadcast.SafeRPC(Instance.photonView, name, target, callIfNotConnected, parameters);
@@ -33,4 +35,10 @@ public class PunBroadcastCommunication : MonoBehaviourPun
         world.LoadWorld(map);
     }
 
+
+    [PunRPC]
+    public void EndCurrentPlayersTurn()
+    {
+        gameState.EndCurrentHerosTurn();
+    }
 }

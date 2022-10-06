@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        if (!GameManagerPun.CanCameraMove)
+        if (!GameManager.CanCameraMove)
             return;
 
         transform.position += GetCurrentCameraSpeed() * Time.deltaTime;

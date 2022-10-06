@@ -19,7 +19,7 @@ public class InterfaceController
 
     protected InterfaceController()
     {
-        GameManagerPun.SetInterfaceController(this);
+        GameManager.SetInterfaceController(this);
     }
 
     protected HashSet<IInterfaceMask> allInterfaceMasks = new HashSet<IInterfaceMask>();
@@ -51,9 +51,13 @@ public class InterfaceController
         {
             Clear();
         }
-        activeMasks.Add(mask);
-        ApplyMask(mask);
-        mask.Open();
+        if (activeMasks.Add(mask))
+        {
+            ApplyMask(mask);
+            mask.Open();
+        }
+        else
+            Debug.LogWarning($"UI Mask {mask.GetType().Name} was already open!");
     }
 
     public void Clear()
@@ -90,9 +94,13 @@ public class InterfaceController
 
     public void RemoveMask(IInterfaceMask mask)
     {
-        activeMasks.Remove(mask);
-        mask.Close();
-        DetermineCursorMode();
+        if (activeMasks.Remove(mask))
+        {
+            mask.Close();
+            DetermineCursorMode();
+        }
+        else
+            Debug.LogWarning($"UI Mask {mask.GetType().Name} was already closed!");
     }
 
     protected void DetermineCursorMode()

@@ -1,8 +1,10 @@
+using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class Hero : ITileOccupation
 {
 
@@ -10,15 +12,17 @@ public class Hero : ITileOccupation
 
     public Hero(SpawnableCreature heroPrefab)
     {
-        this.heroPrefab = heroPrefab;
+        this.heroPrefab = new AssetPolyRef<SpawnableCreature>() { RuntimeRef = heroPrefab};
     }
 
-    public SpawnableCreature heroPrefab;
+    public bool IsMine => !PhotonNetwork.IsConnected || PhotonNetwork.LocalPlayer.ActorNumber == ownerRoomId;
 
-    [System.NonSerialized]
+    public AssetPolyRef<SpawnableCreature> heroPrefab;
+
+    [NonSerialized]
     public int ownerRoomId;
 
-    public int heroId;
+    public int heroIndex;
 
     public Inventory inventory;
 
@@ -30,14 +34,32 @@ public class Hero : ITileOccupation
 
     public bool isPlayersTurn;
 
-    [System.NonSerialized]
-    protected GameObject playerObject;
+    [NonSerialized]
+    protected GameObject heroObject;
+
+    public Transform runtimeHeroObject => heroObject.transform;
+
+    [NonSerialized]
+    public bool interuptMovement;
 
     public bool CanBeCrossed => true;
 
     public bool CanBeEntered => true;
 
-    protected bool IsInCity => !playerObject.activeSelf;
+    public int restMovementInTurn;
+
+    protected bool IsInCity => !heroObject.activeSelf;
+
+    public void StartHerosTurn()
+    {
+        interuptMovement = false;
+        GenerateMovement();
+    }
+
+    public void GenerateMovement()
+    {
+        restMovementInTurn = 5;
+    }
 
     public void OnPlayerEntered(Hero p)
     {
@@ -71,19 +93,22 @@ public class Hero : ITileOccupation
 
     public void OnEnterCity()
     {
-        playerObject.SetActive(false);
+        heroObject.SetActive(false);
     }
 
     public void OnExitCity()
     {
-        playerObject.SetActive(true);
+        heroObject.SetActive(true);
     }
 
     public void SpawnOccupation(Transform parent)
     {
-        playerObject = GameObject.Instantiate(heroPrefab.prefab, parent);
+        heroObject = GameObject.Instantiate(heroPrefab.RuntimeRef.prefab, parent);
         //playerObject = looks.SpawnPlayer();
-        playerObject.transform.position = MapTile.CenterPos;
+        heroObject.transform.position = MapTile.CenterPos;
+
+        if(MapTile.ContainsTown)
+            OnEnterCity();
     }
 
 }

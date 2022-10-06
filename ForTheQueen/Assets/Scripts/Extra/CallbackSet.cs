@@ -15,7 +15,7 @@ public class CallbackSet<T>
 
     public void RemoveSubscriber(T subscriber)
     {
-        subscribers.Add(subscriber);
+        subscribers.Remove(subscriber);
     }
 
     public void CallForEachSubscriber(Action<T> a)

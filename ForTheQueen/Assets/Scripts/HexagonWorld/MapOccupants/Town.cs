@@ -21,6 +21,7 @@ public class Town : TileInteractableOccupation<TownScriptableObject>
 
     public override void OnPlayerReachedFieldAsTarget(Hero p)
     {
+        InterfaceController.GetInterfaceMask<TownUI>().AdaptUI(this);
         p.OnEnterCity();
     }
 
@@ -49,8 +50,11 @@ public class Town : TileInteractableOccupation<TownScriptableObject>
 
     public override void OnPlayerMouseHover(Hero p)
     {
-        HoverInfo.AdaptUI(OccupationObject, MapTile.CenterPos);
-        InterfaceController.Instance.AddMask(HoverInfo);
+        if (GameManager.AllowPlayerPassiveActions)
+        {
+            HoverInfo.AdaptUI(OccupationObject, MapTile.CenterPos);
+            InterfaceController.Instance.AddMask(HoverInfo);
+        }
     }
 
     public override void OnPlayerMouseExit(Hero p)

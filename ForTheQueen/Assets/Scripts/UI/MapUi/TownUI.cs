@@ -11,6 +11,14 @@ public class TownUI : AdaptableInterfaceMask<Town>
 
     public TextMeshProUGUI townName;
 
+    public override bool BlockCameraMovement => true;
+
+    public override bool BlockPlayerActiveAction => true;
+
+    public override bool BlockPlayerPassiveAction => false;
+
+    public override bool BlockPlayerMovement => true; 
+
     public void LeaveTown()
     {
         interfaceController.RemoveMask(this);
