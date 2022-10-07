@@ -16,7 +16,7 @@ public class NetworkLobbyCreator : MonoBehaviourPunCallbacks
     /// <summary>
     /// This client's version number. Users are separated from each other by gameVersion (which allows you to make breaking changes).
     /// </summary>
-    private string gameVersion = "1";
+    public static string GAME_VERSION = "1";
 
     protected bool createdRoom = false;
 
@@ -37,7 +37,7 @@ public class NetworkLobbyCreator : MonoBehaviourPunCallbacks
         {
             // #Critical, we must first and foremost connect to Photon Online Server.
             IsConnected = PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = gameVersion;
+            PhotonNetwork.GameVersion = GAME_VERSION;
             if(!IsConnected)
             {
                 CreateOfflineLobby();

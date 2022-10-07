@@ -14,6 +14,8 @@ public class GameManager
         };
     }
 
+    //add gamepersistent on game loaded callback to reset gamemanager accordingly
+
     private GameManager()
     {
         Time.timeScale = 1;
