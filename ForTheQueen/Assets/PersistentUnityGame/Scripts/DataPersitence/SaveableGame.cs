@@ -167,6 +167,9 @@ public class SaveableGame
 
     #region serialized fields and its properties (+getter and setter)
 
+    private GameInstanceData gameInstanceData;
+
+    public GameInstanceData GameInstanceData => gameInstanceData;
 
     private Dictionary<string, Dictionary<string, object>> savedStaticData;
 

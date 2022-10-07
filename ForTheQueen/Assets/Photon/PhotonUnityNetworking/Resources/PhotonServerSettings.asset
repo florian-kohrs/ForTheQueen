@@ -47,6 +47,8 @@ MonoBehaviour:
   - MoveTowardsClickedTile
   - PlayerTakesControllOverCharacter
   - UpdateHeroCustomziation
+  - RPCBeginAdventure
+  - BeginAdventureRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

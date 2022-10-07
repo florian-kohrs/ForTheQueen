@@ -120,7 +120,7 @@ public class Hero : ITileOccupation
 
     public void SpawnOccupation(Transform parent)
     {
-        Heroes.heroes[heroIndex] = this;
+        Heroes.SetHero(this,heroIndex);
         heroObject = GameObject.Instantiate(heroPrefab.RuntimeRef.prefab, parent);
         //playerObject = looks.SpawnPlayer();
         heroObject.transform.position = MapTile.CenterPos;

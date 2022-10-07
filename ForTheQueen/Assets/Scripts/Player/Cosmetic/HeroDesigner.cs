@@ -7,13 +7,24 @@ using UnityEngine;
 public class HeroDesigner : MonoBehaviourPun
 {
 
-    protected HeroCustomization HeroCustomization => hero.customization;
+    protected HeroCustomization HeroCustomization => Hero.customization;
 
-    protected Hero hero;
+    public Hero Hero { get; protected set; }
+
+    protected bool buttonsEnabled = true;
+
+    public void SetButtonEnabledState(bool state)
+    {
+        buttonsEnabled = state;
+        foreach (var item in Selections)
+        {
+            item.SetButtonEnabledState(state);
+        }
+    }
 
     public void StartDesigner(Hero hero)
     {
-        this.hero = hero;
+        this.Hero = hero;
         gameObject.SetActive(true);
 
         classSelection.AddDesignChangeListener(OnClassChanges);
@@ -92,7 +103,7 @@ public class HeroDesigner : MonoBehaviourPun
 
     protected void DesignChanged()
     {
-        if (!hero.IsMine)
+        if (!Hero.IsMine)
             return;
 
         ApplySelectionToHero();

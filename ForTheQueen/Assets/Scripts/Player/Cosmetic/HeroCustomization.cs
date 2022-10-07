@@ -18,6 +18,8 @@ public class HeroCustomization
 
     public bool designIsSet;
 
+    public bool customizationDone;
+
     public GameObject SpawnPlayer()
     {
         return GameObject.CreatePrimitive(PrimitiveType.Sphere);

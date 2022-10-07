@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ListSelection : MonoBehaviour
 {
@@ -29,6 +30,12 @@ public class ListSelection : MonoBehaviour
     protected CallbackSet<Action> callbackSet = new CallbackSet<Action>();
 
     protected Hero h;
+
+    public void SetButtonEnabledState(bool state)
+    {
+        foreach (Button b in GetComponentsInChildren<Button>())
+            b.interactable = state;
+    }
 
     public void SetHero(Hero h) 
     {
