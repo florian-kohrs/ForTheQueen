@@ -20,9 +20,12 @@ public class HeroCustomization
 
     public bool customizationDone;
 
-    public GameObject SpawnPlayer()
+    public GameObject SpawnPlayer(Transform parent, Hero h)
     {
-        return GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        ApplyableAssets race = ListLookUp.instance.races.list[raceId];
+        GameObject heroGameObject = race.Apply(parent, h);
+
+        return heroGameObject;
     }
 
 }

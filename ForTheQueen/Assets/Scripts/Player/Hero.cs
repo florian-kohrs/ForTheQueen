@@ -12,15 +12,7 @@ public class Hero : ITileOccupation
     {
     }
 
-    public Hero(SpawnableCreature heroPrefab, int heroIndex) : this()
-    {
-        this.heroIndex = heroIndex;
-        this.heroPrefab = new AssetPolyRef<SpawnableCreature>() { RuntimeRef = heroPrefab};
-    }
-
     public bool IsMine => !PhotonNetwork.IsConnected || PhotonNetwork.LocalPlayer.ActorNumber == ownerRoomId;
-
-    public AssetPolyRef<SpawnableCreature> heroPrefab;
 
     [NonSerialized]
     public int ownerRoomId;
@@ -120,8 +112,8 @@ public class Hero : ITileOccupation
 
     public void SpawnOccupation(Transform parent)
     {
-        Heroes.SetHero(this,heroIndex);
-        heroObject = GameObject.Instantiate(heroPrefab.RuntimeRef.prefab, parent);
+        Heroes.SetHero(this, heroIndex);
+        heroObject = customization.SpawnPlayer(parent, this);
         //playerObject = looks.SpawnPlayer();
         heroObject.transform.position = MapTile.CenterPos;
 

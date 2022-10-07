@@ -49,6 +49,7 @@ MonoBehaviour:
   - UpdateHeroCustomziation
   - RPCBeginAdventure
   - BeginAdventureRPC
+  - SetHeroReadyState
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

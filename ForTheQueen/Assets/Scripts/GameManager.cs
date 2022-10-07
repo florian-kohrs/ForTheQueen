@@ -30,8 +30,6 @@ public class GameManager
 
     public static HashSet<object> blockPlayerPassiveAction = new HashSet<object>();
 
-
-
     private InterfaceController interfaceController;
 
     public static bool IsMyTurn => Player.IsMyTurn;

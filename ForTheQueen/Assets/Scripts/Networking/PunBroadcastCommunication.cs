@@ -30,8 +30,9 @@ public class PunBroadcastCommunication : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void LoadWorld(byte[] map)
+    public void LoadWorld(object[] mapParam)
     {
+        byte[] map = PhotonNetworkExtension.FromObjectArray<byte>(mapParam);
         world.LoadWorld(map);
     }
 

@@ -61,6 +61,11 @@ public class Player : MonoBehaviour
         PhotonNetwork.LocalPlayer.TagObject = this;
     }
 
+    private void OnDestroy()
+    {
+        GameManager.blockPlayerActiveAction.Remove(this);
+        GameManager.blockPlayerMovement.Remove(this);
+    }
 
     public void EndTurn(Hero h)
     {

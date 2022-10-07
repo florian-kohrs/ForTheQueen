@@ -61,11 +61,12 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
     }
 
     [PunRPC]
-    public void MoveTowardsClickedTile(List<Vector2Int> path, int heroIndex)
+    public void MoveTowardsClickedTile(object[] pathParam, int heroIndex)
     {
+        Vector2Int[] path = PhotonNetworkExtension.FromObjectArray<Vector2>(pathParam).ToVector2IntArray();
         Hero h = Heroes.GetHeroFromID(heroIndex);
         MapMovementAnimation moveAnim = MapAnimation.GetAnimationOfType<MapMovementAnimation>();
-        moveAnim.AnimateMovement(path, h, HexagonWorld, OnEndMovement);
+        moveAnim.AnimateMovement(path.ToList(), h, HexagonWorld, OnEndMovement);
     }
 
     protected void OnEndMovement()
@@ -79,12 +80,13 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
         if(Input.GetMouseButtonDown(0) && currentHoveredTile != null && IsCurrentHovoredTileInRange && GameManager.AllowPlayerMovement)
         {
             isInAnimation = true;
+            object[] pathParam = PhotonNetworkExtension.ToObjectArray(VectorExtension.ToVector2Array(pathToCurrentHovoredTile));
             Broadcast.SafeRPC(
                 photonView,
                 nameof(MoveTowardsClickedTile),
                 RpcTarget.All,
-                () => MoveTowardsClickedTile(pathToCurrentHovoredTile, Hero.heroIndex),
-                pathToCurrentHovoredTile, Hero.heroIndex);
+                () => MoveTowardsClickedTile(pathParam, Hero.heroIndex),
+                pathParam, Hero.heroIndex);
 
         }
     }

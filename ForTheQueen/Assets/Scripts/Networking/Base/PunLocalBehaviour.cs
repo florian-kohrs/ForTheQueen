@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PunLocalBehaviour : MonoBehaviourPun
+public abstract class PunLocalBehaviour : MonoBehaviourPun
 {
 
     protected void Start()

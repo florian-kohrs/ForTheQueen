@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class VectorExtension
@@ -30,6 +31,12 @@ public static class VectorExtension
     {
         return new Vector3(v.x * f, v.y * f, v.z * f);
     }
+
+    public static Vector2[] ToVector2Array(this Vector2Int[] v2Ints) => v2Ints.Select(v2I => new Vector2(v2I.x, v2I.y)).ToArray();
+
+    public static Vector2[] ToVector2Array(this IEnumerable<Vector2Int> v2Ints) => v2Ints.Select(v2I => new Vector2(v2I.x, v2I.y)).ToArray();
+
+    public static Vector2Int[] ToVector2IntArray(this Vector2[] v2Ints) => v2Ints.Select(v2I => new Vector2Int((int)v2I.x, (int)v2I.y)).ToArray();
 
     public static int[] ToArray(Vector3Int v3)
     {

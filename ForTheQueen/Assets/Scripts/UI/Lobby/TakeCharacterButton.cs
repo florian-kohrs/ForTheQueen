@@ -6,15 +6,18 @@ using UnityEngine;
 public class TakeCharacterButton : MonoBehaviourPun
 {
 
-    public int heroIndex;
+    public int HeroIndex => heroDesigner.transform.GetSiblingIndex();
 
     public HeroDesigner heroDesigner;
+
+    public GameObject activateOnTake;
 
     public Hero hero;
 
     private void Start()
     {
-        hero.heroIndex = heroIndex;
+        activateOnTake.SetActive(false);
+        hero.heroIndex = HeroIndex;
     }
 
     public void TakeControll()
@@ -26,9 +29,11 @@ public class TakeCharacterButton : MonoBehaviourPun
     [PunRPC]
     public void PlayerTakesControllOverCharacter(int playerIndex)
     {
+        activateOnTake.SetActive(true);
         gameObject.SetActive(false);
         hero.ownerRoomId = playerIndex;
-        Heroes.SetHero(hero, heroIndex);
+        hero.heroIndex = HeroIndex;
+        Heroes.SetHero(hero, HeroIndex);
         heroDesigner.StartDesigner(hero);
     }
 

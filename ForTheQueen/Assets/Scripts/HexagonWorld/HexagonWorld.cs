@@ -125,11 +125,12 @@ public class HexagonWorld : SaveableMonoBehaviour
             return;
 
         byte[] map = GamePersistence.ObjectToByteArray(world);
+        object[] mapParam = PhotonNetworkExtension.ToObjectArray(map);
         PunBroadcastCommunication.SafeRPC(
             nameof(PunBroadcastCommunication.Instance.LoadWorld),
             RpcTarget.Others,
-            () => PunBroadcastCommunication.Instance.LoadWorld(map),
-            map);
+            () => PunBroadcastCommunication.Instance.LoadWorld(mapParam),
+            mapParam);
         LoadWorld(map);
     }
 

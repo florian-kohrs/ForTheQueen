@@ -11,7 +11,7 @@ public class TestStaticData : MonoBehaviour
     [Save]
     public static SaveableMonoBehaviour m;
 
-    [RuntimeInitializeOnLoadMethod]
+    //[RuntimeInitializeOnLoadMethod]
     public static void test()
     {
         SaveableGame.AddStaticGameData(typeof(TestStaticData));

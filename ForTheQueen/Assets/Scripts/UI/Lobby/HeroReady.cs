@@ -22,19 +22,20 @@ public class HeroReady : MonoBehaviourPun
 
     public void SwapHeroReadyState()
     {
-        designer.SetButtonEnabledState(!ready);
+        designer.SetButtonEnabledState(ready);
         Broadcast.SafeRPC(
             photonView, 
             nameof(SetHeroReadyState), 
             RpcTarget.All, 
-            () => SetHeroReadyState(CurrentHeroId, CurrentHeroReadyState), 
-            CurrentHeroId, CurrentHeroReadyState);
+            () => SetHeroReadyState(CurrentHeroId, !CurrentHeroReadyState), 
+            CurrentHeroId, !CurrentHeroReadyState);
     }
 
+    [PunRPC]
     public void SetHeroReadyState(int heroId, bool state)
     {
-        ready = !ready;
-        Heroes.GetHeroFromID(heroId).customization.customizationDone = state;
+        ready = state;
+        Heroes.GetHeroFromID(heroId).customization.customizationDone = ready;
         if (ready)
             btnText.text = readyText;
         else
