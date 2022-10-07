@@ -14,6 +14,11 @@ public class InterfaceController
 
     static InterfaceController()
     {
+        Reset();
+    }
+
+    public static void Reset()
+    {
         instance = new InterfaceController();
     }
 

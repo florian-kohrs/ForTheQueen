@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65f75a87a6000b2449c27b0b8baec8e5, type: 3}
+  m_Name: DefaultRace
+  m_EditorClassIdentifier: 
+  description: Default Race
+  equipPos: {x: 0, y: 0, z: 0}
+  equipScale: {x: 200, y: 200, z: 200}
+  prefab: {fileID: 2912094714053972292, guid: 8d74c7dca25a8a44d93a4e3893fbb388, type: 3}

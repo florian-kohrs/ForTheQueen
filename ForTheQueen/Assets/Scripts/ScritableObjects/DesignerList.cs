@@ -1,10 +1,10 @@
-using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PunButton : MonoBehaviour
+public class DesignerList : ScriptableObject
 {
- 
+
+    public List<ApplyableAssets> list;
 
 }

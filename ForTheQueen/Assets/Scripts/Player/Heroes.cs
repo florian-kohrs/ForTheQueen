@@ -19,6 +19,11 @@ public class Heroes : MonoBehaviour
         return heroes.Where(h => h.IsHerosTurn).FirstOrDefault();
     }
 
+    public static void SetHero(Hero h, int index)
+    {
+        heroes[index] = h;
+    }
+
     public void LoadHeros(Hero[] heros)
     {
         Heroes.heroes = heros;

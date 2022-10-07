@@ -29,9 +29,9 @@ public class Hero : ITileOccupation
 
     public Inventory inventory;
 
-    public CreatureStats playerStats;
+    public CreatureStats heroStats;
 
-    public PlayerLooks looks;
+    public HeroCustomization customization;
 
     public MapTile MapTile
     {

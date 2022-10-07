@@ -32,4 +32,22 @@ public class AssetMenue : MonoBehaviour
         AssetCreator.CreateAsset<SpawnableCreature>(BASE_FOLDER_NAME + "Creauture");
     }
 
+    [MenuItem("Assets/Create/Custom/Character/DesignerList")]
+    public static void NewDesignerList()
+    {
+        AssetCreator.CreateAsset<DesignerList>(BASE_FOLDER_NAME + "DesignerList");
+    }
+
+    [MenuItem("Assets/Create/Custom/Character/EquipableAsset")]
+    public static void NewEquipableAsset()
+    {
+        AssetCreator.CreateAsset<EquipableAssets>(BASE_FOLDER_NAME + "EquipableAsset");
+    }
+
+    [MenuItem("Assets/Create/Custom/Character/Class")]
+    public static void HeroClass()
+    {
+        AssetCreator.CreateAsset<HeroClass>(BASE_FOLDER_NAME + "HeroClass");
+    }
+
 }

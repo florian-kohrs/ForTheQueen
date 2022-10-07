@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameMenue : InterfaceMask
+public class InGameMenue : InterfaceMask
 {
 
     public GameObject settings;

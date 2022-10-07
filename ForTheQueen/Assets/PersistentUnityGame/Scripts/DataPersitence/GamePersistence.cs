@@ -161,6 +161,15 @@ public class GamePersistence
         }
     }
 
+    public static bool HasGameWithName(string name)
+    {
+        return GetInstance().HasGameWithName_(name);
+    }
+
+    protected bool HasGameWithName_(string name)
+    {
+        return allSavedGames.Where(game => game.GameName == name).FirstOrDefault() != null;
+    }
 
     public void EnterScene(string sceneName)
     {

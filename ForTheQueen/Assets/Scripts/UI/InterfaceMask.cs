@@ -25,7 +25,10 @@ public abstract class InterfaceMask : PlayerActionInfluence, IInterfaceMask
         maskRoot.SetActive(false);
         interfaceController = InterfaceController.Instance;
         interfaceController.AddPossibleInterfaceMask(this);
+        OnStart();
     }
+
+    protected virtual void OnStart() { }
 
     public virtual CursorLockMode CursorMode => CursorLockMode.Confined;
     

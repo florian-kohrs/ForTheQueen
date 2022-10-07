@@ -126,4 +126,10 @@ public class Inventory
     }
 
 
+    public void Clear()
+    {
+        items.Clear();
+        OnInventoryChanged();
+    }
+
 }
