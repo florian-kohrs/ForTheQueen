@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HeroDesigner : MonoBehaviourPun
 {
@@ -13,12 +14,14 @@ public class HeroDesigner : MonoBehaviourPun
 
     protected bool buttonsEnabled = true;
 
+    protected bool IsMine => Hero.IsMine;
+
     public void SetButtonEnabledState(bool state)
     {
-        buttonsEnabled = state;
+        buttonsEnabled = state && IsMine;
         foreach (var item in Selections)
         {
-            item.SetButtonEnabledState(state);
+            item.SetButtonEnabledState(buttonsEnabled);
         }
     }
 
@@ -27,13 +30,22 @@ public class HeroDesigner : MonoBehaviourPun
         this.Hero = hero;
         gameObject.SetActive(true);
 
+        SetInteractableOfAllChildButtons(IsMine);
+
+
         classSelection.AddDesignChangeListener(OnClassChanges);
         foreach (var item in Selections)
         {
             item.gameObject.SetActive(true);
+            item.SetButtonEnabledState(IsMine);
             item.AddDesignChangeListener(DesignChanged);
             item.SetHero(hero);
         }
+    }
+
+    protected void SetInteractableOfAllChildButtons(bool state)
+    {
+        GetComponentsInChildren<Button>().ToList().ForEach(b => b.interactable = state);
     }
 
     public IEnumerable<ListSelection> Selections

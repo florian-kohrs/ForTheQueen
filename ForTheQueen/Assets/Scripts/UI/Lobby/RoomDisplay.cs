@@ -16,10 +16,11 @@ public class RoomDisplay : MonoBehaviour
 
     public Button button;
 
-    public void ShowRoom(RoomInfo r)
+    public void ShowRoom(RoomInfo r, NetworkLobbyJoiner joiner)
     {
+        this.joiner = joiner;
         string roomName = string.Copy(r.Name);
-        this.roomName.text = $"Room name: {roomName}";
+        this.roomName.text = $"Room name:{Environment.NewLine}{roomName}";
         playerInfo.text = $"{r.PlayerCount} / {r.MaxPlayers} players";
         button.onClick.AddListener(delegate { joiner.JoinRoomByName(roomName); });
     }

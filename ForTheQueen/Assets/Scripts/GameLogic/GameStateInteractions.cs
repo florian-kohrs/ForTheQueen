@@ -8,9 +8,15 @@ public class GameStateInteractions : MonoBehaviourPun
 
     public GameState gameState;
 
-    public void EndHerosTurn()
+    public void EndHeroesTurn()
     {
-        Broadcast.SafeRPC(photonView, nameof(gameState.EndCurrentHerosTurn), RpcTarget.All, ()=>gameState.EndCurrentHerosTurn());
+        Broadcast.SafeRPC(photonView, nameof(EndHeroesTurnRPC), RpcTarget.All, EndHeroesTurnRPC);
+    }
+    
+    [PunRPC]
+    public void EndHeroesTurnRPC()
+    {
+        gameState.EndCurrentHerosTurn();
     }
 
 }

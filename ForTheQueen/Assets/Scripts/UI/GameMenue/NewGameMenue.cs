@@ -34,12 +34,12 @@ public class NewGameMenue : MenueInterfaceMask
         }
 
         SetEnabledOfButton(startGame, true);
-
     }
 
 
     public void StartGame()
     {
+        lobbyCreator.enabled = true;
         lobbyCreator.BeginnOnlineGame(gameName.text);
     }
 

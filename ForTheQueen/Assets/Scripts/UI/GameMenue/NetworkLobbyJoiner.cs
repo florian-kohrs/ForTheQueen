@@ -15,6 +15,11 @@ public class NetworkLobbyJoiner : MonoBehaviourPunCallbacks
 
     protected List<GameObject> currentRoomDisplays = new List<GameObject>();
 
+    private void Awake()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.GameVersion = NetworkLobbyCreator.GAME_VERSION;
+    }
 
     private void Start()
     {
@@ -53,7 +58,7 @@ public class NetworkLobbyJoiner : MonoBehaviourPunCallbacks
     {
         GameObject display = Instantiate(roomDisplayPrefab, roomDisplayParent);
         currentRoomDisplays.Add(display);
-        display.GetComponent<RoomDisplay>().ShowRoom(r);
+        display.GetComponent<RoomDisplay>().ShowRoom(r, this);
     }
 
     protected void ClearCurrentRoomDisplay()
@@ -70,6 +75,16 @@ public class NetworkLobbyJoiner : MonoBehaviourPunCallbacks
     public void JoinRoomByName(string name)
     {
         PhotonNetwork.JoinRoom(name);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log($"Failed joining room. message: {message}");
+    }
+
+    public override void OnJoinedLobby()
+    {
+        Debug.Log($"Joined Lobby");
     }
 
 }

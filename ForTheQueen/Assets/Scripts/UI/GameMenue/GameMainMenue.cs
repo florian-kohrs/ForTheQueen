@@ -5,9 +5,11 @@ using UnityEngine;
 public class GameMainMenue : MenueInterfaceMask
 {
 
-    public MenueInterfaceMask newGameScreen;
+    public NewGameMenue newGameScreen;
 
     public MenueInterfaceMask loadGameScreen;
+
+    public LobbyJoinerInterface joinGameScreen;
 
     public MenueInterfaceMask marketScreen;
 
@@ -18,18 +20,22 @@ public class GameMainMenue : MenueInterfaceMask
 
     public void NewGame()
     {
-        ChangeInterfaceFor(newGameScreen);
+        OpenAdditiveInterface(newGameScreen);
     }
 
+    public void JoinGame()
+    {
+        OpenAdditiveInterface(joinGameScreen);
+    }
 
     public void LoadGame()
     {
-        ChangeInterfaceFor(loadGameScreen);
+        OpenAdditiveInterface(loadGameScreen);
     }
 
     public void OpenMarket()
     {
-        ChangeInterfaceFor(marketScreen);
+        OpenAdditiveInterface(marketScreen);
     }
 
     public void ExitGame()

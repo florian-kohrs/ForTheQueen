@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class NetworkLobbyCreator : MonoBehaviourPunCallbacks
 {
 
-    public const int MAX_PLAYERS = 3;
+    public const byte MAX_PLAYERS = 3;
 
     public const string LOBBY_SCENE_NAME = "CharacterCreation";
 
@@ -45,6 +45,12 @@ public class NetworkLobbyCreator : MonoBehaviourPunCallbacks
         }
     }
 
+    private void Awake()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.GameVersion = NetworkLobbyCreator.GAME_VERSION;
+    }
+
     public void BeginnOfflineGame(string gameName)
     {
         CreateOfflineLobby();
@@ -63,7 +69,6 @@ public class NetworkLobbyCreator : MonoBehaviourPunCallbacks
         }
         else
         {
-            PhotonNetwork.AutomaticallySyncScene = true;
             createdRoom = true;
             PhotonNetwork.CreateRoom(gameName, new RoomOptions { MaxPlayers = MAX_PLAYERS });
         }
