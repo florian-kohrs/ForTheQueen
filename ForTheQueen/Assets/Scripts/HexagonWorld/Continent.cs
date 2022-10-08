@@ -13,7 +13,6 @@ public class Continent
 
     protected Vector2Int offset;
 
-    protected const int MIN_DISTANCE_BETWEEN_TOWNS = 8;
 
     /// <summary>
     /// determines how much the noise value at position influences choice if tile is water or land
@@ -66,21 +65,10 @@ public class Continent
     protected void SpawnObjectsForKingdom(TileBiom biom)
     {
         HashSet<MapTile> kingdomTiles = new HashSet<MapTile>(mapTilesPerKingdom[biom]);
-        
-        foreach (var townObject in biom.townsInBiom)
-        {
-            MapTile t = Rand.PickOne(kingdomTiles, rand);
-            Town town = new Town(townObject);
-            t.AddTileOccupation(town);
-            foreach (var item in world.MapTilesFromIndices(HexagonPathfinder.GetNeighboursInDistance(t.Coordinates, MIN_DISTANCE_BETWEEN_TOWNS)))
-            {
-                kingdomTiles.Remove(item);
-            }
-            if(town.OccupationObject.isStartTown)
-            {
-                Heroes.SpawnHeros(town.MapTile);
-            }
-        }
+
+        Kingdom k = new Kingdom() { world = world, kingdomBiom = biom, mapFieldsOfKingdom = kingdomTiles, rand = rand };
+        k.ApplyOccupationToKingdom();
+
     }
 
 

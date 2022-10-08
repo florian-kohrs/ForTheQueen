@@ -84,6 +84,8 @@ public class MapTile
     [NonSerialized]
     protected GameObject tileMarker;
 
+    public bool canBePermanantlyOccupied;
+
     public void SpawnAllTileOccupations(Transform parent)
     {
         foreach (var item in occupations)

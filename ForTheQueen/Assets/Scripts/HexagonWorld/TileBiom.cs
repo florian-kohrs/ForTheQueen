@@ -12,5 +12,8 @@ public class TileBiom : SaveableScriptableObject
 
     public List<TownScriptableObject> townsInBiom;
 
+    public List<TileBlockingOccupation> blockingOccupations;
+
+    public float blockingOccupationDensity = 1;
 
 }

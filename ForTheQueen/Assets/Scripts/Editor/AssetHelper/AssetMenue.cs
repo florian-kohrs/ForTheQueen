@@ -50,4 +50,10 @@ public class AssetMenue : MonoBehaviour
         AssetCreator.CreateAsset<HeroClass>(BASE_FOLDER_NAME + "HeroClass");
     }
 
+    [MenuItem("Assets/Create/Custom/Map/BlockingOccupation")]
+    public static void BlockingOccupation()
+    {
+        AssetCreator.CreateAsset<TileBlockingOccupation>(BASE_FOLDER_NAME + "TileBlockingOccupation");
+    }
+
 }
