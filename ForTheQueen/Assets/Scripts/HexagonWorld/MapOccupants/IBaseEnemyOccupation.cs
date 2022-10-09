@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileBlockingOccupation : TileOccupationScritableObject
+public interface IBaseEnemyOccupation
 {
 
+    void Despawn();
+
+    void Delete();
 
 }

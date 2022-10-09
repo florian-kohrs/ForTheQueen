@@ -21,6 +21,10 @@ public class GameManager
         Time.timeScale = 1;
     }
 
+    protected float animationSpeed;
+
+    public static float AnimationSpeed => instance.animationSpeed;
+
     private bool isGameFrozen;
 
 

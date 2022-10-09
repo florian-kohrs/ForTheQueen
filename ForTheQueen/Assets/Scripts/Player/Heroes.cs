@@ -8,12 +8,12 @@ public class Heroes
 
     public static void Reset()
     {
-        heroes = new Hero[NUMBER_PLAYERS];
+        heroes = new Hero[NUMBER_HEROES];
     }
 
-    public const int NUMBER_PLAYERS = 3;
+    public const int NUMBER_HEROES = 3;
 
-    protected static Hero[] heroes = new Hero[NUMBER_PLAYERS];
+    protected static Hero[] heroes = new Hero[NUMBER_HEROES];
 
     public static Hero GetHeroFromID(int id) => heroes[id];
 
@@ -31,9 +31,20 @@ public class Heroes
 
     public static void SpawnHeros(MapTile startTile)
     {
+        if (heroes[0] == null)
+            CreateHeroes();
         foreach (var hero in heroes)
         {
             startTile.AddTileOccupation(hero);
+        }
+    }
+
+    protected static void CreateHeroes()
+    {
+        Reset();
+        for (int i = 0; i < NUMBER_HEROES; i++)
+        {
+            heroes[i] = new Hero() { heroIndex = i };
         }
     }
 

@@ -4,48 +4,60 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class DjikstraFactionAssignment
+public class DjikstraFactionAssignment<T>
 {
 
-    protected static Queue<Vector2Int> candidates = new Queue<Vector2Int>();
+    protected static Queue<Vector2Int> candidates;
 
     protected static Vector2Int currentContinentSize;
 
-    protected static int[,] currentContinent;
+    protected static T[,] currentMap;
 
-    public static void AssignFactionForContinent(int[,] continent)
+    protected static HashSet<Vector2Int> visitedPoints;
+
+    protected static Predicate<Vector2Int> isFieldAvailable;
+
+    public static void BuildDjikstraOnMap(T[,] map, Tuple<T, Vector2Int> startPoint, Predicate<Vector2Int> isFieldAvailable = null)
     {
-        currentContinent = continent;
-        InitialFactionAssignment();
+        BuildDjikstraOnMap(map, new List<Tuple<T, Vector2Int>>() { startPoint }, isFieldAvailable);
+    }
+
+    public static void BuildDjikstraOnMap(T[,] map, IEnumerable<Tuple<T, Vector2Int>> startPoints, Predicate<Vector2Int> isFieldAvailable = null)
+    {
+        DjikstraFactionAssignment<T>.isFieldAvailable = isFieldAvailable;
+        candidates = new Queue<Vector2Int>();
+        visitedPoints = new HashSet<Vector2Int>();
+        currentMap = map;
+        InitializeDjisktra(startPoints);
         while(candidates.Count > 0)
         {
             Vector2Int next = candidates.Dequeue();
-
-            int currentFaction = continent[next.x, next.y];
+            T currentFaction = map[next.x, next.y];
             foreach(Vector2Int neighbour in GetNeighboursOf(next))
             {
+                visitedPoints.Add(neighbour);
                 candidates.Enqueue(neighbour);
-                continent[neighbour.x, neighbour.y] = currentFaction;
+                map[neighbour.x, neighbour.y] = currentFaction;
             }
         }
     }
      
-    protected static void InitialFactionAssignment()
+    protected static void InitializeDjisktra(IEnumerable<Tuple<T, Vector2Int>> startPoints)
     {
-        int widthIndex = currentContinent.GetLength(0) - 1;
-        int heightIndex = currentContinent.GetLength(1) - 1;
+        int widthIndex = currentMap.GetLength(0) - 1;
+        int heightIndex = currentMap.GetLength(1) - 1;
         currentContinentSize = new Vector2Int(widthIndex + 1, heightIndex + 1);
-
-        StartKingdomAt(2, 0, 1);
-        StartKingdomAt(widthIndex - 5, 0, 2);
-        StartKingdomAt(1, heightIndex - 1, 3);
-        StartKingdomAt(widthIndex - 1, heightIndex - 3, 4);
+        foreach (var item in startPoints)
+        {
+            AddStartPoint(item.Item2.x, item.Item2.y, item.Item1);
+        }
     }
 
-    protected static void StartKingdomAt(int x, int y, int index)
+    protected static void AddStartPoint(int x, int y, T index)
     {
-        currentContinent[x, y] = index;
+        currentMap[x, y] = index;
         candidates.Enqueue(new Vector2Int(x, y));
+        visitedPoints.Add(new Vector2Int(x, y));
     }
 
     protected static IEnumerable<Vector2Int> GetNeighboursOf(Vector2Int p)
@@ -66,7 +78,12 @@ public class DjikstraFactionAssignment
 
     protected static bool IsNeighbourFieldValid(Vector2Int pos)
     {
-        return IsInBound(pos) && !VisitedPoint(pos);
+        return IsInBound(pos) && !VisitedPoint(pos) && IsFieldAvailable(pos);
+    }
+
+    protected static bool IsFieldAvailable(Vector2Int pos)
+    {
+        return isFieldAvailable == null || isFieldAvailable(pos);
     }
 
     protected static bool IsInBound(Vector2Int pos)
@@ -77,7 +94,7 @@ public class DjikstraFactionAssignment
 
     protected static bool VisitedPoint(Vector2Int pos)
     {
-        return currentContinent[pos.x, pos.y] > 0;
+        return visitedPoints.Contains(pos);
     }
 
 }

@@ -21,3 +21,7 @@ MonoBehaviour:
   maxMovementOnBiom: 1
   color: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
   townsInBiom: []
+  blockingOccupations:
+  - {fileID: 11400000, guid: eefd3f6f4a323084ab3ae3d0e4c580a9, type: 2}
+  - {fileID: 11400000, guid: 983b1460987ce164d9a94f85e5644fdb, type: 2}
+  blockingOccupationDensity: 30

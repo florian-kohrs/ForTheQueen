@@ -99,6 +99,11 @@ public class InterfaceController
         }
     }
 
+    public void RemoveMask<T>() where T : IInterfaceMask
+    {
+        RemoveMask(GetInterfaceMask<T>());
+    }
+
     public void RemoveMask(IInterfaceMask mask)
     {
         if (activeMasks.Remove(mask))

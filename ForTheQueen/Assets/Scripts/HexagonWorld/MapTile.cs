@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
 
-[System.Serializable]
+[Serializable]
 public class MapTile
 {
 
@@ -51,22 +50,37 @@ public class MapTile
 
     public SerializableVector2Int Coordinates => coordinates;
 
-    public int biomIndex;
-
-    public int AdaptedBiomIndex => biomIndex - 1;
-
-    public bool IsWater => biomIndex == 0;
+    public bool IsWater => kingdomOfMapTile == null;
 
     protected List<ITileOccupation> occupations = new List<ITileOccupation>();
 
-    public bool CanBeCrossed { get; private set; } = true;
 
-    public bool CanBeEntered { get; private set; } = true;
+    protected bool canBeCrossed = true;
+
+    public bool CanBeCrossed(bool allowWaterTiles) => canBeCrossed && (!IsWater || allowWaterTiles);
+
+
+    public bool canBeEntered  = true;
+
+    public bool CanBeEntered(bool allowWaterTiles) => canBeEntered && (!IsWater || allowWaterTiles);
 
 
     public bool discovered = false;
 
     public bool ContainsTown => occupations.Where(o => o.GetType() == typeof(Town)).Any();
+
+    public bool CanBePermanentlyOccupied => !HasOccupations && canBePermanantlyOccupied;
+
+    public bool HasOccupations => occupations.Count > 0;
+
+    public void RemoveEnemiesFromTile()
+    {
+        foreach (var item in occupations)
+        {
+            if (item is IBaseEnemyOccupation enemy)
+                enemy.Despawn();
+        }
+    }
 
     public Vector3 CenterPos
     { 
@@ -84,7 +98,9 @@ public class MapTile
     [NonSerialized]
     protected GameObject tileMarker;
 
-    public bool canBePermanantlyOccupied;
+    public Kingdom kingdomOfMapTile;
+
+    public bool canBePermanantlyOccupied = true;
 
     public void SpawnAllTileOccupations(Transform parent)
     {
@@ -98,8 +114,8 @@ public class MapTile
     {
         occupations.Add(occupation);
         occupation.MapTile = this;
-        CanBeCrossed &= occupation.CanBeCrossed;
-        CanBeEntered &= occupation.CanBeEntered;
+        canBeCrossed &= occupation.CanBeCrossed;
+        canBeEntered &= occupation.CanBeEntered;
     }
 
     public void RemoveTileOccupation(ITileOccupation occupation)
@@ -188,7 +204,7 @@ public class MapTile
 
     protected void AddHexagonColor(List<Color> colors)
     {
-        Color c = HexagonWorld.WORLD_BIOMS[AdaptedBiomIndex].color;
+        Color c = kingdomOfMapTile.KingdomBiom.color;
         //float colorRandomRange = 0.045f;
         //c.r += Random.Range(-colorRandomRange, colorRandomRange) * c.r;
         //c.g += Random.Range(-colorRandomRange, colorRandomRange) * c.g;

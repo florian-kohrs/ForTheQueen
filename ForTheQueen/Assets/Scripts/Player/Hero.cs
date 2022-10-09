@@ -23,6 +23,21 @@ public class Hero : ITileOccupation
 
     public CreatureStats heroStats;
 
+    public bool CanEnterWater => false;
+
+    public HeroCustomization Customization
+    {
+        get
+        {
+            if (customization == null) 
+            { 
+                customization = new HeroCustomization();
+                Debug.LogWarning("Created new customization. Should only happen during developement when starting in game scene!");
+            }
+            return customization;
+        }
+    }
+
     public HeroCustomization customization;
 
     public MapTile MapTile
@@ -113,7 +128,7 @@ public class Hero : ITileOccupation
     public void SpawnOccupation(Transform parent)
     {
         Heroes.SetHero(this, heroIndex);
-        heroObject = customization.SpawnPlayer(parent, this);
+        heroObject = Customization.SpawnPlayer(parent, this);
         //playerObject = looks.SpawnPlayer();
         heroObject.transform.position = MapTile.CenterPos;
 

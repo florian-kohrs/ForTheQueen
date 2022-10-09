@@ -1,100 +1,145 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Continent 
 {
 
-    public string ContinentName;
+    public string continentName;
 
-    public Vector2Int startCoord;
+    public SerializableVector2Int startCoord;
 
-    public Vector2Int size;
+    public SerializableVector2Int size;
 
-    protected Vector2Int offset;
+    protected SerializableVector2Int offset;
 
 
     /// <summary>
     /// determines how much the noise value at position influences choice if tile is water or land
     /// </summary>
+    [NonSerialized]
     protected AnimationCurve distanceNoiseWeighting;
 
-    protected int[,] continentFactionAssignment;
+    
+    [HideInInspector]
+    protected Kingdom[] kingdomsOnContinent;
 
     public Dictionary<TileBiom, HashSet<MapTile>> mapTilesPerKingdom = new Dictionary<TileBiom, HashSet<MapTile>>();
 
-    protected TileBiom[] kingdomsOnContinent;
-
+    [NonSerialized]
     protected HexagonWorld world;
 
-    protected System.Random rand;
+    public Continent() { }
 
-    public Continent(HexagonWorld world, int seed, TileBiom[] kingdomsOnContinent, Vector2Int startCoord, Vector2Int size, AnimationCurve distanceNoiseWeighting)
+    public Continent(HexagonWorld world, int seed, AssetPolyRef<TileBiom>[] biomsOnContinent, Vector2Int startCoord, Vector2Int size, AnimationCurve distanceNoiseWeighting)
     {
-        rand = new System.Random(seed);
+        kingdomsOnContinent = new Kingdom[biomsOnContinent.Length];
+        for (int i = 0; i < biomsOnContinent.Length; i++)
+        {
+            kingdomsOnContinent[i] = new Kingdom(biomsOnContinent[i], world);
+        }
+
+        System.Random rand = new System.Random(seed);
         this.world = world;
-        this.kingdomsOnContinent = kingdomsOnContinent;
         this.startCoord = startCoord;
         this.size = size;
         offset = new Vector2Int(rand.Next(0,999999), rand.Next(0, 999999));
         this.distanceNoiseWeighting = distanceNoiseWeighting;
-        continentFactionAssignment = new int[size.x, size.y];
-        BuildContinent();
+        int[,] continentFactionAssignment;
+
+        BuildContinent(out continentFactionAssignment);
+        WriteContinentFactionTilesIntoWorld(continentFactionAssignment);
+        SpawnObjectsForAllKingdoms(rand);
     }
 
     protected void AddTileToDict(MapTile t, int factionIndex)
     {
-        HashSet<MapTile> tiles;
-        TileBiom b = kingdomsOnContinent[factionIndex - 1];
-        if (!mapTilesPerKingdom.TryGetValue(b, out tiles))
-        {
-            tiles = new HashSet<MapTile>();
-            mapTilesPerKingdom[b] = tiles;
-        }
-        tiles.Add(t);
+        t.kingdomOfMapTile = kingdomsOnContinent[factionIndex];
+        kingdomsOnContinent[factionIndex].mapFieldsOfKingdom.Add(t);
     }
 
-    public void SpawnObjectsForAllKingdoms()
+    protected void RemoveTileFromDict(MapTile t)
     {
-        for (int i = 0; i < kingdomsOnContinent.Length; i++)
+        t.kingdomOfMapTile.mapFieldsOfKingdom.Add(t);
+    }
+
+    public void SpawnObjectsForAllKingdoms(System.Random rand)
+    {
+        foreach (var kingdom in kingdomsOnContinent)
         {
-            SpawnObjectsForKingdom(kingdomsOnContinent[i]);
+            kingdom.SpawnOccupationToKingdom(rand);
         }
     }
 
-    protected void SpawnObjectsForKingdom(TileBiom biom)
-    {
-        HashSet<MapTile> kingdomTiles = new HashSet<MapTile>(mapTilesPerKingdom[biom]);
-
-        Kingdom k = new Kingdom() { world = world, kingdomBiom = biom, mapFieldsOfKingdom = kingdomTiles, rand = rand };
-        k.ApplyOccupationToKingdom();
-
-    }
-
-
-    public void WriteContinentFactionTilesIntoWorld(MapTile[,] world)
+    protected void DoForEachField(Action<MapTile> a)
     {
         for (int x = 0; x < size.x; x++)
         {
             int currentX = startCoord.x + x;
             for (int y = 0; y < size.y; y++)
             {
-                int currentKingdomIndex = continentFactionAssignment[x, y];
-                if (currentKingdomIndex == 0)
-                    continue;
-
-                float noise = NoiseForPoint(x, y);
-                if (noise < HexagonWorld.TILE_IS_WATER_BELOW_VALUE)
-                    continue;
-
                 int currentY = startCoord.y + y;
-                world[currentX, currentY].biomIndex = currentKingdomIndex;
-                AddTileToDict(world[currentX, currentY], currentKingdomIndex);
+                a(world.MapTileFromIndex(currentX, currentY));
             }
         }
     }
 
-    protected float NoiseForPoint(int x, int y)
+    public void WriteContinentFactionTilesIntoWorld(int[,] continentFactionAssignment)
+    {
+        for (int x = 0; x < size.x; x++)
+        {
+            int globalX = startCoord.x + x;
+            for (int y = 0; y < size.y; y++)
+            {
+                int currentKingdomIndex = continentFactionAssignment[x, y];
+                float noise = NoiseForPoint(x, y);
+
+                if (noise < HexagonWorld.TILE_IS_WATER_BELOW_VALUE)
+                    continue;
+
+                int globalY = startCoord.y + y;
+                RegisterMapTile(currentKingdomIndex, globalX,globalY);
+            }
+        }
+        RemoveIslands();
+    }
+
+    protected void RegisterMapTile(int currentKingdomIndex, int currentX, int currentY)
+    {
+        AddTileToDict(world.World[currentX, currentY], currentKingdomIndex);
+    }
+
+    protected void RemoveFromWorld(int currentX, int currentY)
+    {
+        RemoveTileFromDict(world.World[currentX, currentY]);
+    }
+
+    protected void RemoveIslands()
+    {
+        bool[,] landTiles = new bool[size.x, size.y];
+        DjikstraFactionAssignment<bool>.BuildDjikstraOnMap(landTiles, System.Tuple.Create(true, new Vector2Int(size.x / 2, size.y/2)),
+            (v2) => !world.MapTileFromIndex(v2).IsWater);
+
+        for (int x = 0; x < size.x; x++)
+        {
+            int currentX = startCoord.x + x;
+            for (int y = 0; y < size.y; y++)
+            {
+                int currentY = startCoord.y + y;
+                if(landTiles[x, y])   
+                    continue;
+                MapTile t = world.MapTileFromIndex(currentX, currentY);
+                if (t.IsWater)
+                    continue;
+
+                RemoveFromWorld(currentX, currentY);
+            }
+        }
+    }
+
+protected float NoiseForPoint(int x, int y)
     {
         float noiseScale = 0.1f;
         ///gets values between 0 and 0.5
@@ -113,9 +158,17 @@ public class Continent
         return noise;
     }
 
-    protected void BuildContinent()
+    protected void BuildContinent(out int[,] continentFactionAssignment)
     {
-        DjikstraFactionAssignment.AssignFactionForContinent(continentFactionAssignment);
+        continentFactionAssignment = new int[size.x, size.y];
+        List<Tuple<int, Vector2Int>> startPoints = new List<Tuple<int, Vector2Int>>()
+        {
+            Tuple.Create(0, new Vector2Int(2, 0)),
+            Tuple.Create(1, new Vector2Int(size.x - 5, 0)),
+            Tuple.Create(2, new Vector2Int(1, size.y - 1)),
+            Tuple.Create(3, new Vector2Int(size.x - 1, size.y - 3))
+        };
+        DjikstraFactionAssignment<int>.BuildDjikstraOnMap(continentFactionAssignment, startPoints);
     }
 
 }

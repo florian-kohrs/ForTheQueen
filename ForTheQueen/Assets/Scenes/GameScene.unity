@@ -1136,11 +1136,27 @@ MonoBehaviour:
   pathfinder: {fileID: 1439090164}
   marker: {fileID: 1439090165}
   mouseMapHover: {fileID: 0}
-  bioms:
-  - {fileID: 11400000, guid: aebdc4e77d00beb48bcd8c154f77fc15, type: 2}
-  - {fileID: 11400000, guid: 779c0de91acf4a2448bc4ae7c06354a4, type: 2}
-  - {fileID: 11400000, guid: bd3573c428e3e9045b06cf2286ea17fe, type: 2}
-  - {fileID: 11400000, guid: 6de9fc1fafaeeee4eb457b4f054f947d, type: 2}
+  saveableBioms:
+  - relativePathFromResource: 
+    assetName: 
+    assetExtension: 
+    wasAlreadyValidated: 0
+    runtimeRef: {fileID: 11400000, guid: aebdc4e77d00beb48bcd8c154f77fc15, type: 2}
+  - relativePathFromResource: 
+    assetName: 
+    assetExtension: 
+    wasAlreadyValidated: 0
+    runtimeRef: {fileID: 11400000, guid: 779c0de91acf4a2448bc4ae7c06354a4, type: 2}
+  - relativePathFromResource: 
+    assetName: 
+    assetExtension: 
+    wasAlreadyValidated: 0
+    runtimeRef: {fileID: 11400000, guid: bd3573c428e3e9045b06cf2286ea17fe, type: 2}
+  - relativePathFromResource: 
+    assetName: 
+    assetExtension: 
+    wasAlreadyValidated: 0
+    runtimeRef: {fileID: 11400000, guid: 6de9fc1fafaeeee4eb457b4f054f947d, type: 2}
   distanceNoiseWeighting:
     serializedVersion: 2
     m_Curve:

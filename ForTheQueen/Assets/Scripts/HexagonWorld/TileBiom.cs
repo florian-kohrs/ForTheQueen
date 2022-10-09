@@ -12,8 +12,13 @@ public class TileBiom : SaveableScriptableObject
 
     public List<TownScriptableObject> townsInBiom;
 
-    public List<TileBlockingOccupation> blockingOccupations;
+    public List<TileBlockingOccupationObject> blockingOccupations;
 
-    public float blockingOccupationDensity = 1;
+    public List<SingleEnemyOccupationScripableObject> singleEnemiesInBiom;
+
+    //Boss?
+
+    [Range(0,100), Tooltip("How many percent of tiles should be occupied")]
+    public int blockingOccupationDensity = 30;
 
 }

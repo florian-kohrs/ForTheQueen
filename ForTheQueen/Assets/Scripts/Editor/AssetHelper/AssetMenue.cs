@@ -53,7 +53,13 @@ public class AssetMenue : MonoBehaviour
     [MenuItem("Assets/Create/Custom/Map/BlockingOccupation")]
     public static void BlockingOccupation()
     {
-        AssetCreator.CreateAsset<TileBlockingOccupation>(BASE_FOLDER_NAME + "TileBlockingOccupation");
+        AssetCreator.CreateAsset<TileBlockingOccupationObject>(BASE_FOLDER_NAME + "TileBlockingOccupation");
+    }
+
+    [MenuItem("Assets/Create/Custom/Creatures/SingleEnemy")]
+    public static void SingleEnemyOccupationScripableObject()
+    {
+        AssetCreator.CreateAsset<SingleEnemyOccupationScripableObject>(BASE_FOLDER_NAME + nameof(SingleEnemyOccupationScripableObject));
     }
 
 }

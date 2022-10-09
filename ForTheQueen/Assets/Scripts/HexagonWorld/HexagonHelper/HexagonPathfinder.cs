@@ -10,8 +10,11 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
 
     protected MapTile[,] World => world.World;
 
-    public List<Vector2Int> GetPath(Vector2Int start, Vector2Int end)
+    protected bool allowWater = false;
+
+    public List<Vector2Int> GetPath(Vector2Int start, Vector2Int end, bool allowWater)
     {
+        this.allowWater = allowWater;
         return Pathfinder<Vector2Int, Vector2Int>.FindPath(this, start, end);
     }
 
@@ -19,7 +22,7 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
     {
         ///if a field cant be crossed (but may still be entered, e.g. enemies on map)
         ///no neighbours will be available for this field
-        if (!World[field.x, field.y].CanBeCrossed)
+        if (!World[field.x, field.y].CanBeCrossed(allowWater))
             return Array.Empty<Vector2Int>();
 
         return GetCircumjacent(field, IsFieldAvailableForPathfinder);
@@ -92,7 +95,13 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
 
     protected bool IsFieldAvailableForPathfinder(Vector2Int point)
     {
-        return world.IsInBounds(point) && world.FieldCanBeEntered(point);
+        return world.IsInBounds(point) && FieldCanBeEntered(point);
+    }
+
+
+    public bool FieldCanBeEntered(Vector2Int point)
+    {
+        return world.MapTileFromIndex(point).CanBeEntered(allowWater);
     }
 
 

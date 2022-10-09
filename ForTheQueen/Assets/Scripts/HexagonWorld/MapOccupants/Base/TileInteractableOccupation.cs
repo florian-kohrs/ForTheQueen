@@ -5,7 +5,6 @@ using UnityEngine;
 
 [Serializable]
 public abstract class TileInteractableOccupation<T> : TileOccupation<T> 
-    
     where T : TileOccupationInteractableScritableObject
 {
 

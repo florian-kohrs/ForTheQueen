@@ -23,12 +23,12 @@ public class Rand
 
     public static T PickOne<T>(ICollection<T> ts)
     {
-        return ts.Skip(Random.Range(0, ts.Count - 1)).First();
+        return ts.Skip(Random.Range(0, ts.Count)).First();
     }
 
     public static T PickOne<T>(ICollection<T> ts, System.Random rand)
     {
-        return ts.Skip(rand.Next(0, ts.Count - 1)).First();
+        return ts.Skip(rand.Next(0, ts.Count)).First();
     }
 
     public static T PickOne<T>(IList<T> ts, out int index)

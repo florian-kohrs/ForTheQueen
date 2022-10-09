@@ -30,7 +30,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 
     public void BeginTileHover(MapTile tile)
     {
-        if (!GameManager.AllowPlayerMovement)
+        if (!GameManager.AllowPlayerMovement || !tile.CanBeEntered(Hero.CanEnterWater))
             return;
 
         currentHoveredTile = tile;
@@ -104,7 +104,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 
     public void DisplayPath(Vector2Int start, Vector2Int end)
     {
-        pathToCurrentHovoredTile = HexagonWorld.pathfinder.GetPath(start, end);
+        pathToCurrentHovoredTile = HexagonWorld.pathfinder.GetPath(start, end, false);
         mapMarkers = HexagonWorld.MarkHexagons(pathToCurrentHovoredTile, markerPrefab);
 
         int count = 1;

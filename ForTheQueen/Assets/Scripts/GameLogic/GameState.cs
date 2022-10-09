@@ -30,7 +30,7 @@ public class GameState : MonoBehaviour
     protected void ProgressInitiativeTimeline()
     {
         activeHeroId++;
-        activeHeroId %= Heroes.NUMBER_PLAYERS;
+        activeHeroId %= Heroes.NUMBER_HEROES;
         if(activeHeroId == 0)
         {
             EndCurrentRound();

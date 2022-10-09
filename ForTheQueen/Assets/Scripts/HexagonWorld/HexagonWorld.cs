@@ -35,12 +35,13 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     public const float TILE_IS_WATER_BELOW_VALUE = 40;
 
-    public static TileBiom[] WORLD_BIOMS;
-
     protected System.Random seedGenerator;
 
     [Save]
     protected MapTile[,] world;
+
+    [Save]
+    protected List<Continent> continents;
 
     public Transform mapOccupationParent;
 
@@ -59,7 +60,25 @@ public class HexagonWorld : SaveableMonoBehaviour
     [SerializeField]
     protected MouseToHoveredMapTile mouseMapHover;
 
-    public TileBiom[] bioms;
+    public AssetPolyRef<TileBiom>[] saveableBioms;
+
+    //protected TileBiom[] bioms;
+
+    //public TileBiom[] Bioms
+    //{
+    //    get
+    //    {
+    //        if (bioms == null)
+    //        {
+    //            bioms = new TileBiom[saveableBioms.Length];
+    //            for (int i = 0; i < saveableBioms.Length; i++)
+    //            {
+    //                bioms[i] = saveableBioms[i].RuntimeRef;
+    //            }
+    //        }
+    //        return bioms;
+    //    }
+    //}
 
     [Tooltip("Determines the influence of noise of the tile based on the distance to the border. " +
         "1 is full influence 0 is no influence.")]
@@ -184,7 +203,6 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     public void CreateWorldWithSeed(int seed)
     {
-        WORLD_BIOMS = bioms;
         seedGenerator = new System.Random(seed);
         InitializeWorld();
         CreateContinentAt(new Vector2Int(5,5 ), new Vector2Int(50, 50));
@@ -209,9 +227,7 @@ public class HexagonWorld : SaveableMonoBehaviour
         Assert.IsTrue(endX <= WORLD_WIDTH);
         Assert.IsTrue(endY <= WORLD_HEIGHT);
 
-        Continent continent = new Continent(this, seedGenerator.Next(), WORLD_BIOMS, startPos, size, distanceNoiseWeighting);
-        continent.WriteContinentFactionTilesIntoWorld(world);
-        continent.SpawnObjectsForAllKingdoms();
+        Continent continent = new Continent(this, seedGenerator.Next(), saveableBioms, startPos, size, distanceNoiseWeighting);
     }
 
 
@@ -266,11 +282,6 @@ public class HexagonWorld : SaveableMonoBehaviour
         return point.x >= 0 && point.y >= 0 && point.x < WORLD_WIDTH && point.y < WORLD_HEIGHT;
     }
 
-    public bool FieldCanBeEntered(Vector2Int point)
-    {
-        return MapTileFromIndex(point).CanBeEntered;
-    }
-
     public IEnumerable<MapTile> GetAdjencentTiles(Vector2Int coord, bool includeCenter = false)
     {
         return GetAdjencentTiles(MapTileFromIndex(coord),includeCenter);
@@ -306,6 +317,7 @@ public class HexagonWorld : SaveableMonoBehaviour
     }
 
     public MapTile MapTileFromIndex(Vector2Int index) => world[index.x, index.y];    
+    public MapTile MapTileFromIndex(int x, int y) => world[x, y];    
 
     public IEnumerable<MapTile> MapTilesFromIndices(IEnumerable<Vector2Int> indices)
     {

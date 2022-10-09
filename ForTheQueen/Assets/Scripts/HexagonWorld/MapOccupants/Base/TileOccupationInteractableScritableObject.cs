@@ -11,6 +11,6 @@ public class TileOccupationInteractableScritableObject : TileOccupationScritable
     [TextArea]
     public string description;
 
-    public Color hoverBackgroundSpriteColor = Color.white;
+    public virtual Color hoverBackgroundSpriteColor => Color.white;
 
 }

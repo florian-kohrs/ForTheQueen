@@ -14,23 +14,17 @@ public abstract class TileOccupation<T> : ITileOccupation where T : TileOccupati
         OccupationObject = occupationObject;
     }
 
-    [NonSerialized]
-    private T occupationObject;
-
     protected AssetPolyRef<T> savedScriptableObject;
 
     public T OccupationObject
     {
         get
         {
-            if(occupationObject == null)
-                occupationObject = savedScriptableObject.RuntimeRef;
-            return occupationObject;
+            return savedScriptableObject.RuntimeRef;
         }
         set
         {
-            occupationObject = value;
-            savedScriptableObject = new AssetPolyRef<T>() { RuntimeRef = occupationObject };
+            savedScriptableObject = new AssetPolyRef<T>() { RuntimeRef = value };
         }
     }
 

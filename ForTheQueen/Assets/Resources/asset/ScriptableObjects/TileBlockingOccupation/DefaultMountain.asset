@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0443307b80ff3b84a9875a426e6f67eb, type: 3}
-  m_Name: DefaultForest
+  m_Name: DefaultMountain
   m_EditorClassIdentifier: 
   assetRef:
-    relativePathFromResource: 
-    assetName: 
-    assetExtension: 
-    wasAlreadyValidated: 0
-    runtimeRef: {fileID: 0}
-  prefab: {fileID: 9192490255371901826, guid: 5d7b95bbac0192448a8dcd3e748e3294, type: 3}
-  spawnOffset: {x: 0, y: 0, z: 0}
-  spawnScale: {x: 0.0004024147, y: 0.01046582, z: 0.0004024147}
+    relativePathFromResource: asset/ScriptableObjects/TileBlockingOccupation
+    assetName: DefaultMountain
+    assetExtension: asset
+    wasAlreadyValidated: 1
+    runtimeRef: {fileID: 11400000}
+  prefab: {fileID: 8128651914715629646, guid: 73606705709fba7409fa16a6caf33c27, type: 3}
+  spawnOffset: {x: 0, y: 0.005, z: 0}
+  spawnScale: {x: 450, y: 600, z: 450}
