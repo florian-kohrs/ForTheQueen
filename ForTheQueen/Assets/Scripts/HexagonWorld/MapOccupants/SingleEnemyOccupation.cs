@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class SingleEnemyOccupation : BaseEnemyOccupation
+public class SingleEnemyOccupation : BaseEnemyOccupation<SingleEnemyOccupationScripableObject>
 {
 
-    public int level;
+    public SingleEnemyOccupation() { }
 
-    public CreatureStats stats;
+    public SingleEnemyOccupation(SingleEnemyOccupationScripableObject e) : base(e) { }
 
 }

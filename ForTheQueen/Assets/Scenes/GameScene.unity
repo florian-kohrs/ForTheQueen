@@ -1090,6 +1090,7 @@ GameObject:
   - component: {fileID: 281338048}
   - component: {fileID: 281338047}
   - component: {fileID: 281338050}
+  - component: {fileID: 281338051}
   m_Layer: 7
   m_Name: HexagonWorld
   m_TagString: Untagged
@@ -1128,7 +1129,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de96490f665b656419f06544e18f63ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontSaveScriptValues: 0
   mapOccupationParent: {fileID: 1081902735}
   mapTileMarker: {fileID: 2938673958130164516, guid: 2d2ed5275b0f15e43bd1f6a5252d641e,
     type: 3}
@@ -1257,6 +1257,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63b85916aaec5554d8e39982652dbaa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &281338051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281338044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 4
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &301565770
 GameObject:
   m_ObjectHideFlags: 0
@@ -1580,6 +1602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   markerPrefab: {fileID: 2503613699086788810, guid: e3996abf8cba1fd4fbdf818956799517,
     type: 3}
+  world: {fileID: 281338046}
   mouseToHovoredMapTile: {fileID: 388220491}
 --- !u!114 &388220488
 MonoBehaviour:

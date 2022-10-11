@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class Kingdom
 {
 
@@ -49,7 +49,7 @@ public class Kingdom
             MapTile t = Rand.PickOne(townFieldOfKingdom, rand);
             Town town = new Town(townObject);
             t.AddTileOccupation(town);
-            foreach (var item in world.MapTilesFromIndices(HexagonPathfinder.GetNeighboursInDistance(t.Coordinates, MIN_DISTANCE_BETWEEN_TOWNS)))
+            foreach (var item in HexagonWorld.MapTilesFromIndices(HexagonPathfinder.GetNeighboursInDistance(t.Coordinates, MIN_DISTANCE_BETWEEN_TOWNS)))
             {
                 townFieldOfKingdom.Remove(item);
             }
@@ -73,9 +73,25 @@ public class Kingdom
                 continue;
 
             float tileRand = rand.Next(0,100);
-            if(tileRand <= KingdomBiom.blockingOccupationDensity)
+            if(tileRand < KingdomBiom.blockingOccupationDensity)
             {
                 SpawnOccupationAt(tile, rand);
+            }
+        }
+    }
+
+    public void SpawnEnemies(System.Random rand)
+    {
+        HashSet<MapTile> enemiesCantSpawnHere = new HashSet<MapTile>();   
+        foreach (var tile in mapFieldsOfKingdom)
+        {
+            if (tile.HasOccupations || enemiesCantSpawnHere.Contains(tile))
+                continue;
+
+            float tileRand = rand.Next(0, 100);
+            if (tileRand <= KingdomBiom.enemyDensity)
+            {
+                SpawnEnemyAt(tile, rand);
             }
         }
     }
@@ -86,10 +102,16 @@ public class Kingdom
         tile.AddTileOccupation(new TileBlockingOccupationInstance(occupation));
     }
 
+    protected void SpawnEnemyAt(MapTile tile, System.Random rand)
+    {
+        SingleEnemyOccupationScripableObject occupation = Rand.PickOne(KingdomBiom.singleEnemiesInBiom, rand);
+        tile.AddAndSpawnTileOccupation(new SingleEnemyOccupation(occupation));
+    }
+
     protected void PreventPathBlockageBetweenImportantSettlements(MapTile from, MapTile to)
     {
         IEnumerable<Vector2Int> path = Pathfinder<Vector2Int, Vector2Int>.FindPath(world.pathfinder, from.Coordinates, to.Coordinates, PathAccuracy.Decent);
-        BlockTilesForMapOccupation(world.MapTilesFromIndices(path));
+        BlockTilesForMapOccupation(HexagonWorld.MapTilesFromIndices(path));
     }
 
     protected void BlockTilesForMapOccupation(IEnumerable<MapTile> mapTile)

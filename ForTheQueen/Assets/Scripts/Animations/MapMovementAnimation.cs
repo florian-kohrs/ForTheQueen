@@ -10,12 +10,10 @@ public class MapMovementAnimation : MapAnimation
 
     protected Hero movingHero;
 
-    protected HexagonWorld world;
-
     protected List<Vector2Int> path;
 
 
-    public void AnimateMovement(List<Vector2Int> path, Hero h, HexagonWorld world, Action onAnimationEnded = null)
+    public void AnimateMovement(List<Vector2Int> path, Hero h, Action onAnimationEnded = null)
     {
         if (path.Count == 0)
         {
@@ -26,7 +24,6 @@ public class MapMovementAnimation : MapAnimation
         {
             this.path = path;
             movingHero = h;
-            this.world = world;
             onAnimationDone = onAnimationEnded;
             animationPlayer = MoveAlongPath();
             BeginAnimation();
@@ -42,7 +39,7 @@ public class MapMovementAnimation : MapAnimation
         int i;
         for (i = 0; i < path.Count && !movingHero.interuptMovement; i++)
         {
-            nextTile = world.MapTileFromIndex(path[i]);
+            nextTile = HexagonWorld.MapTileFromIndex(path[i]);
             yield return MoveToNextTile(nextTile);
             nextTile.OnPlayerEntered(movingHero);
             movingHero.restMovementInTurn -= 1;

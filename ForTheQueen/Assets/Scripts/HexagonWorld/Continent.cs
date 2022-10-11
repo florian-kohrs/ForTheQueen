@@ -73,6 +73,14 @@ public class Continent
         }
     }
 
+    public void RespawnEnemies(System.Random rand)
+    {
+        foreach (var kingdom in kingdomsOnContinent)
+        {
+            kingdom.SpawnEnemies(rand);
+        }
+    }
+
     protected void DoForEachField(Action<MapTile> a)
     {
         for (int x = 0; x < size.x; x++)
@@ -81,7 +89,7 @@ public class Continent
             for (int y = 0; y < size.y; y++)
             {
                 int currentY = startCoord.y + y;
-                a(world.MapTileFromIndex(currentX, currentY));
+                a(HexagonWorld.MapTileFromIndex(currentX, currentY));
             }
         }
     }
@@ -108,19 +116,19 @@ public class Continent
 
     protected void RegisterMapTile(int currentKingdomIndex, int currentX, int currentY)
     {
-        AddTileToDict(world.World[currentX, currentY], currentKingdomIndex);
+        AddTileToDict(HexagonWorld.World[currentX, currentY], currentKingdomIndex);
     }
 
     protected void RemoveFromWorld(int currentX, int currentY)
     {
-        RemoveTileFromDict(world.World[currentX, currentY]);
+        RemoveTileFromDict(HexagonWorld.World[currentX, currentY]);
     }
 
     protected void RemoveIslands()
     {
         bool[,] landTiles = new bool[size.x, size.y];
         DjikstraFactionAssignment<bool>.BuildDjikstraOnMap(landTiles, System.Tuple.Create(true, new Vector2Int(size.x / 2, size.y/2)),
-            (v2) => !world.MapTileFromIndex(v2).IsWater);
+            (v2) => !HexagonWorld.MapTileFromIndex(v2).IsWater);
 
         for (int x = 0; x < size.x; x++)
         {
@@ -130,7 +138,7 @@ public class Continent
                 int currentY = startCoord.y + y;
                 if(landTiles[x, y])   
                     continue;
-                MapTile t = world.MapTileFromIndex(currentX, currentY);
+                MapTile t = HexagonWorld.MapTileFromIndex(currentX, currentY);
                 if (t.IsWater)
                     continue;
 

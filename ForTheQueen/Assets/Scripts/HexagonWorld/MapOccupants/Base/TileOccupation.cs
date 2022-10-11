@@ -54,7 +54,7 @@ public abstract class TileOccupation<T> : ITileOccupation where T : TileOccupati
     public abstract void OnPlayerReachedFieldAsTarget(Hero p);
     public abstract void OnPlayerUncovered(Hero p);
 
-    public void SpawnOccupation(Transform parent)
+    public virtual void SpawnOccupation(Transform parent)
     {
         mapOccupationInstance = OccupationObject.Spawn(parent);
         mapOccupationInstance.transform.localPosition += MapTile.CenterPos;

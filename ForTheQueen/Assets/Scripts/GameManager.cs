@@ -36,6 +36,18 @@ public class GameManager
 
     public static HashSet<object> blockPlayerPassiveAction = new HashSet<object>();
 
+    public static void FreezeAllActiveActions(object lockedBy)
+    {
+        blockPlayerMovement.Add(lockedBy);
+        blockPlayerActiveAction.Add(lockedBy);
+    }
+
+    public static void UnfreezeAllActiveActions(object lockedBy)
+    {
+        blockPlayerMovement.Remove(lockedBy);
+        blockPlayerActiveAction.Remove(lockedBy);
+    }
+
     private InterfaceController interfaceController;
 
     public static bool IsMyTurn => Player.IsMyTurn;
@@ -100,6 +112,7 @@ public class GameManager
             return instance;
         }
     }
+
 
     private static GameManager instance;
 

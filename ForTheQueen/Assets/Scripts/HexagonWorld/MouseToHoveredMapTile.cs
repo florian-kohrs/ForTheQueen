@@ -10,8 +10,6 @@ public class MouseToHoveredMapTile : MonoBehaviour
 
     protected static int WORLD_LAYER_ID = 7;
 
-    public HexagonWorld HexagonWorld => GameState.world;
-
     public CallbackSet<IMouseTileSelectionCallback> subscribers = new CallbackSet<IMouseTileSelectionCallback>();
 
     protected MapTile lastHovoredTile;

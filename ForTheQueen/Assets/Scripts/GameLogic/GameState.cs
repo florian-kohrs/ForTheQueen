@@ -8,8 +8,6 @@ public class GameState : MonoBehaviour
 
     private int activeHeroId;
 
-    public static HexagonWorld world;
-
     public CallbackSet<IPlayerTurnStateListener> turnListener;
 
     private void Start()
@@ -56,7 +54,7 @@ public class GameState : MonoBehaviour
 
     protected void EndCurrentRound()
     {
-
+        GameInstanceData.CurrentGameInstanceData.timeData.EnterNextRound();
     }
 
 }

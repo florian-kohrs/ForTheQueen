@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
-public class HexagonWorld : SaveableMonoBehaviour
+public class HexagonWorld : MonoBehaviourPun
 {
 
     //idea: For the king mix with legends of andor bord game, with maybe settlement management from mount and blade
@@ -37,15 +37,15 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     protected System.Random seedGenerator;
 
-    [Save]
-    protected MapTile[,] world;
-
-    [Save]
-    protected List<Continent> continents;
-
     public Transform mapOccupationParent;
 
-    public MapTile[,] World => world;
+    public static MapTile[,] World => GamePersistence.GetCurrentGameInstanceData().worldData.world;
+
+    public static List<Continent> Continents => GamePersistence.GetCurrentGameInstanceData().worldData.contintents;
+
+    public static WorldData WorldData => GamePersistence.GetCurrentGameInstanceData().worldData;
+
+    protected bool IsWorldEmpty => Continents.Count == 0;
 
     protected int[,] isLand = new int[WORLD_WIDTH, WORLD_HEIGHT];
 
@@ -123,19 +123,14 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     private void Start()
     {
-        if(WasLoaded)
-        {
-            LoadSavedWorld();
-        }
-        else
+        if(IsWorldEmpty)
         {
             CreateWorld();
         }
-    }
-
-    public override void OnAwake()
-    {
-        GameState.world = this;
+        else
+        {
+            LoadSavedWorld();
+        }
     }
 
     protected void LoadSavedWorld()
@@ -143,24 +138,25 @@ public class HexagonWorld : SaveableMonoBehaviour
         if (!PhotonNetworkExtension.IsMasterClient)
             return;
 
-        byte[] map = GamePersistence.ObjectToByteArray(world);
-        object[] mapParam = PhotonNetworkExtension.ToObjectArray(map);
-        PunBroadcastCommunication.SafeRPC(
-            nameof(PunBroadcastCommunication.Instance.LoadWorld),
+        byte[] gameData = GamePersistence.ObjectToByteArray(GameInstanceData.CurrentGameInstanceData);
+        object[] gameParam = PhotonNetworkExtension.ToObjectArray(gameData);
+        Broadcast.SafeRPC(photonView,
+            nameof(LoadGame),
             RpcTarget.All,
-            () => PunBroadcastCommunication.Instance.LoadWorld(mapParam),
-            mapParam);
-        //LoadWorld(map);
+            () => LoadGame(gameParam),
+            gameParam);
     }
 
-    public void LoadWorld(byte[] map)
+    [PunRPC]
+    public void LoadGame(object[] gameDataO)
     {
-        LoadWorld(GamePersistence.ByteArrayToObject<MapTile[,]>(map));
+        byte[] gameDataB = PhotonNetworkExtension.FromObjectArray<byte>(gameDataO);
+        LoadGame(GamePersistence.ByteArrayToObject<GameInstanceData>(gameDataB));
     }
 
-    protected void LoadWorld(MapTile[,] map)
+    protected void LoadGame(GameInstanceData gameInstance)
     {
-        world = map;
+        GamePersistence.SetCurrentGameInstanceData(gameInstance);
         BuildWorld();
     }
 
@@ -171,13 +167,13 @@ public class HexagonWorld : SaveableMonoBehaviour
 
     protected void InitializeWorld()
     {
-        world = new MapTile[WORLD_WIDTH, WORLD_HEIGHT];
+        WorldData.world = new MapTile[WORLD_WIDTH, WORLD_HEIGHT];
         for (int x = 0; x < WORLD_WIDTH; x++)
         {
             for (int y = 0; y < WORLD_HEIGHT; y++)
             {
                 MapTile t = new MapTile(new Vector2Int(x, y));
-                world[x, y] = t;
+                World[x, y] = t;
             }
         }
     }
@@ -193,20 +189,22 @@ public class HexagonWorld : SaveableMonoBehaviour
         if (!PhotonNetworkExtension.IsMasterClient)
             return;
 
-        PunBroadcastCommunication.SafeRPC(
-            nameof(PunBroadcastCommunication.Instance.CreateWorld), 
-            RpcTarget.Others, 
-            ()=>PunBroadcastCommunication.Instance.CreateWorld(seed),
+        Broadcast.SafeRPC(photonView, 
+            nameof(CreateWorldWithSeed), 
+            RpcTarget.All, 
+            ()=>CreateWorldWithSeed(seed),
             seed);
-        CreateWorldWithSeed(seed);
     }
 
+    [PunRPC]
     public void CreateWorldWithSeed(int seed)
     {
+        GameInstanceData.CurrentGameInstanceData.startSeed = seed;
         seedGenerator = new System.Random(seed);
         InitializeWorld();
-        CreateContinentAt(new Vector2Int(5,5 ), new Vector2Int(50, 50));
+        CreateContinentAt(new Vector2Int(5,5), new Vector2Int(50, 50));
         BuildWorld();
+        GameInstanceData.CurrentGameInstanceData.timeData.StartGame();
     }
 
     protected int GetBiomAt(int x, int y)
@@ -228,6 +226,7 @@ public class HexagonWorld : SaveableMonoBehaviour
         Assert.IsTrue(endY <= WORLD_HEIGHT);
 
         Continent continent = new Continent(this, seedGenerator.Next(), saveableBioms, startPos, size, distanceNoiseWeighting);
+        Continents.Add(continent);
     }
 
 
@@ -242,7 +241,7 @@ public class HexagonWorld : SaveableMonoBehaviour
         {
             for (int z = 0; z < WORLD_HEIGHT; z++)
             {
-                MapTile t = world[x, z];
+                MapTile t = World[x, z];
                 t.AddTileToMesh(verts, tris, colors);
                 t.MarkTile(mapTileMarker, tileMarkerParent);
                 t.SpawnAllTileOccupations(mapOccupationParent);
@@ -277,7 +276,7 @@ public class HexagonWorld : SaveableMonoBehaviour
         return marker.MarkHexagons(tiles, markerPrefab);
     }
 
-    public bool IsInBounds(Vector2Int point)
+    public static bool IsInBounds(Vector2Int point)
     {
         return point.x >= 0 && point.y >= 0 && point.x < WORLD_WIDTH && point.y < WORLD_HEIGHT;
     }
@@ -296,7 +295,7 @@ public class HexagonWorld : SaveableMonoBehaviour
             yield return tile;
     }
 
-    public Maybe<MapTile> GetWorldTileFromPosition(Vector3 pos)
+    public static Maybe<MapTile> GetWorldTileFromPosition(Vector3 pos)
     {
         Vector2Int guessedIndex = GetNaiveArrayIndexFromPos(pos);
         List<Vector2Int> neighbours = GetInBoundsNeighbours(guessedIndex);
@@ -316,15 +315,15 @@ public class HexagonWorld : SaveableMonoBehaviour
         return foundIndex.ApplyValueToFunction(MapTileFromIndex);
     }
 
-    public MapTile MapTileFromIndex(Vector2Int index) => world[index.x, index.y];    
-    public MapTile MapTileFromIndex(int x, int y) => world[x, y];    
+    public static MapTile MapTileFromIndex(Vector2Int index) => World[index.x, index.y];    
+    public static MapTile MapTileFromIndex(int x, int y) => World[x, y];    
 
-    public IEnumerable<MapTile> MapTilesFromIndices(IEnumerable<Vector2Int> indices)
+    public static IEnumerable<MapTile> MapTilesFromIndices(IEnumerable<Vector2Int> indices)
     {
         return indices.Select(MapTileFromIndex);
     }
 
-    protected Vector2Int GetNaiveArrayIndexFromPos(Vector3 pos)
+    protected static Vector2Int GetNaiveArrayIndexFromPos(Vector3 pos)
     {
         //pos.x -= HEX_RADIUS;
         //pos.z -= HEX_RADIUS;
@@ -343,7 +342,7 @@ public class HexagonWorld : SaveableMonoBehaviour
     /// </summary>
     /// <param name="point"></param>
     /// <returns></returns>
-    public bool IsPointInsideHexagonSimple(Vector2Int coord, Vector3 point)
+    public static bool IsPointInsideHexagonSimple(Vector2Int coord, Vector3 point)
     {
         Vector3 relativePos = point - MapTileFromIndex(coord).CenterPos;
         float sqrDist = Vector3.SqrMagnitude(relativePos);
@@ -361,7 +360,7 @@ public class HexagonWorld : SaveableMonoBehaviour
     //protected bool IsPointInside
 
 
-    public List<Vector2Int> GetInBoundsNeighbours(Vector2Int field)
+    public static List<Vector2Int> GetInBoundsNeighbours(Vector2Int field)
     {
         return HexagonPathfinder.GetCircumjacent(field, IsInBounds).ToList();
     }

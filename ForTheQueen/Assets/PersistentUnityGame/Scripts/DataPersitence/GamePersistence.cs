@@ -128,6 +128,12 @@ public class GamePersistence
         return GetInstance().GetCurrentGame().GameInstanceData;
     }
 
+    public static void SetCurrentGameInstanceData(GameInstanceData data)
+    {
+        GetInstance().GetCurrentGame().GameInstanceData = data;
+    }
+
+
     public SaveableGame GetCurrentGame()
     {
         return currentGame;

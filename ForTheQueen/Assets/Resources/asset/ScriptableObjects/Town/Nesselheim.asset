@@ -23,7 +23,6 @@ MonoBehaviour:
   spawnScale: {x: 2, y: 2, z: 2}
   occupationName: Nesselheim
   description: A nice Town
-  hoverBackgroundSpriteColor: {r: 0, g: 0.07754137, b: 0.5849056, a: 1}
   guaranteedItemsToSell: []
   townSprite: {fileID: 21300000, guid: 2e1c8137835d61d44b470c7cbc794094, type: 3}
   isStartTown: 1

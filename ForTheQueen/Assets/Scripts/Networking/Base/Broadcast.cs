@@ -19,4 +19,14 @@ public static class Broadcast
         }
     }
 
+    public static void SafeRPCToOthers(PhotonView view, string name, params object[] parameters)
+    {
+        SafeRPC(view, name, RpcTarget.Others, null, parameters);
+    }
+
+    public static void SafeRPCToOthersBuffered(PhotonView view, string name, params object[] parameters)
+    {
+        SafeRPC(view, name, RpcTarget.OthersBuffered, null, parameters);
+    }
+
 }

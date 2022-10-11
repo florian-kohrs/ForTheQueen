@@ -10,16 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c07006a602ea33a4594bc1ec36821e87, type: 3}
-  m_Name: caf5bc77-e904-4b8d-837f-5c4b9c0270ae
+  m_Name: ChickenEnemy
   m_EditorClassIdentifier: 
   assetRef:
-    relativePathFromResource: 
-    assetName: 
-    assetExtension: 
-    wasAlreadyValidated: 0
-    runtimeRef: {fileID: 0}
+    relativePathFromResource: asset/ScriptableObjects/SingleEnemyOccupationScripableObject
+    assetName: ChickenEnemy
+    assetExtension: asset
+    wasAlreadyValidated: 1
+    runtimeRef: {fileID: 11400000}
   prefab: {fileID: 7441269040754729752, guid: 299d7afd08ae3e9439d7b719a68d23d5, type: 3}
   spawnOffset: {x: 0, y: 0, z: 0}
-  spawnScale: {x: 1, y: 1, z: 1}
+  spawnScale: {x: 200, y: 200, z: 200}
   occupationName: Deadly Chicken
-  description: 
+  description: This chicken is pissed. At you.
+  level: 1
+  stats:
+    speed: 65
+    health: 50
+    intelligence: 0
+    dodge: 5
+    strength: 75
+    talent: 0

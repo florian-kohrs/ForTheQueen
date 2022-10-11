@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class SingleEnemyOccupationScripableObject : BaseEnemyOccupationScriptableObject
 {
-    
 
+    public int level;
+
+    public CreatureStats stats;
 
 }

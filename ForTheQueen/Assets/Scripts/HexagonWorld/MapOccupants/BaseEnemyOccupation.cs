@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class BaseEnemyOccupation : TileInteractableOccupation<BaseEnemyOccupationScriptableObject>, IBaseEnemyOccupation
+public class BaseEnemyOccupation<T> : TileInteractableOccupation<T>, IBaseEnemyOccupation where T : BaseEnemyOccupationScriptableObject
 {
+
+    public BaseEnemyOccupation() { }
+
+    public BaseEnemyOccupation(T e) : base(e) { }
+
 
     protected float DespawnTime => 0.4f * GameManager.AnimationSpeed;
 

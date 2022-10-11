@@ -32,7 +32,7 @@ public class Hero : ITileOccupation
             if (customization == null) 
             { 
                 customization = new HeroCustomization();
-                Debug.LogWarning("Created new customization. Should only happen during developement when starting in game scene!");
+                Debug.LogWarning("Created new customization. Should only happen during developement when starting in game scene");
             }
             return customization;
         }

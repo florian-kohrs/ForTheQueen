@@ -7,12 +7,12 @@ using UnityEngine;
 public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 {
 
-    public HexagonWorld HexagonWorld => GameState.world;
-
     public int RestMovementInTurn => Hero.restMovementInTurn;
     public Hero Hero => Player.CurrentActiveHero;
 
     public GameObject markerPrefab;
+
+    public HexagonWorld world;
 
     public MouseToHoveredMapTile mouseToHovoredMapTile;
 
@@ -66,7 +66,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
         Vector2Int[] path = PhotonNetworkExtension.FromObjectArray<Vector2>(pathParam).ToVector2IntArray();
         Hero h = Heroes.GetHeroFromID(heroIndex);
         MapMovementAnimation moveAnim = MapAnimation.GetAnimationOfType<MapMovementAnimation>();
-        moveAnim.AnimateMovement(path.ToList(), h, HexagonWorld, OnEndMovement);
+        moveAnim.AnimateMovement(path.ToList(), h, OnEndMovement);
     }
 
     protected void OnEndMovement()
@@ -104,8 +104,8 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 
     public void DisplayPath(Vector2Int start, Vector2Int end)
     {
-        pathToCurrentHovoredTile = HexagonWorld.pathfinder.GetPath(start, end, false);
-        mapMarkers = HexagonWorld.MarkHexagons(pathToCurrentHovoredTile, markerPrefab);
+        pathToCurrentHovoredTile = world.pathfinder.GetPath(start, end, false);
+        mapMarkers = world.MarkHexagons(pathToCurrentHovoredTile, markerPrefab);
 
         int count = 1;
         foreach (GameObject marker in mapMarkers)

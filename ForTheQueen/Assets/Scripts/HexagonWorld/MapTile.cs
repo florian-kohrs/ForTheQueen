@@ -106,8 +106,18 @@ public class MapTile
     {
         foreach (var item in occupations)
         {
+            if(item is IBaseEnemyOccupation enemy)
+            {
+
+            }
             item.SpawnOccupation(parent);
         }
+    }
+
+    public void AddAndSpawnTileOccupation(ITileOccupation occupation)
+    {
+        AddTileOccupation(occupation);
+        occupation.SpawnOccupation(tileMarker.transform.parent);
     }
 
     public void AddTileOccupation(ITileOccupation occupation)

@@ -23,18 +23,6 @@ public class PunBroadcastCommunication : MonoBehaviourPun
         Broadcast.SafeRPC(Instance.photonView, name, target, callIfNotConnected, parameters);
     }
 
-    [PunRPC]
-    public void CreateWorld(int seed)
-    {
-        world.CreateWorldWithSeed(seed);
-    }
-
-    [PunRPC]
-    public void LoadWorld(object[] mapParam)
-    {
-        byte[] map = PhotonNetworkExtension.FromObjectArray<byte>(mapParam);
-        world.LoadWorld(map);
-    }
 
 
     [PunRPC]

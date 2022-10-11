@@ -167,9 +167,19 @@ public class SaveableGame
 
     #region serialized fields and its properties (+getter and setter)
 
-    private GameInstanceData gameInstanceData;
+    private GameInstanceData gameInstanceData = new GameInstanceData();
 
-    public GameInstanceData GameInstanceData => gameInstanceData;
+    public GameInstanceData GameInstanceData
+    {
+        get
+        {
+            return gameInstanceData;
+        }
+        set
+        {
+            gameInstanceData = value;
+        }
+    }
 
     private Dictionary<string, Dictionary<string, object>> savedStaticData;
 

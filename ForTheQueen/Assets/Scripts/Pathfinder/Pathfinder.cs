@@ -93,7 +93,7 @@ public class Pathfinder<T, J>
         pathTails.Peek().BuildPath(result);
         if (ReachedTarget)
         {
-            Debug.Log("found path after: " + count + " iterations of length " + result.Count);
+            //Debug.Log("found path after: " + count + " iterations of length " + result.Count);
         }
         else
         {
@@ -137,10 +137,7 @@ public class Pathfinder<T, J>
 
     public Path<T, J> PeekUnusedClosest()
     {
-        while(usedFields.Contains(pathTails.Peek().current))
-        {
-            pathTails.Dequeue();
-        }
+        DismissSeenFields();
 
         return pathTails.Peek();
     }
@@ -148,6 +145,14 @@ public class Pathfinder<T, J>
 
     public bool ReachedTarget => nav.ReachedTarget(PeekUnusedClosest().current, target);
 
+
+    protected void DismissSeenFields()
+    {
+        while (pathTails.Count() > 0 && usedFields.Contains(pathTails.Peek().current))
+        {
+            pathTails.Dequeue();
+        }
+    }
 
     public BinaryHeap<float, Path<T, J>> pathTails;
 
@@ -172,7 +177,15 @@ public class Pathfinder<T, J>
         return path != null;
     }
 
-    protected bool HasTail => pathTails.size > 0;
+    protected bool HasTail
+    {
+        get 
+        {
+            DismissSeenFields();
+            return pathTails.size > 0; 
+        }
+    }
+
 
 
 }

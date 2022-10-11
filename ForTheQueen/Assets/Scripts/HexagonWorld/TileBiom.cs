@@ -19,6 +19,9 @@ public class TileBiom : SaveableScriptableObject
     //Boss?
 
     [Range(0,100), Tooltip("How many percent of tiles should be occupied")]
-    public int blockingOccupationDensity = 30;
+    public int blockingOccupationDensity = 20;
+
+    [Range(0,100)]
+    public int enemyDensity = 12;
 
 }
