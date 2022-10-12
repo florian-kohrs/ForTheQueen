@@ -53,8 +53,6 @@ public class HexagonWorld : MonoBehaviourPun
 
     public Transform tileMarkerParent;
 
-    public HexagonPathfinder pathfinder;
-
     public HexagonMarker marker;
 
     [SerializeField]
@@ -264,16 +262,6 @@ public class HexagonWorld : MonoBehaviourPun
     {
         Filter.mesh = m;
         MeshCollider.sharedMesh = m;
-    }
-
-    public List<GameObject> MarkHexagons(IEnumerable<Vector2Int> coords, GameObject markerPrefab = null)
-    {
-        return MarkHexagons(MapTilesFromIndices(coords), markerPrefab);
-    }
-
-    public List<GameObject> MarkHexagons(IEnumerable<MapTile> tiles, GameObject markerPrefab = null)
-    {
-        return marker.MarkHexagons(tiles, markerPrefab);
     }
 
     public static bool IsInBounds(Vector2Int point)

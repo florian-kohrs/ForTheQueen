@@ -5,34 +5,53 @@ using UnityEngine;
 public class HexagonMarker : MonoBehaviour
 {
 
-    public GameObject defaultMarkerPrefab;
+    public static HexagonMarker Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public GameObject defaultMarkerPrefab; 
+
+    public GameObject battleParticipantMarker; 
+
+    public GameObject mapMovementMarker; 
 
     protected GameObject currentMarkerPrefab;
 
-    public List<GameObject> MarkHexagons(IEnumerable<MapTile> tiles)
+    [SerializeField]
+    protected GameObject markerEnvirenment;
+
+    public MarkerMapping MarkHexagons(IEnumerable<Vector2Int> tiles, GameObject markerPrefab, MarkerMapping mapping = null)
     {
-        return MarkHexagons(tiles, defaultMarkerPrefab);
+        return MarkHexagons(HexagonWorld.MapTilesFromIndices(tiles), markerPrefab, mapping);
     }
 
-    public List<GameObject> MarkHexagons(IEnumerable<MapTile> tiles, GameObject markerPrefab)
+    public MarkerMapping MarkHexagons(IEnumerable<MapTile> tiles, GameObject markerPrefab, MarkerMapping mapping = null)
     {
-        List<GameObject> markers = new List<GameObject>();
+        if(mapping == null)
+            mapping = new MarkerMapping();
+
+        mapping.newTiles = new List<MapTile>();
 
         currentMarkerPrefab = markerPrefab;
         if (currentMarkerPrefab == null)
             currentMarkerPrefab = defaultMarkerPrefab;
 
-        foreach (var h in tiles)
+        foreach (var t in tiles)
         {
-            markers.Add(SpawnMarkerAt(h.CenterPos));
+            mapping.Add(t, SpawnMarkerAt(t));
+            mapping.newTiles.Add(t);
         }
-        return markers;
+        return mapping;
     }
 
-    protected GameObject SpawnMarkerAt(Vector3 pos)
+    protected GameObject SpawnMarkerAt(MapTile tile)
     {
-        GameObject marker = Instantiate(currentMarkerPrefab, transform);
-        marker.transform.position = pos + Vector3.up * 0.05f;
+        GameObject marker = Instantiate(currentMarkerPrefab, markerEnvirenment.transform);
+        marker.transform.position = tile.CenterPos + Vector3.up * 0.05f;
+        tile.SetCurrentMarkerOnMapTile(marker);
         return marker;
     }
 

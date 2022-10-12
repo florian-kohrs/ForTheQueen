@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Hero : ITileOccupation
+public class Hero : ITileOccupation, IBattleOccupation
 {
 
     public Hero() 
@@ -46,6 +46,11 @@ public class Hero : ITileOccupation
         set => mapTile = value;
     }
 
+    public void DisplayInBattle(Transform leftPartyParent)
+    {
+
+    }
+
     public MapTile mapTile;
 
     protected bool isHerosTurn;
@@ -67,6 +72,12 @@ public class Hero : ITileOccupation
     public int restMovementInTurn;
 
     protected bool IsInCity => !heroObject.activeSelf;
+
+    public bool OnPlayersSide => true;
+
+    public bool HasSupportRange => false;
+
+    public bool HelpsInFight => true;
 
     public void StartHerosTurn()
     {
@@ -136,4 +147,8 @@ public class Hero : ITileOccupation
             OnEnterCity();
     }
 
+    public void DisplayInPreFight(Transform parent)
+    {
+        Debug.Log("Hero Display not ready");
+    }
 }

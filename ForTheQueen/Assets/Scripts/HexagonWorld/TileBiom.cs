@@ -24,4 +24,7 @@ public class TileBiom : SaveableScriptableObject
     [Range(0,100)]
     public int enemyDensity = 12;
 
+    [Range(0,10)]
+    public int fightAssistRange = 2;
+
 }

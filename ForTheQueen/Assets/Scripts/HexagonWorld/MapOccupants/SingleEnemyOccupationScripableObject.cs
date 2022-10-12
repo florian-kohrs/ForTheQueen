@@ -9,4 +9,6 @@ public class SingleEnemyOccupationScripableObject : BaseEnemyOccupationScriptabl
 
     public CreatureStats stats;
 
+    public bool hasSupportRange;
+
 }

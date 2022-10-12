@@ -110,7 +110,7 @@ public class Kingdom
 
     protected void PreventPathBlockageBetweenImportantSettlements(MapTile from, MapTile to)
     {
-        IEnumerable<Vector2Int> path = Pathfinder<Vector2Int, Vector2Int>.FindPath(world.pathfinder, from.Coordinates, to.Coordinates, PathAccuracy.Decent);
+        IEnumerable<Vector2Int> path = HexagonPathfinder.GetPath(from.Coordinates, to.Coordinates, false, PathAccuracy.Decent);
         BlockTilesForMapOccupation(HexagonWorld.MapTilesFromIndices(path));
     }
 

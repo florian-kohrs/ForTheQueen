@@ -14,13 +14,13 @@ public class MapTile
     {
         this.coordinates = coordinates;
     }
-    
-    public void OnPlayerUncovered(Hero p) 
+
+    public void OnPlayerUncovered(Hero p)
     {
         occupations.ForEach(occupation => occupation.OnPlayerUncovered(p));
     }
 
-    public void OnPlayerReachedFieldAsTarget(Hero p) 
+    public void OnPlayerReachedFieldAsTarget(Hero p)
     {
         occupations.ForEach(occupation => occupation.OnPlayerReachedFieldAsTarget(p));
     }
@@ -30,17 +30,17 @@ public class MapTile
         occupations.ForEach(occupation => occupation.OnPlayerLeftFieldAfterStationary(p));
     }
 
-    public void OnPlayerEntered(Hero p) 
+    public void OnPlayerEntered(Hero p)
+    {
+        occupations.ForEach(occupation => occupation.OnPlayerEntered(p));
+    }
+
+    public void OnMouseStay(Hero p)
     {
         occupations.ForEach(occupation => occupation.OnPlayerMouseHover(p));
     }
 
-    public void OnMouseStay(Hero p) 
-    {
-        occupations.ForEach(occupation => occupation.OnPlayerMouseHover(p));
-    }
-
-    public void OnMouseExit(Hero p) 
+    public void OnMouseExit(Hero p)
     {
         occupations.ForEach(occupation => occupation.OnPlayerMouseExit(p));
     }
@@ -54,6 +54,25 @@ public class MapTile
 
     protected List<ITileOccupation> occupations = new List<ITileOccupation>();
 
+    [NonSerialized]
+    protected GameObject currentMarkerOnMapTile;
+
+    public GameObject CurrentMarkerOnMapTile => currentMarkerOnMapTile;
+
+    public void ClearMarker(GameObject marker)
+    {
+        if(currentMarkerOnMapTile == marker && marker != null)
+            GameObject.Destroy(currentMarkerOnMapTile);
+    }
+
+    public void SetCurrentMarkerOnMapTile(GameObject tile)
+    {
+        if(currentMarkerOnMapTile != null)
+            GameObject.Destroy(currentMarkerOnMapTile);
+        currentMarkerOnMapTile = tile;
+    }
+
+    public IEnumerable<ITileOccupation> Occupations => occupations;
 
     protected bool canBeCrossed = true;
 

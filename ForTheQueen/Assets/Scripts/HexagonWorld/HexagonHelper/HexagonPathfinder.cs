@@ -3,17 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2Int>
+public class HexagonPathfinder : INavigatable<Vector2Int, Vector2Int>
 {
-
-    public HexagonWorld world;
 
     protected bool allowWater = false;
 
-    public List<Vector2Int> GetPath(Vector2Int start, Vector2Int end, bool allowWater)
+    public static List<Vector2Int> GetPath(Vector2Int start, Vector2Int end, bool allowWater, PathAccuracy pathAccuracy = PathAccuracy.Perfect)
     {
-        this.allowWater = allowWater;
-        return Pathfinder<Vector2Int, Vector2Int>.FindPath(this, start, end);
+        HexagonPathfinder pathfinder = new HexagonPathfinder();
+        pathfinder.allowWater = allowWater;
+        return Pathfinder<Vector2Int, Vector2Int>.FindPath(pathfinder, start, end, pathAccuracy);
     }
 
     public IEnumerable<Vector2Int> GetCircumjacent(Vector2Int field)
@@ -65,9 +64,16 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
         return GetNeighboursInDistance(start, distance, _=>true);
     }
 
-    public static IEnumerable<Vector2Int> GetNeighboursInDistance(Vector2Int start, int distance, Predicate<Vector2Int> p)
+    public static IEnumerable<Vector2Int> GetAccessableNeighboursInDistance(Vector2Int start, int distance, bool includeStart = true)
     {
-        yield return start;
+        return GetNeighboursInDistance(start, distance, 
+            (p)=> HexagonWorld.IsInBounds(p) && FieldCanBeEntered(p, HexagonWorld.MapTileFromIndex(p).IsWater), includeStart);
+    }
+
+    public static IEnumerable<Vector2Int> GetNeighboursInDistance(Vector2Int start, int distance, Predicate<Vector2Int> p, bool includeStart = true)
+    {
+        if(includeStart)
+            yield return start;
         Stack<Vector2Int> activeIteration = new Stack<Vector2Int>();
         Stack<Vector2Int> nextIteration = new Stack<Vector2Int>();
         nextIteration.Push(start);
@@ -96,10 +102,14 @@ public class HexagonPathfinder : MonoBehaviour, INavigatable<Vector2Int, Vector2
         return HexagonWorld.IsInBounds(point) && FieldCanBeEntered(point);
     }
 
+    public static bool FieldCanBeEntered(Vector2Int point, bool allowWater)
+    {
+        return HexagonWorld.MapTileFromIndex(point).CanBeEntered(allowWater);
+    }
 
     public bool FieldCanBeEntered(Vector2Int point)
     {
-        return HexagonWorld.MapTileFromIndex(point).CanBeEntered(allowWater);
+        return FieldCanBeEntered(point, allowWater);
     }
 
 

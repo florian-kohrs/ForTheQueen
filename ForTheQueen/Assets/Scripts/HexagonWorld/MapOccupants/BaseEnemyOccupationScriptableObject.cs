@@ -5,7 +5,6 @@ using UnityEngine;
 public class BaseEnemyOccupationScriptableObject : TileOccupationInteractableScritableObject
 {
 
-
     public override Color hoverBackgroundSpriteColor => Color.red;
 
 }

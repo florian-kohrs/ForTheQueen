@@ -10,10 +10,6 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
     public int RestMovementInTurn => Hero.restMovementInTurn;
     public Hero Hero => Player.CurrentActiveHero;
 
-    public GameObject markerPrefab;
-
-    public HexagonWorld world;
-
     public MouseToHoveredMapTile mouseToHovoredMapTile;
 
     protected CallbackSet<IMouseTileSelectionCallback> MouseCallbackSet => mouseToHovoredMapTile.subscribers;
@@ -26,7 +22,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 
     protected bool isInAnimation;
 
-    protected List<GameObject> mapMarkers = new List<GameObject>();
+    protected MarkerMapping mapMovementMarker;
 
     public void BeginTileHover(MapTile tile)
     {
@@ -47,17 +43,13 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 
     protected void ClearPathDisplay()
     {
-        if(mapMarkers == null)
+        if(mapMovementMarker == null)
         {
             Debug.LogWarning("Map markers are null. is that important?");
             return;
         }
 
-        foreach (var item in mapMarkers)
-        {
-            Destroy(item);
-        }
-        mapMarkers.Clear();
+        mapMovementMarker.ClearMarkers();
     }
 
     [PunRPC]
@@ -104,11 +96,11 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 
     public void DisplayPath(Vector2Int start, Vector2Int end)
     {
-        pathToCurrentHovoredTile = world.pathfinder.GetPath(start, end, false);
-        mapMarkers = world.MarkHexagons(pathToCurrentHovoredTile, markerPrefab);
+        pathToCurrentHovoredTile = HexagonPathfinder.GetPath(start, end, false);
+        mapMovementMarker = HexagonMarker.Instance.MarkHexagons(pathToCurrentHovoredTile, HexagonMarker.Instance.mapMovementMarker);
 
         int count = 1;
-        foreach (GameObject marker in mapMarkers)
+        foreach (GameObject marker in mapMovementMarker.markerMapping.Values)
         {
             MovementMapMarker m = marker.GetComponent<MovementMapMarker>();
 
@@ -125,7 +117,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
             }
 
             displayColor.a = 0.7f;
-            m.hexagonOverlayRenderer.material.color = displayColor;
+            m.hexagonImage.color = displayColor;
 
             count++;
         }
