@@ -15,7 +15,7 @@ public class Town : TileInteractableOccupation<TownScriptableObject>
 
     public string TownName => OccupationObject.occupationName;
 
-    public override void OnPlayerEntered(Hero p)
+    public override void OnHeroEnter(Hero p, MapMovementAnimation mapMovement)
     {
     }
 

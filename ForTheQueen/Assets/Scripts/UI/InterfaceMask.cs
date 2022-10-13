@@ -45,6 +45,16 @@ public abstract class InterfaceMask : PlayerActionInfluence, IInterfaceMask
 
     protected virtual void OnClose() { }
 
+    public void RemoveMask()
+    {
+        interfaceController.RemoveMask(this);
+    }
+
+    public void AddMask()
+    {
+        interfaceController.AddMask(this);
+    }
+
     public void Close()
     {
         RemoveInfluence();

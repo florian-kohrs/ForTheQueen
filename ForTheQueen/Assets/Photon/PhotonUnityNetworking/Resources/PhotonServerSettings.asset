@@ -53,6 +53,10 @@ MonoBehaviour:
   - EndHeroesTurnRPC
   - CreateWorldWithSeed
   - LoadGame
+  - RetreatFromFight
+  - SneakFromFight
+  - StartFight
+  - StartSkillCheck
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

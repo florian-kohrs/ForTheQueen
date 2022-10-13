@@ -42,9 +42,10 @@ public class Heroes
     protected static void CreateHeroes()
     {
         Reset();
+        GameInstanceData.CurrentGameInstanceData.ShuffleGameInstanceSeed();
         for (int i = 0; i < NUMBER_HEROES; i++)
         {
-            heroes[i] = new Hero() { heroIndex = i };
+            heroes[i] = new Hero() { heroIndex = i, heroStats = new CreatureStats() { speed = 60 } };
         }
     }
 

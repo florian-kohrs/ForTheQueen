@@ -22,7 +22,7 @@ public class HeroCustomization
 
     public GameObject SpawnPlayer(Transform parent, Hero h)
     {
-        ApplyableAssets race = ListLookUp.instance.races.list[raceId];
+        ApplyableAssets race = GenerellLookup.instance.customizationLookup.races.list[raceId];
         GameObject heroGameObject = race.Apply(parent, h);
 
         return heroGameObject;

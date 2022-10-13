@@ -3,39 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class CreatureStats
+public class SpriteLookup
 {
 
-    public int agility;
+    public Sprite intelligenceSprite;
+    public Sprite agilitySprite;
+    public Sprite strengthSprite;
+    public Sprite talentSprite;
+    public Sprite speedSprite;
+    public Sprite vitalitySprite;
 
-    public int strength;
-
-    public int intelligence;
-
-    public int talent;
-
-    public int speed;
-
-    public int dodge;
-
-    public int vitality;
-
-    public int GetStatsOfSkill(SkillCheck.Skill skill)
+    public Sprite SpriteFromSkillCheck(SkillCheck.Skill skill)
     {
         switch (skill)
         {
             case SkillCheck.Skill.Speed:
-                return speed;
+                return speedSprite;
             case SkillCheck.Skill.Strength:
-                return strength;
+                return strengthSprite;
             case SkillCheck.Skill.Talent:
-                return talent;
+                return talentSprite;
             case SkillCheck.Skill.Agility:
-                return agility;
+                return agilitySprite;
             case SkillCheck.Skill.Vitality:
-                return vitality;
+                return vitalitySprite;
             case SkillCheck.Skill.Intelligence:
-                return intelligence;
+                return intelligenceSprite;
             default:
                 throw new System.Exception($"No sprite available for skill{skill}");
         }

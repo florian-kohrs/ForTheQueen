@@ -30,9 +30,9 @@ public class MapTile
         occupations.ForEach(occupation => occupation.OnPlayerLeftFieldAfterStationary(p));
     }
 
-    public void OnPlayerEntered(Hero p)
+    public void OnPlayerEntered(Hero p, MapMovementAnimation mapMovement)
     {
-        occupations.ForEach(occupation => occupation.OnPlayerEntered(p));
+        occupations.ForEach(occupation => occupation.OnHeroEnter(p, mapMovement));
     }
 
     public void OnMouseStay(Hero p)

@@ -11,7 +11,7 @@ public interface ITileOccupation
 
     void OnPlayerUncovered(Hero p);
 
-    void OnPlayerEntered(Hero p);
+    void OnHeroEnter(Hero p, MapMovementAnimation mapMovement);
 
     void OnPlayerLeftFieldAfterStationary(Hero p);
 

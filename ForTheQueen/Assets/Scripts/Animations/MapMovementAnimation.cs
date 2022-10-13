@@ -12,6 +12,9 @@ public class MapMovementAnimation : MapAnimation
 
     protected List<Vector2Int> path;
 
+    protected int currentPathIndex;
+
+    public bool IsPathDone => currentPathIndex >= path.Count - 1; 
 
     public void AnimateMovement(List<Vector2Int> path, Hero h, Action onAnimationEnded = null)
     {
@@ -23,11 +26,10 @@ public class MapMovementAnimation : MapAnimation
         else
         {
             this.path = path;
+            this.path.Insert(0, h.MapTile.Coordinates);
             movingHero = h;
             onAnimationDone = onAnimationEnded;
-            animationPlayer = MoveAlongPath();
-            BeginAnimation();
-            StartCoroutine(animationPlayer);
+            ContinuePath();
         }
     }
 
@@ -36,15 +38,14 @@ public class MapMovementAnimation : MapAnimation
         movingHero.MapTile.OnPlayerLeftAfterStationary(movingHero);
         MapTile previousTile = movingHero.MapTile;
         MapTile nextTile = null;
-        int i;
-        for (i = 0; i < path.Count && !movingHero.interuptMovement; i++)
+        for (currentPathIndex = 1; currentPathIndex < path.Count && !movingHero.interuptMovement; currentPathIndex++)
         {
-            nextTile = HexagonWorld.MapTileFromIndex(path[i]);
+            nextTile = HexagonWorld.MapTileFromIndex(path[currentPathIndex]);
             yield return MoveToNextTile(nextTile);
-            nextTile.OnPlayerEntered(movingHero);
+            nextTile.OnPlayerEntered(movingHero, this);
             movingHero.restMovementInTurn -= 1;
         }
-        if(i == path.Count)
+        if(currentPathIndex == path.Count)
         {
             nextTile.OnPlayerReachedFieldAsTarget(movingHero);
         }
@@ -52,6 +53,19 @@ public class MapMovementAnimation : MapAnimation
         previousTile.RemoveTileOccupation(movingHero);
         movingHero.interuptMovement = false;
         EndAnimation();
+    }
+
+    public void Backstep()
+    {
+        path = new List<Vector2Int>() { path[currentPathIndex - 1] };
+        MoveAlongPath();
+    }
+
+    public void ContinuePath()
+    {
+        animationPlayer = MoveAlongPath();
+        BeginAnimation();
+        StartCoroutine(animationPlayer);
     }
 
     public override bool BlockCameraMovement => false;

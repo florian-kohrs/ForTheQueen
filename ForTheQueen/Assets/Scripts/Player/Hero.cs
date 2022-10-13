@@ -93,10 +93,12 @@ public class Hero : ITileOccupation, IBattleOccupation
 
     public void GenerateMovement()
     {
-        restMovementInTurn = 5;
+        SkillCheckUI ui = InterfaceController.GetInterfaceMask<SkillCheckUI>();
+        ui.AdaptUIAndOpen(SkillCheck.GetMovementSkillCheckForHero(this));
+        ui.EvaluateSkillCheck(r => restMovementInTurn = r.numberSuccessfull);
     }
 
-    public void OnPlayerEntered(Hero p)
+    public void OnHeroEnter(Hero p, MapMovementAnimation mapMovement)
     {
     }
 

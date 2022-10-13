@@ -13,7 +13,7 @@ public class TileBlockingOccupationInstance : TileOccupation<TileBlockingOccupat
 
     public override bool CanBeEntered => false;
 
-    public override void OnPlayerEntered(Hero p)
+    public override void OnHeroEnter(Hero p, MapMovementAnimation mapMovement)
     {
     }
 

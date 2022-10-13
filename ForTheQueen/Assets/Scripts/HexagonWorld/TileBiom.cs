@@ -27,4 +27,10 @@ public class TileBiom : SaveableScriptableObject
     [Range(0,10)]
     public int fightAssistRange = 2;
 
+    [Range(0,5)]
+    public int guaranteedMovement = 2;
+
+    [Range(2, 10)]
+    public int maxExtraMovement = 4;
+
 }

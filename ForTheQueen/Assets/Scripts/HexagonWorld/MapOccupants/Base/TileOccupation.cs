@@ -49,7 +49,7 @@ public abstract class TileOccupation<T> : ITileOccupation where T : TileOccupati
     public abstract bool CanBeEntered { get; }
 
     public abstract void OnPlayerMouseExit(Hero p);
-    public abstract void OnPlayerEntered(Hero p);
+    public abstract void OnHeroEnter(Hero p, MapMovementAnimation mapMovement);
     public abstract void OnPlayerMouseHover(Hero p);
     public abstract void OnPlayerReachedFieldAsTarget(Hero p);
     public abstract void OnPlayerUncovered(Hero p);

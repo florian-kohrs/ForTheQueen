@@ -91,7 +91,7 @@ public class HexagonPathfinder : INavigatable<Vector2Int, Vector2Int>
                         continue;
                     yield return item;
                     seen.Add(item);
-                    nextIteration.Push(current);
+                    nextIteration.Push(item);
                 }
             } 
         }

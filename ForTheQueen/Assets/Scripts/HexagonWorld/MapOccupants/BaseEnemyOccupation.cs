@@ -33,16 +33,19 @@ public abstract class BaseEnemyOccupation<T> : TileInteractableOccupation<T>, IB
     }
 
 
-    public override void OnPlayerEntered(Hero p)
+    public override void OnHeroEnter(Hero h, MapMovementAnimation mapMovement)
     {
-        OnPlayerMouseExit(p);
-        InterfaceController.GetInterfaceMask<PreBattleUI>().AdaptUIAndOpen(new BattleParticipants(MapTile), mapTile.CenterPos);
+        OnPlayerMouseExit(h);
+        h.interuptMovement = true;
+        MapMovementBattleInteruption interuption = new MapMovementBattleInteruption(new BattleParticipants(MapTile), mapMovement);
+        InterfaceController.GetInterfaceMask<PreBattleUI>().AdaptUIAndOpen(interuption, mapTile.CenterPos);
         //TODO: Open Fight UI
     }
 
     public override void OnPlayerMouseExit(Hero p)
     {
-        battleMarkers.ClearMarkers();
+        if (battleMarkers != null)
+            battleMarkers.ClearMarkers();
         InterfaceController.Instance.RemoveMask<GenericMouseHoverInfo>();
     }
 
@@ -53,7 +56,7 @@ public abstract class BaseEnemyOccupation<T> : TileInteractableOccupation<T>, IB
 
         battleMarkers = HexagonMarker.Instance.MarkHexagons(tiles, HexagonMarker.Instance.battleParticipantMarker);
         BattleParticipants b = new BattleParticipants(MapTile, tiles);
-        HexagonMarker.Instance.MarkHexagons(tiles, HexagonMarker.Instance.battleParticipantMarker);
+        HexagonMarker.Instance.MarkHexagons(tiles, HexagonMarker.Instance.battleParticipantMarker, battleMarkers);
 
         InterfaceController.GetInterfaceMask<GenericMouseHoverInfo>().AdaptUIAndOpen(OccupationObject, mapTile.CenterPos);
     }
