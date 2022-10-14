@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IBattleOccupation
+public interface IBattleOccupation : ITileOccupation
 {
 
     bool OnPlayersSide { get; }
@@ -11,8 +11,8 @@ public interface IBattleOccupation
 
     bool HelpsInFight { get; }
 
-    MapTile MapTile { get; }
-
     void DisplayInPreFight(Transform parent);
+
+    IBattleParticipant GetParticipant();
 
 }

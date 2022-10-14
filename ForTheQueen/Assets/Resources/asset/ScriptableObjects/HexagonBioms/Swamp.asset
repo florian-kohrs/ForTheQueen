@@ -28,3 +28,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5a55489154b197b4a9921605e076f7b6, type: 2}
   blockingOccupationDensity: 20
   enemyDensity: 12
+  fightAssistRange: 2
+  guaranteedMovement: 2
+  maxExtraMovement: 4

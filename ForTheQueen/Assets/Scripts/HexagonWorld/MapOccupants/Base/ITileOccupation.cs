@@ -17,7 +17,7 @@ public interface ITileOccupation
 
     void OnPlayerReachedFieldAsTarget(Hero p);
 
-    MapTile MapTile { set; }
+    MapTile MapTile { get; set; }
 
     bool CanBeCrossed { get; }
 

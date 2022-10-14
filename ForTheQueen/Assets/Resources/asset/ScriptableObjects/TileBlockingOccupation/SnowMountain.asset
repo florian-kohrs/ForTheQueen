@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0443307b80ff3b84a9875a426e6f67eb, type: 3}
+  m_Name: SnowMountain
+  m_EditorClassIdentifier: 
+  assetRef:
+    relativePathFromResource: asset/ScriptableObjects/TileBlockingOccupation
+    assetName: SnowMountain
+    assetExtension: asset
+    wasAlreadyValidated: 1
+    runtimeRef: {fileID: 11400000}
+  prefab: {fileID: 8270971147839087869, guid: b45aa11e62282434bac0b7f15d0e5c0d, type: 3}
+  spawnOffset: {x: 0, y: 0.01, z: 0}
+  spawnScale: {x: 450, y: 550, z: 450}

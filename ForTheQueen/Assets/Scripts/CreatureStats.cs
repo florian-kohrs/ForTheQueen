@@ -6,6 +6,8 @@ using UnityEngine;
 public class CreatureStats
 {
 
+    public int level;
+
     public int agility;
 
     public int strength;
@@ -19,6 +21,10 @@ public class CreatureStats
     public int dodge;
 
     public int vitality;
+
+    public int currentHealth;
+
+    public int MaxHealth => Mathf.RoundToInt(vitality / 10f * level);
 
     public int GetStatsOfSkill(SkillCheck.Skill skill)
     {

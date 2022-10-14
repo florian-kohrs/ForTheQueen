@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class GameInstanceData
 {
+
     //TODO: Broadcast this!
     public void ShuffleGameInstanceSeed()
     {

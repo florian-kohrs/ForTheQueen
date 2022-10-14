@@ -153,4 +153,14 @@ public class Hero : ITileOccupation, IBattleOccupation
     {
         Debug.Log("Hero Display not ready");
     }
+
+    public GameObject SpawnInCombat()
+    {
+        throw new NotImplementedException();
+    }
+
+    public IBattleParticipant GetParticipant()
+    {
+        throw new NotImplementedException();
+    }
 }

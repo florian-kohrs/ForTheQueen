@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c07006a602ea33a4594bc1ec36821e87, type: 3}
-  m_Name: ChickenEnemy
+  m_Name: Snowman
   m_EditorClassIdentifier: 
   assetRef:
     relativePathFromResource: asset/ScriptableObjects/SingleEnemyOccupationScripableObject
-    assetName: ChickenEnemy
+    assetName: Snowman
     assetExtension: asset
     wasAlreadyValidated: 1
     runtimeRef: {fileID: 11400000}
-  prefab: {fileID: 7441269040754729752, guid: 299d7afd08ae3e9439d7b719a68d23d5, type: 3}
+  prefab: {fileID: 2571682514507280397, guid: c5235c4aa8549034380b4f39b7237588, type: 3}
   spawnOffset: {x: 0, y: 0, z: 0}
-  spawnScale: {x: 200, y: 200, z: 200}
-  occupationName: Deadly Chicken
-  description: This chicken is pissed. At you.
-  level: 1
+  spawnScale: {x: 1, y: 1, z: 1}
+  occupationName: Snowman
+  description: 
+  level: 0
   stats:
     level: 0
     agility: 0
-    strength: 75
+    strength: 0
     intelligence: 0
     talent: 0
-    speed: 65
-    dodge: 5
+    speed: 0
+    dodge: 0
     vitality: 0
     currentHealth: 0
   hasSupportRange: 0

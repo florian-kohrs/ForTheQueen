@@ -70,4 +70,14 @@ public abstract class BaseEnemyOccupation<T> : TileInteractableOccupation<T>, IB
     }
 
     public abstract void DisplayInPreFight(Transform parent);
+
+    public GameObject SpawnInCombat()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public IBattleParticipant GetParticipant()
+    {
+        throw new System.NotImplementedException();
+    }
 }
