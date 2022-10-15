@@ -24,7 +24,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d8c889af4bcff3347a506742390cf7b9, type: 2}
   blockingOccupations:
   - {fileID: 11400000, guid: eefd3f6f4a323084ab3ae3d0e4c580a9, type: 2}
-  - {fileID: 11400000, guid: eefd3f6f4a323084ab3ae3d0e4c580a9, type: 2}
+  - {fileID: 11400000, guid: 2748a9ef26dd98348a58666cb3bc9cc3, type: 2}
   - {fileID: 11400000, guid: 983b1460987ce164d9a94f85e5644fdb, type: 2}
   singleEnemiesInBiom:
   - {fileID: 11400000, guid: 589b0e62acf1eae4e8f28e2d6b69e1a5, type: 2}
