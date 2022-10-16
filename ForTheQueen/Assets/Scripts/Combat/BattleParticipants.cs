@@ -9,11 +9,20 @@ public class BattleParticipants
 
     public static int MAX_COMBAT_SIZE = 3;
 
+    public BattleParticipants(Vector2Int startTileCoord) :
+      this(HexagonWorld.MapTileFromIndex(startTileCoord)) { }
+
     public BattleParticipants(MapTile startTile) : 
         this(startTile, 
             HexagonWorld.MapTilesFromIndices(
                 HexagonPathfinder.GetAccessableNeighboursInDistance(startTile.Coordinates, startTile.kingdomOfMapTile.KingdomBiom.fightAssistRange, false)))
     { }
+
+
+    public List<IBattleOccupation> onPlayersSide;
+
+    public List<IBattleOccupation> onEnemiesSide;
+
 
     public BattleParticipants(MapTile startTile, IEnumerable<MapTile> battleTiles)
     {
@@ -66,9 +75,5 @@ public class BattleParticipants
             }
         }
     }
-
-    public List<IBattleOccupation> onPlayersSide;
-
-    public List<IBattleOccupation> onEnemiesSide;
 
 }

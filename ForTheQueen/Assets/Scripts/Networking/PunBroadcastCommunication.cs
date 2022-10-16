@@ -30,9 +30,9 @@ public class PunBroadcastCommunication : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void SneakFromFight(int seed)
+    public void SneakFromFight()
     {
-        InterfaceController.GetInterfaceMask<PreBattleUI>().Sneak(seed);
+        InterfaceController.GetInterfaceMask<PreBattleUI>().Sneak();
     }
 
     [PunRPC]

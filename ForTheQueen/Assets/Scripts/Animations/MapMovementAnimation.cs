@@ -29,16 +29,17 @@ public class MapMovementAnimation : MapAnimation
             this.path.Insert(0, h.MapTile.Coordinates);
             movingHero = h;
             onAnimationDone = onAnimationEnded;
+            movingHero.MapTile.OnPlayerLeftAfterStationary(movingHero);
+            currentPathIndex = 1;
             ContinuePath();
         }
     }
 
     protected IEnumerator MoveAlongPath()
     {
-        movingHero.MapTile.OnPlayerLeftAfterStationary(movingHero);
         MapTile previousTile = movingHero.MapTile;
         MapTile nextTile = null;
-        for (currentPathIndex = 1; currentPathIndex < path.Count && !movingHero.interuptMovement; currentPathIndex++)
+        for (; currentPathIndex < path.Count && !movingHero.interuptMovement; currentPathIndex++)
         {
             nextTile = HexagonWorld.MapTileFromIndex(path[currentPathIndex]);
             yield return MoveToNextTile(nextTile);
@@ -57,8 +58,9 @@ public class MapMovementAnimation : MapAnimation
 
     public void Backstep()
     {
-        path = new List<Vector2Int>() { path[currentPathIndex - 1] };
-        MoveAlongPath();
+        path = new List<Vector2Int>() { movingHero.MapTile.Coordinates, path[currentPathIndex - 1] };
+        currentPathIndex = 1;
+        ContinuePath();
     }
 
     public void ContinuePath()

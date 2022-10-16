@@ -105,8 +105,8 @@ public class MapTile
     { 
         get
         {
-            if(center == default)
-                center = new Vector3(GetXPosForCoord(coordinates), 0, GetZPosForCoord(coordinates));
+            if (center == default)
+                center = GetPosForCoord(Coordinates);
             return center;
         } 
     }
@@ -125,10 +125,6 @@ public class MapTile
     {
         foreach (var item in occupations)
         {
-            if(item is IBaseEnemyOccupation enemy)
-            {
-
-            }
             item.SpawnOccupation(parent);
         }
     }
@@ -244,7 +240,12 @@ public class MapTile
         }
     }
 
-    protected float GetZPosForCoord(Vector2Int coord)
+    public static Vector3 GetPosForCoord(Vector2Int coord)
+    {
+        return new Vector3(GetXPosForCoord(coord),0,GetZPosForCoord(coord));
+    }
+
+    protected static float GetZPosForCoord(Vector2Int coord)
     {
         float anchorY = (HexagonWorld.HEX_Y_SPACING + HexagonWorld.SPACE_BETWEEN_HEXES) * coord.y;
 
@@ -254,7 +255,7 @@ public class MapTile
         return anchorY;
     }
 
-    protected float GetXPosForCoord(Vector2Int coord)
+    protected static float GetXPosForCoord(Vector2Int coord)
     {
         float anchorX = (HexagonWorld.HEX_X_SPACING + HexagonWorld.SPACE_BETWEEN_HEXES) * coord.x;
 

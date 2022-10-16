@@ -215,6 +215,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Retreat
       objectReference: {fileID: 0}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2895635476730478365}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BtnRetreat
+      objectReference: {fileID: 0}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PreBattleUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 7575709594887973229, guid: 36ec3ee0d85b3754bae4cae513f74c56,
         type: 3}
       propertyPath: m_Pivot.x
@@ -341,6 +361,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fight
       objectReference: {fileID: 0}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2895635476730478365}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BtnFight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PreBattleUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 7575709594887973229, guid: 36ec3ee0d85b3754bae4cae513f74c56,
         type: 3}
       propertyPath: m_Pivot.x
@@ -466,6 +506,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Sneak
+      objectReference: {fileID: 0}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2895635476730478365}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BtnSneak
+      objectReference: {fileID: 0}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PreBattleUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3312422807613602309, guid: 36ec3ee0d85b3754bae4cae513f74c56,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7575709594887973229, guid: 36ec3ee0d85b3754bae4cae513f74c56,
         type: 3}
@@ -731,7 +791,7 @@ PrefabInstance:
     - target: {fileID: 1726772810801066650, guid: 859ee5d126996074db5abd007048cf24,
         type: 3}
       propertyPath: m_Name
-      value: PreBattleUI
+      value: BattleUI
       objectReference: {fileID: 0}
     - target: {fileID: 1846710815625093760, guid: 859ee5d126996074db5abd007048cf24,
         type: 3}

@@ -24,6 +24,7 @@ public class GameTime
         {
             RespawnTempOccupations();
         }
+        GameManager.UnfreezeAllActiveActions(this);
     }
 
     public void StartGame()

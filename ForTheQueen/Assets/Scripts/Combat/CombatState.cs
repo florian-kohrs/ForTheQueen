@@ -19,8 +19,16 @@ public class CombatState : MonoBehaviourPun
 
     public SortedList<float, IBattleParticipant> actionTimeline;
 
+    public static BattleParticipants participants;
+
+    private void Start()
+    {
+        StartCombat(participants);
+    }
+
     public void StartCombat(BattleParticipants participants)
     {
+        battleMap.BeginBattle(participants);
         heroParticipants = participants.onPlayersSide.Select(p => p.GetParticipant()).ToList();
         enemyParticipants = participants.onEnemiesSide.Select(p => p.GetParticipant()).ToList();
         actionTimeline = new SortedList<float, IBattleParticipant>();

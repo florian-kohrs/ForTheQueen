@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class PreBattleUI : AdaptableInterfaceMask<MapMovementBattleInteruption>
 {
 
+    public static string BATTLE_SCENE_NAME = "BattleScene";
+
     public Transform rightPartyParent;
     public Transform leftPartyParent;
 
@@ -22,7 +24,7 @@ public class PreBattleUI : AdaptableInterfaceMask<MapMovementBattleInteruption>
     public void BtnSneak()
     {
         int seed = Random.Range(0, 99999999);
-        PunBroadcastCommunication.SafeRPC(nameof(PunBroadcastCommunication.SneakFromFight), RpcTarget.All, ()=>Sneak(seed),seed);
+        PunBroadcastCommunication.SafeRPC(nameof(PunBroadcastCommunication.SneakFromFight), RpcTarget.All, Sneak);
     }
 
     public void BtnRetreat()
@@ -33,17 +35,20 @@ public class PreBattleUI : AdaptableInterfaceMask<MapMovementBattleInteruption>
     public void Fight()
     {
         RemoveMask();
+        CombatState.participants = battleInteruption.participants;
+        PhotonNetwork.LoadLevel(BATTLE_SCENE_NAME);
     }
 
-    public void Sneak(int seed)
+    public void Sneak()
     {
+        RemoveMask();
         battleInteruption.mapMovement.ContinuePath();
     }
 
     public void Retreat()
     {
         RemoveMask();
-        battleInteruption.mapMovement.ContinuePath();
+        battleInteruption.mapMovement.Backstep();
     }
 
     protected void SetInteractableOfButtons()
