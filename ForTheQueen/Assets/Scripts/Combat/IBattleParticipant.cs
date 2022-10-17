@@ -5,6 +5,8 @@ using UnityEngine;
 public interface IBattleParticipant
 {
 
+    GameObject gameObject { get; }
+
     void StartTurn();
 
     int MaxHealth { get; }
@@ -13,8 +15,6 @@ public interface IBattleParticipant
 
     int Speed { get; }
 
-    GameObject SpawnCombatObject();
-     
     CombatState CombatState { set; }
 
 }

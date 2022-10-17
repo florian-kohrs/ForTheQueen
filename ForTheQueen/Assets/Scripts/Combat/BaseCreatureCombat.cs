@@ -20,12 +20,11 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
         set
         {
             stats.currentHealth = value;
+            
         }
     }
 
     public int Speed  => stats.speed;
-
-    public abstract GameObject SpawnCombatObject();
 
     public abstract void StartTurn();
 }

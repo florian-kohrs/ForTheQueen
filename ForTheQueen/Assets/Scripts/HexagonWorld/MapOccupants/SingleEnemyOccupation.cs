@@ -18,4 +18,10 @@ public class SingleEnemyOccupation : BaseEnemyOccupation<SingleEnemyOccupationSc
     public override void DisplayInPreFight(Transform parent)
     {
     }
+
+    protected override void ApplyParticipantStats(NPCBattleParticipant p)
+    {
+        p.inventory = OccupationObject.items;
+        p.stats = OccupationObject.stats;
+    }
 }

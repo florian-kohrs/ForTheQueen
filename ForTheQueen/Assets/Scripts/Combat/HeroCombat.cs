@@ -5,13 +5,21 @@ using UnityEngine;
 public class HeroCombat : InventoryCreatureCombat
 {
 
-    public override GameObject SpawnCombatObject()
+    protected Hero hero;
+
+    public Hero Hero
     {
-        throw new System.NotImplementedException();
+        get => hero;
+        set
+        {
+            hero = value;
+            stats = hero.heroStats;
+            inventory = hero.inventory;
+        }
     }
 
     public override void StartTurn()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Player started turn");
     }
 }

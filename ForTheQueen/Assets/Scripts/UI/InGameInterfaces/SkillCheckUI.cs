@@ -22,9 +22,9 @@ public class SkillCheckUI : AdaptableInterfaceMask<SkillCheck>
     public static readonly Color SUCCESS_COLOR = Color.green;
     public static readonly Color FAIL_COLOR = Color.red;
 
-    public const float SKILL_ANIMATION_SPEED = 0.666f;
+    public const float SKILL_ANIMATION_SPEED = 0.4f;
 
-    public const float IDLE_AFTER_ANIMATION = 0.333f;
+    public const float IDLE_AFTER_ANIMATION = 0.25f;
 
     public override bool BlockCameraMovement => false;
 

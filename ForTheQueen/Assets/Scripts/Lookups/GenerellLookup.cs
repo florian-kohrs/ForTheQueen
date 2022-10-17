@@ -9,6 +9,7 @@ public class GenerellLookup : MonoBehaviour
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         instance = this;
     }
 

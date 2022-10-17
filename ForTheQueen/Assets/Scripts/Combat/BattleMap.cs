@@ -20,37 +20,45 @@ public class BattleMap : MonoBehaviour
     protected IBattleParticipant[,] battleMapParticipant;
 
     //TODO: Let players choose their start position (save selection)
-    public void BeginBattle(BattleParticipants participants)
+    public ICollection<IBattleParticipant> BeginBattle(BattleParticipants participants)
     {
         CreateMap();
-
         battleMapParticipant = new IBattleParticipant[battleMapSize.x, battleMapSize.y];
 
         int i = 0;
         foreach (var item in participants.onPlayersSide)
         {
-            SetParticipantAt(battleMapSize.y - 2, 1 + i, item);
+            Transform t = SetParticipantAt(1 + i, battleMapSize.y - 2, item);
+            t.Rotate(0, 180, 0);
             i++;
         }
 
         i = 0;
         foreach (var item in participants.onEnemiesSide)
         {
-            SetParticipantAt(1, 1 + i, item);
+            SetParticipantAt(1 + i, 1, item);
             i++;
         }
+
+        List<IBattleParticipant> ps = new List<IBattleParticipant>();
+        foreach (var item in battleMapParticipant)
+        {
+            if (item != null)
+                ps.Add(item);
+        }
+        return ps;
     }
 
-    protected void SetParticipantAt(int x, int z, IBattleOccupation occ)
+    protected Transform SetParticipantAt(int x, int z, IBattleOccupation occ)
     {
-        SetParticipantAt(x,z,occ.GetParticipant());
+        return SetParticipantAt(x,z,occ.GetParticipant());
     }
 
-    protected void SetParticipantAt(int x, int z, IBattleParticipant part)
+    protected Transform SetParticipantAt(int x, int z, IBattleParticipant part)
     {
-        GameObject o = part.SpawnCombatObject();
-        o.transform.position = GetCenterPos(x, z);
+        part.gameObject.transform.position = GetCenterPos(x, z);
         battleMapParticipant[x, z] = part;
+        return part.gameObject.transform;
     }
 
     protected void CreateMap()

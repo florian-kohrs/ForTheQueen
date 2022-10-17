@@ -573,3 +573,31 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4036763662915857631}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2912094714053972292 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1183498507658935707, guid: 3fc0dfa0f6a90fe4e9a9d0457a52e3e7,
+    type: 3}
+  m_PrefabInstance: {fileID: 4036763662915857631}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1614244267289776466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2912094714053972292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 760b3fed095ab7a4e984b353de05ece5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stats:
+    level: 0
+    agility: 0
+    strength: 0
+    intelligence: 0
+    talent: 0
+    speed: 0
+    dodge: 0
+    vitality: 0
+    currentHealth: 0

@@ -11,11 +11,9 @@ public class CombatState : MonoBehaviourPun
 
     public BattleMap battleMap;
 
-    public List<IBattleParticipant> heroParticipants;
+    public ICollection<IBattleParticipant> battleParticipants;
 
-    public List<IBattleParticipant> enemyParticipants;
-
-    protected int TotalParticipants => heroParticipants.Count + enemyParticipants.Count;
+    protected int TotalParticipants => battleParticipants.Count;
 
     public SortedList<float, IBattleParticipant> actionTimeline;
 
@@ -28,22 +26,21 @@ public class CombatState : MonoBehaviourPun
 
     public void StartCombat(BattleParticipants participants)
     {
-        battleMap.BeginBattle(participants);
-        heroParticipants = participants.onPlayersSide.Select(p => p.GetParticipant()).ToList();
-        enemyParticipants = participants.onEnemiesSide.Select(p => p.GetParticipant()).ToList();
+        battleParticipants = battleMap.BeginBattle(participants);
         actionTimeline = new SortedList<float, IBattleParticipant>();
         CreateTimeLine(0);
+        NextTurn();
     }
 
     protected void CreateTimeLine(int startIndex)
     {
         float keyExtra = 0f;
-        foreach (IBattleParticipant participant in heroParticipants.Concat(enemyParticipants))
+        foreach (IBattleParticipant participant in battleParticipants)
         {
             participant.CombatState = this;
             float turnCost = CombatSpeedCost(participant);
            
-            for (int i = 0; i < COMBAT_ROUND_CHUNK_SIZE; i++)
+            for (int i = 1; i < COMBAT_ROUND_CHUNK_SIZE; i++)
             {
                 actionTimeline.Add(turnCost * (i + startIndex) + keyExtra, participant);
             }
@@ -55,18 +52,18 @@ public class CombatState : MonoBehaviourPun
 
     public void EndTurn()
     {
-        Broadcast.SafeRPC(photonView, nameof(EndTurnRPC), RpcTarget.All, EndTurn);
+        Broadcast.SafeRPC(photonView, nameof(EndTurnRPC), RpcTarget.All, EndTurnRPC);
     }
 
     [PunRPC]
     protected void EndTurnRPC()
     {
-
+        NextTurn();
     }
 
     protected void NextTurn()
     {
-        IBattleParticipant b = actionTimeline[0];
+        IBattleParticipant b = actionTimeline.Values[0];
         actionTimeline.RemoveAt(0);
         b.StartTurn();
     }

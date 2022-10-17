@@ -62,4 +62,10 @@ public class AssetMenue : MonoBehaviour
         AssetCreator.CreateAsset<SingleEnemyOccupationScripableObject>(BASE_FOLDER_NAME + nameof(SingleEnemyOccupationScripableObject));
     }
 
+    [MenuItem("Assets/Create/Custom/Combat/Action")]
+    public static void CombatAction()
+    {
+        AssetCreator.CreateAsset<CombatAction>(BASE_FOLDER_NAME + nameof(CombatAction));
+    }
+
 }

@@ -43,15 +43,17 @@ public class MapMovementAnimation : MapAnimation
         {
             nextTile = HexagonWorld.MapTileFromIndex(path[currentPathIndex]);
             yield return MoveToNextTile(nextTile);
+            previousTile.RemoveTileOccupation(movingHero);
+            nextTile.AddTileOccupation(movingHero);
             nextTile.OnPlayerEntered(movingHero, this);
             movingHero.restMovementInTurn -= 1;
+            previousTile = nextTile;
         }
         if(currentPathIndex == path.Count)
         {
             nextTile.OnPlayerReachedFieldAsTarget(movingHero);
         }
-        nextTile.AddTileOccupation(movingHero);
-        previousTile.RemoveTileOccupation(movingHero);
+        
         movingHero.interuptMovement = false;
         EndAnimation();
     }
