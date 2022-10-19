@@ -44,6 +44,18 @@ public class SkillCheckUI : AdaptableInterfaceMask<SkillCheck>
         }
     }
 
+    public void UseFocus()
+    {
+        Heroes.GetCurrentActiveHero().UseFocusOnSkillCheck(currentSkillCheck);
+        AdaptUI(currentSkillCheck);
+    }
+
+    public void RemoveFocus()
+    {
+        Heroes.GetCurrentActiveHero().RegainSkillCheckFocus(currentSkillCheck);
+        AdaptUI(currentSkillCheck);
+    }
+
     protected void SpawnMarker(bool usedFocus)
     {
         GameObject skillCheckMarker = Instantiate(skillCheckPrefab, skillCheckParent);
@@ -64,7 +76,7 @@ public class SkillCheckUI : AdaptableInterfaceMask<SkillCheck>
     {
         foreach (var item in skillCheckInstances)
         {
-            Destroy(item);
+            Destroy(item.gameObject);
         }
     }
 

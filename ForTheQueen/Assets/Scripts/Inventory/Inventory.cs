@@ -16,6 +16,8 @@ public class Inventory
     [System.NonSerialized]
     public System.Action OnInventoryChanged;
 
+    protected virtual void OnInventoryChange() { }
+
     public void AddItems(IEnumerable<ItemContainer> items)
     {
         foreach (ItemContainer i in items)
@@ -46,6 +48,7 @@ public class Inventory
         {
             items.Add(item,count);
         }
+        OnInventoryChange();
         OnInventoryChanged?.Invoke();
     }
 
@@ -115,14 +118,6 @@ public class Inventory
         items.TryGetValue(i, out itemCount);
 
         return itemCount >= count;
-    }
-
-    public void AddItems(IEnumerable<ItemContainer> items, int count = 1)
-    {
-        foreach (ItemContainer i in items)
-        {
-            AddItem(i);
-        }
     }
 
 

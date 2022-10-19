@@ -27,6 +27,10 @@ public class SkillCheck
 
     public int numberSkillChecks;
 
+    public bool canFocus;
+
+    public bool CanAddFocus => canFocus && numberFocusUsed < numberSkillChecks && Heroes.GetCurrentActiveHero().CanSpendFocus;
+
     public CreatureStats stats;
 
 }

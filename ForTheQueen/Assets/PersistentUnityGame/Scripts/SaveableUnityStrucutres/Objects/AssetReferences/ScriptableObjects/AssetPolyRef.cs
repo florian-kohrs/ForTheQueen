@@ -10,6 +10,11 @@ public class AssetPolyRef<T> : AssetReference, IAssetRefMaintainer where T : Obj
     
     public AssetPolyRef() : base() { }
 
+    public AssetPolyRef(T t)
+    {
+        runtimeRef = t;
+    }
+
     protected AssetPolyRef(SerializationInfo info, StreamingContext context) : base(info, context) { }
     
     [SerializeField]

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5f9bc13bab5c2748859cef35bdd11c9, type: 3}
+  m_Name: 0c3d873c-55a6-4bd8-b924-59298041eee7
+  m_EditorClassIdentifier: 
+  assetRef:
+    relativePathFromResource: 
+    assetName: 
+    assetExtension: 
+    wasAlreadyValidated: 0
+    runtimeRef: {fileID: 0}
+  icon: {fileID: 21300000, guid: 1f93bf544e955bc47b0952de7043a15e, type: 3}
+  itemName: Short Sword
+  itemDescription: A not so long sword
+  value: 12
+  canBeSoled: 1
+  prefab: {fileID: 8331834134780772017, guid: 97bf8a29881c0ec459d5e56cc61558b5, type: 3}
+  equipPosition: {x: 0, y: 0, z: 0}
+  equipEulerAngle: {x: 0, y: 0, z: 0}
+  equipScale: {x: 1, y: 1, z: 1}
+  handling: 0
+  actions:
+  - {fileID: 0}

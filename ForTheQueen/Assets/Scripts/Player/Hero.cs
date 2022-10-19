@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Hero : ITileOccupation, IBattleOccupation
+public class Hero : ITileOccupation, IBattleOccupation, IItemEquipper
 {
 
     public Hero() 
@@ -19,7 +19,7 @@ public class Hero : ITileOccupation, IBattleOccupation
 
     public int heroIndex;
 
-    public Inventory inventory;
+    public EquipableInventory inventory;
 
     public CreatureStats heroStats;
 
@@ -65,6 +65,28 @@ public class Hero : ITileOccupation, IBattleOccupation
     [NonSerialized]
     public bool interuptMovement;
 
+    protected int maxFocus;
+
+    public int MaxFocus => maxFocus;
+
+    protected int currentFocus;
+
+    public int CurrentFocus => currentFocus;
+
+    public void UseFocusOnSkillCheck(SkillCheck check)
+    {
+        currentFocus--;
+        check.numberFocusUsed++;
+    }
+
+    public void RegainSkillCheckFocus(SkillCheck check)
+    {
+        currentFocus += check.numberFocusUsed;
+        check.numberFocusUsed = 0;
+    }
+
+    public bool CanSpendFocus => currentFocus > 0;
+
     public bool CanBeCrossed => true;
 
     public bool CanBeEntered => true;
@@ -78,6 +100,10 @@ public class Hero : ITileOccupation, IBattleOccupation
     public bool HasSupportRange => false;
 
     public bool HelpsInFight => true;
+
+    public Transform HelmetParent => heroObject.transform;
+
+    public Transform WeaponParent => heroObject.transform;
 
     public void StartHerosTurn()
     {
@@ -160,5 +186,15 @@ public class Hero : ITileOccupation, IBattleOccupation
         HeroCombat h = hero.GetComponent<HeroCombat>();
         h.Hero = this;
         return h;
+    }
+
+    public void EquipHelmet(GameObject g)
+    {
+        
+    }
+
+    public void EquipWeapon(GameObject g)
+    {
+        
     }
 }

@@ -10,6 +10,6 @@ public class InventoryItem : SaveableScriptableObject
     public string itemName;
     public string itemDescription;
     public int value;
-    public bool canBeSoled;
+    public bool canBeSoled = true;
     
 }

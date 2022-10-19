@@ -17,4 +17,5 @@ public class GenerellLookup : MonoBehaviour
 
     public SpriteLookup spriteLookup;
 
+
 }
