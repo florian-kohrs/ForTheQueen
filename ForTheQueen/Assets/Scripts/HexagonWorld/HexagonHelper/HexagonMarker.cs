@@ -25,7 +25,7 @@ public class HexagonMarker : MonoBehaviour
 
     public MarkerMapping MarkHexagons(IEnumerable<Vector2Int> tiles, GameObject markerPrefab, MarkerMapping mapping = null)
     {
-        return MarkHexagons(HexagonWorld.MapTilesFromIndices(tiles), markerPrefab, mapping);
+        return MarkHexagons(HexagonWorld.instance.MapTilesFromIndices(tiles), markerPrefab, mapping);
     }
 
     public MarkerMapping MarkHexagons(IEnumerable<MapTile> tiles, GameObject markerPrefab, MarkerMapping mapping = null)

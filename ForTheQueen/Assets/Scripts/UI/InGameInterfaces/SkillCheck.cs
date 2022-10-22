@@ -6,13 +6,15 @@ using UnityEngine;
 public class SkillCheck
 {
 
-    public SkillCheck() { }
+    public SkillCheck(Hero h) 
+    {
+        hero = h;
+    }
 
     public static SkillCheck GetMovementSkillCheckForHero(Hero h)
     {
-        SkillCheck skillCheck = new SkillCheck();
+        SkillCheck skillCheck = new SkillCheck(h);
         skillCheck.skill = Skill.Speed;
-        skillCheck.stats = h.heroStats;
         TileBiom b = h.MapTile.kingdomOfMapTile.KingdomBiom;
         skillCheck.numberFocusUsed = b.guaranteedMovement;
         skillCheck.numberSkillChecks = b.guaranteedMovement + b.maxExtraMovement;
@@ -29,8 +31,10 @@ public class SkillCheck
 
     public bool canFocus;
 
-    public bool CanAddFocus => canFocus && numberFocusUsed < numberSkillChecks && Heroes.GetCurrentActiveHero().CanSpendFocus;
+    public Hero hero;
 
-    public CreatureStats stats;
+    public bool CanAddFocus => canFocus && numberFocusUsed < numberSkillChecks && hero.CanSpendFocus;
+
+    public CreatureStats Stats => hero.heroStats;
 
 }

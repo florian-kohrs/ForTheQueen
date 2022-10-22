@@ -9,12 +9,14 @@ public class BattleParticipants
 
     public static int MAX_COMBAT_SIZE = 3;
 
+    public BattleParticipants() { }
+
     public BattleParticipants(Vector2Int startTileCoord) :
       this(HexagonWorld.MapTileFromIndex(startTileCoord)) { }
 
     public BattleParticipants(MapTile startTile) : 
         this(startTile, 
-            HexagonWorld.MapTilesFromIndices(
+            HexagonWorld.instance.MapTilesFromIndices(
                 HexagonPathfinder.GetAccessableNeighboursInDistance(startTile.Coordinates, startTile.kingdomOfMapTile.KingdomBiom.fightAssistRange, false)))
     { }
 

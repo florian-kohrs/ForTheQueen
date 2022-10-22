@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleMap : MonoBehaviour
+public class BattleMap : HexagonGrid<IBattleParticipant>
 {
 
     public const int CENTER_AREA = 2;
@@ -18,6 +18,10 @@ public class BattleMap : MonoBehaviour
     protected GameObject battleMapTilePrefab;
 
     protected IBattleParticipant[,] battleMapParticipant;
+
+    public override Vector2Int Size => battleMapSize;
+
+    public override IBattleParticipant[,] GridData => battleMapParticipant;
 
     //TODO: Let players choose their start position (save selection)
     public ICollection<IBattleParticipant> BeginBattle(BattleParticipants participants)
@@ -76,9 +80,9 @@ public class BattleMap : MonoBehaviour
     protected void SpawnTileAt(int x, int z)
     {
         GameObject t = Instantiate(battleMapTilePrefab, parent);
-        t.transform.position = MapTile.GetPosForCoord(new Vector2Int(x, z));
+        t.transform.position = GetCenterPos(x, z);
     }
 
-    public Vector3 GetCenterPos(int x, int z) => MapTile.GetPosForCoord(new Vector2Int(x, z));
+    public Vector3 GetCenterPos(int x, int z) => MapTile.GetCenterPosForCoord(new Vector2Int(x, z), SpaceBetweenHexes, HexXSpacing, HexYSpacing);
 
 }

@@ -106,7 +106,7 @@ public class MapTile
         get
         {
             if (center == default)
-                center = GetPosForCoord(Coordinates);
+                center = GetCenterPosForCoord(Coordinates);
             return center;
         } 
     }
@@ -176,15 +176,15 @@ public class MapTile
         float centerX = center.x;
         float centerY = center.y;
         float centerZ = center.z;
-        Vector2 smallStep = VectorExtension.RotateVector(new Vector2(-HexagonWorld.HEX_RADIUS, 0), Mathf.Deg2Rad * 60);
-        Vector2 largeStep = VectorExtension.RotateVector(new Vector2(-HexagonWorld.HEX_RADIUS, 0), Mathf.Deg2Rad * 120);
+        Vector2 smallStep = VectorExtension.RotateVector(new Vector2(-HexagonWorld.instance.HexRadius, 0), Mathf.Deg2Rad * 60);
+        Vector2 largeStep = VectorExtension.RotateVector(new Vector2(-HexagonWorld.instance.HexRadius, 0), Mathf.Deg2Rad * 120);
 
-        Vector3 left = new Vector3(centerX - HexagonWorld.HEX_RADIUS, centerY, centerZ);
+        Vector3 left = new Vector3(centerX - HexagonWorld.instance.HexRadius, centerY, centerZ);
         ///swap lefts and rights to be correct. wrong rotate method?
         Vector3 topLeft = new Vector3(centerX - smallStep.x, centerY, centerZ - smallStep.y);
         Vector3 topRight = new Vector3(centerX - largeStep.x, centerY, centerZ - largeStep.y);
 
-        Vector3 right = new Vector3(centerX + HexagonWorld.HEX_RADIUS, centerY, centerZ);
+        Vector3 right = new Vector3(centerX + HexagonWorld.instance.HexRadius, centerY, centerZ);
         Vector3 botRight = new Vector3(centerX + smallStep.x, centerY, centerZ + smallStep.y);
         Vector3 botLeft = new Vector3(centerX + largeStep.x, centerY, centerZ + largeStep.y);
 
@@ -240,24 +240,32 @@ public class MapTile
         }
     }
 
-    public static Vector3 GetPosForCoord(Vector2Int coord)
+    public static Vector3 GetCenterPosForCoord(Vector2Int coord, float spaceBetweenHexes, float xSpacing, float ySpacing)
     {
-        return new Vector3(GetXPosForCoord(coord),0,GetZPosForCoord(coord));
+        return new Vector3(GetXPosForCoord(coord, spaceBetweenHexes, xSpacing, ySpacing), 0, GetZPosForCoord(coord, spaceBetweenHexes, xSpacing, ySpacing));
     }
 
-    protected static float GetZPosForCoord(Vector2Int coord)
+    public static Vector3 GetCenterPosForCoord(Vector2Int coord)
     {
-        float anchorY = (HexagonWorld.HEX_Y_SPACING + HexagonWorld.SPACE_BETWEEN_HEXES) * coord.y;
+        return new Vector3(
+            GetXPosForCoord(coord, HexagonWorld.instance.SpaceBetweenHexes, HexagonWorld.instance.HexXSpacing, HexagonWorld.instance.HexYSpacing),
+            0,
+            GetZPosForCoord(coord, HexagonWorld.instance.SpaceBetweenHexes, HexagonWorld.instance.HexXSpacing, HexagonWorld.instance.HexYSpacing));
+    }
+
+    protected static float GetZPosForCoord(Vector2Int coord, float spaceBetweenHexes, float xSpacing, float ySpacing)
+    {
+        float anchorY = (ySpacing + spaceBetweenHexes) * coord.y;
 
         if (coord.x % 2 != 0)
-            anchorY += HexagonWorld.HEX_Y_SPACING / 2;
+            anchorY += ySpacing / 2;
 
         return anchorY;
     }
 
-    protected static float GetXPosForCoord(Vector2Int coord)
+    protected static float GetXPosForCoord(Vector2Int coord, float spaceBetweenHexes, float xSpacing, float ySpacing)
     {
-        float anchorX = (HexagonWorld.HEX_X_SPACING + HexagonWorld.SPACE_BETWEEN_HEXES) * coord.x;
+        float anchorX = (xSpacing + spaceBetweenHexes) * coord.x;
 
         return anchorX;
     }

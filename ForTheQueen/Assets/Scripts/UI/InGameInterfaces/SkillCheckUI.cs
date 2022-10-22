@@ -46,13 +46,13 @@ public class SkillCheckUI : AdaptableInterfaceMask<SkillCheck>
 
     public void UseFocus()
     {
-        Heroes.GetCurrentActiveHero().UseFocusOnSkillCheck(currentSkillCheck);
+        Heroes.GetHeroWithActiveTurn().UseFocusOnSkillCheck(currentSkillCheck);
         AdaptUI(currentSkillCheck);
     }
 
     public void RemoveFocus()
     {
-        Heroes.GetCurrentActiveHero().RegainSkillCheckFocus(currentSkillCheck);
+        Heroes.GetHeroWithActiveTurn().RegainSkillCheckFocus(currentSkillCheck);
         AdaptUI(currentSkillCheck);
     }
 
@@ -98,7 +98,7 @@ public class SkillCheckUI : AdaptableInterfaceMask<SkillCheck>
         {
             yield return new WaitForSeconds(SKILL_ANIMATION_SPEED);
             int r = rand.Next(0, 100);
-            bool success = r < currentSkillCheck.stats.GetStatsOfSkill(currentSkillCheck.skill);
+            bool success = r < currentSkillCheck.Stats.GetStatsOfSkill(currentSkillCheck.skill);
             if(success)
             {
                 skillCheckInstances[i].color = SUCCESS_COLOR;

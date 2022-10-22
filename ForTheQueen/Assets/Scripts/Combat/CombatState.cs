@@ -19,9 +19,31 @@ public class CombatState : MonoBehaviourPun
 
     public static BattleParticipants participants;
 
+    public BattleParticipants testParticipants = new BattleParticipants();
+
+    public SingleEnemyOccupationScripableObject enemy;
+
+    protected IBattleParticipant activeParticipant;
+
     private void Start()
     {
+        if (participants == null)
+        {
+            GameInstanceData.CurrentGameInstanceData.ShuffleGameInstanceSeed();
+            EnterTest();
+        }
         StartCombat(participants);
+    }
+
+    protected void EnterTest()
+    {
+        Heroes.CreateHeroes((HeroClass)GenerellLookup.instance.customizationLookup.classes.list[0]);
+        testParticipants = new BattleParticipants();
+        testParticipants.onPlayersSide = new List<IBattleOccupation>();
+        testParticipants.onEnemiesSide = new List<IBattleOccupation>();
+        testParticipants.onPlayersSide.AddRange(Heroes.AllHeroes);
+        testParticipants.onEnemiesSide.Add(new SingleEnemyOccupation(enemy));
+        participants = testParticipants;
     }
 
     public void StartCombat(BattleParticipants participants)
@@ -63,9 +85,11 @@ public class CombatState : MonoBehaviourPun
 
     protected void NextTurn()
     {
-        IBattleParticipant b = actionTimeline.Values[0];
+        if (activeParticipant != null)
+            activeParticipant.OnTurnEnded();
+        activeParticipant = actionTimeline.Values[0];
         actionTimeline.RemoveAt(0);
-        b.StartTurn();
+        activeParticipant.StartTurn();
     }
 
 }

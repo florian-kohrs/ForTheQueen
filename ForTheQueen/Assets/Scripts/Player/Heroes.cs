@@ -15,9 +15,11 @@ public class Heroes
 
     protected static Hero[] heroes = new Hero[NUMBER_HEROES];
 
+    public static IEnumerable<Hero> AllHeroes => heroes;
+
     public static Hero GetHeroFromID(int id) => heroes[id];
 
-    public static Hero GetCurrentActiveHero()
+    public static Hero GetHeroWithActiveTurn()
     {
         return heroes.Where(h => h.IsHerosTurn).FirstOrDefault();
     }
@@ -32,20 +34,31 @@ public class Heroes
     public static void SpawnHeros(MapTile startTile)
     {
         if (heroes[0] == null)
-            CreateHeroes();
+            CreateHeroes((HeroClass)GenerellLookup.instance.customizationLookup.classes.list[0]);
         foreach (var hero in heroes)
         {
             startTile.AddTileOccupation(hero);
         }
     }
 
-    protected static void CreateHeroes()
+    public static void CreateHeroes()
     {
         Reset();
         GameInstanceData.CurrentGameInstanceData.ShuffleGameInstanceSeed();
         for (int i = 0; i < NUMBER_HEROES; i++)
         {
             heroes[i] = new Hero() { heroIndex = i, heroStats = new CreatureStats() { speed = 60 } };
+        }
+    }
+
+    public static void CreateHeroes(HeroClass heroClass)
+    {
+        Reset();
+        //GameInstanceData.CurrentGameInstanceData.ShuffleGameInstanceSeed();
+        for (int i = 0; i < NUMBER_HEROES; i++)
+        {
+            heroes[i] = new Hero() { heroIndex = i };
+            heroClass.Apply(null, heroes[i]);
         }
     }
 

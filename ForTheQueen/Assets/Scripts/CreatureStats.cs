@@ -6,21 +6,30 @@ using UnityEngine;
 public class CreatureStats
 {
 
+    [Range(0,95)]
     public int level;
 
+    [Range(0, 95)]
     public int agility;
 
+    [Range(0, 95)]
     public int strength;
 
+    [Range(0, 95)]
     public int intelligence;
 
+    [Range(0, 95)]
     public int talent;
 
+    [Range(0, 95)]
     public int speed;
 
+    [Range(0, 95)]
+    public int vitality;
+
+    [Range(0, 95)]
     public int dodge;
 
-    public int vitality;
 
     public int currentHealth;
 

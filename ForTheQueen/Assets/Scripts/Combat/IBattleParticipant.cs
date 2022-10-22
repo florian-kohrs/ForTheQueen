@@ -9,6 +9,8 @@ public interface IBattleParticipant
 
     void StartTurn();
 
+    void OnTurnEnded();
+
     int MaxHealth { get; }
 
     int CurrentHealth { get; set; }

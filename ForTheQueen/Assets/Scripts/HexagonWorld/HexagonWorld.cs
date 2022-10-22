@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
-public class HexagonWorld : MonoBehaviourPun
+public class HexagonWorld : HexagonGrid<MapTile>
 {
 
     //idea: For the king mix with legends of andor bord game, with maybe settlement management from mount and blade
@@ -16,22 +16,6 @@ public class HexagonWorld : MonoBehaviourPun
     public const int WORLD_WIDTH = 100;
 
     public const int WORLD_HEIGHT = 100;
-
-    public const float SPACE_BETWEEN_HEXES = 0f;
-
-    public const float HEX_DIAMETER = 10f;
-
-    public const float WORLD_TOTAL_WIDTH = WORLD_WIDTH * HEX_DIAMETER;
-    public const float WORLD_TOTAL_HEIGHT = WORLD_HEIGHT * HEX_DIAMETER;
-
-    public static readonly float HEX_Y_SPACING = Mathf.Sin(Mathf.Deg2Rad * 60) * HEX_DIAMETER;
-    public static readonly float HEX_X_SPACING = Mathf.Cos(Mathf.Deg2Rad * 60) * HEX_DIAMETER * 1.5f;
-
-    public const float HEX_RADIUS = HEX_DIAMETER / 2;
-
-    public static readonly float HEX_SMALL_SQR_RADIUS = Mathf.Pow(HEX_Y_SPACING / 2,2);
-
-    public const float TOTAL_HEX_SPACE = SPACE_BETWEEN_HEXES + HEX_DIAMETER;
 
     public const float TILE_IS_WATER_BELOW_VALUE = 40;
 
@@ -53,12 +37,39 @@ public class HexagonWorld : MonoBehaviourPun
 
     public Transform tileMarkerParent;
 
+    public static HexagonWorld instance;
+
+    public static float GetWorldTotalWidth => instance.WorldTotalWidth;
+    public static float GetWorldTotalHeigth => instance.WorldTotalHeight;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    public static MapTile MapTileFromIndex(Vector2Int v2)
+    {
+        return World[v2.x, v2.y];
+    }
+
+    public static MapTile MapTileFromIndex(int x, int y)
+    {
+        return World[x, y];
+    }
+
+
     public HexagonMarker marker;
 
     [SerializeField]
-    protected MouseToHoveredMapTile mouseMapHover;
+    protected MouseWorldEvents mouseMapHover;
 
     public AssetPolyRef<TileBiom>[] saveableBioms;
+
+
+    public override Vector2Int Size => new Vector2Int(WORLD_WIDTH, WORLD_HEIGHT);
+
+    public override MapTile[,] GridData => World;
+
 
     //protected TileBiom[] bioms;
 
@@ -269,73 +280,6 @@ public class HexagonWorld : MonoBehaviourPun
         return point.x >= 0 && point.y >= 0 && point.x < WORLD_WIDTH && point.y < WORLD_HEIGHT;
     }
 
-    public IEnumerable<MapTile> GetAdjencentTiles(Vector2Int coord, bool includeCenter = false)
-    {
-        return GetAdjencentTiles(MapTileFromIndex(coord),includeCenter);
-    }
-
-    public IEnumerable<MapTile> GetAdjencentTiles(MapTile center, bool includeCenter = false)
-    {
-        if (includeCenter)
-            yield return center;
-
-        foreach (MapTile tile in MapTilesFromIndices(GetInBoundsNeighbours(center.Coordinates)))
-            yield return tile;
-    }
-
-    public static Maybe<MapTile> GetWorldTileFromPosition(Vector3 pos)
-    {
-        Vector2Int guessedIndex = GetNaiveArrayIndexFromPos(pos);
-        List<Vector2Int> neighbours = GetInBoundsNeighbours(guessedIndex);
-        neighbours.Add(guessedIndex);
-        Maybe<Vector2Int> foundIndex = new Maybe<Vector2Int>();
-        foreach (var index in neighbours)
-        {
-            if(IsInBounds(index) && IsPointInsideHexagonSimple(index, pos))
-            {
-                if(foundIndex.HasValue)
-                {
-                    Debug.LogWarning("Mouse hovered detected over multiple fields. This should not happen.");
-                }
-                foundIndex.Value = index;
-            }
-        }
-        return foundIndex.ApplyValueToFunction(MapTileFromIndex);
-    }
-
-    public static MapTile MapTileFromIndex(Vector2Int index) => World[index.x, index.y];    
-    public static MapTile MapTileFromIndex(int x, int y) => World[x, y];    
-
-    public static IEnumerable<MapTile> MapTilesFromIndices(IEnumerable<Vector2Int> indices)
-    {
-        return indices.Select(MapTileFromIndex);
-    }
-
-    protected static Vector2Int GetNaiveArrayIndexFromPos(Vector3 pos)
-    {
-        //pos.x -= HEX_RADIUS;
-        //pos.z -= HEX_RADIUS;
-        int coordX = (int)(pos.x / (HexagonWorld.HEX_X_SPACING + HexagonWorld.SPACE_BETWEEN_HEXES));
-
-        if (coordX % 2 != 0)
-            pos.z -= HexagonWorld.HEX_Y_SPACING / 2;
-
-        int coordY = (int)(pos.z / (HexagonWorld.HEX_Y_SPACING + HexagonWorld.SPACE_BETWEEN_HEXES));
-
-        return new Vector2Int(coordX,coordY);
-    }
-
-    /// <summary>
-    /// checks if distance is within circle lying inside hexagon
-    /// </summary>
-    /// <param name="point"></param>
-    /// <returns></returns>
-    public static bool IsPointInsideHexagonSimple(Vector2Int coord, Vector3 point)
-    {
-        Vector3 relativePos = point - MapTileFromIndex(coord).CenterPos;
-        float sqrDist = Vector3.SqrMagnitude(relativePos);
-        return sqrDist < HEX_SMALL_SQR_RADIUS;
-    }
 
     //public bool IsPointInsideHexagon(Vector3 point)
     //{
@@ -348,10 +292,6 @@ public class HexagonWorld : MonoBehaviourPun
     //protected bool IsPointInside
 
 
-    public static List<Vector2Int> GetInBoundsNeighbours(Vector2Int field)
-    {
-        return HexagonPathfinder.GetCircumjacent(field, IsInBounds).ToList();
-    }
-
+ 
 
 }

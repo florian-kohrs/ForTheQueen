@@ -5,6 +5,6 @@ using UnityEngine;
 public abstract class InventoryCreatureCombat : BaseCreatureCombat
 {
 
-    public Inventory inventory;
+    public EquipableInventory inventory;
 
 }

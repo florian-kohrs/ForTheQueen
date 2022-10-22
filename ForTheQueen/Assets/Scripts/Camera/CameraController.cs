@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         screenSize = new Vector2(Screen.width, Screen.height);
-        maxCameraPos = new Vector2(HexagonWorld.WORLD_TOTAL_WIDTH, HexagonWorld.WORLD_TOTAL_HEIGHT);
+        maxCameraPos = new Vector2(HexagonWorld.GetWorldTotalWidth, HexagonWorld.GetWorldTotalHeigth);
     }
 
     void Update()

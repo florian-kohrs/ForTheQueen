@@ -9,7 +9,15 @@ public class SkillCheckButton : MultiClickButton
 
     public SkillCheck skillCheck;
 
-    protected Hero CurrentHero => Heroes.GetCurrentActiveHero();
+    protected Hero hero;
+    public Hero Hero
+    {
+        set
+        {
+            hero = value;
+            interactable = hero.IsMine;
+        }
+    }
 
     public Action leftClickAction;
 
@@ -20,7 +28,7 @@ public class SkillCheckButton : MultiClickButton
     private void Start()
     {
         activated = false;
-        leftClick.AddListener(()=> { activated = true; LeftClick(); });
+        leftClick.AddListener(()=> LeftClick());
         rightClick.AddListener(() => UseFocus());
         onBeginHover.AddListener(() => OnBeginnHover());
         onEndHover.AddListener(() => OnEndHover());
@@ -28,15 +36,16 @@ public class SkillCheckButton : MultiClickButton
 
     public void LeftClick()
     {
-        if (activated || !Player.IsMyTurn)
+        if (activated)
             return;
 
         leftClickAction();
+        activated = true;
     }
 
     public void UseFocus()
     {
-        if (activated || !Player.IsMyTurn)
+        if (activated)
             return;
 
         if (skillCheck.CanAddFocus) //add networking to button interactions
@@ -45,7 +54,7 @@ public class SkillCheckButton : MultiClickButton
 
     public void OnBeginnHover()
     {
-        if (activated || !Player.IsMyTurn)
+        if (activated)
             return;
 
         InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(skillCheck);
@@ -53,7 +62,7 @@ public class SkillCheckButton : MultiClickButton
 
     public void OnEndHover()
     {
-        if (activated || !Player.IsMyTurn)
+        if (activated)
             return;
 
         InterfaceController.Instance.RemoveMask<SkillCheckUI>();

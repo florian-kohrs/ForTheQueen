@@ -12,6 +12,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HexagonUiSkillCheckButton
       objectReference: {fileID: 0}
+    - target: {fileID: 3647372312387738660, guid: b9bb54068b3fcda4fb90b2619eace5e2,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7900903775920553491, guid: b9bb54068b3fcda4fb90b2619eace5e2,
         type: 3}
       propertyPath: m_Pivot.x
@@ -117,21 +122,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8312004253153544595, guid: b9bb54068b3fcda4fb90b2619eace5e2,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9bb54068b3fcda4fb90b2619eace5e2, type: 3}
---- !u!1 &116390976953044963 stripped
+--- !u!1 &5589977155249087872 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 4618266273920563754, guid: b9bb54068b3fcda4fb90b2619eace5e2,
+  m_CorrespondingSourceObject: {fileID: 871858656218501193, guid: b9bb54068b3fcda4fb90b2619eace5e2,
     type: 3}
   m_PrefabInstance: {fileID: 4722833789350016457}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1633492416600745430
+--- !u!114 &3154554114308473762
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 116390976953044963}
+  m_GameObject: {fileID: 5589977155249087872}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1751fd84318b494e87054feb6471521, type: 3}
@@ -155,14 +165,53 @@ MonoBehaviour:
     numberFocusUsed: 0
     numberSkillChecks: 0
     canFocus: 0
-    stats:
+    hero:
+      heroIndex: 0
+      heroStats:
+        level: 0
+        agility: 0
+        strength: 0
+        intelligence: 0
+        talent: 0
+        speed: 0
+        vitality: 0
+        dodge: 0
+        currentHealth: 0
+      customization:
+        raceId: 0
+        classId: 0
+        beardId: 0
+        otherCosmeticId: 0
+        skinColorId: 0
+        designIsSet: 0
+        customizationDone: 0
+      mapTile:
+        canBeEntered: 1
+        discovered: 0
+        canBePermanantlyOccupied: 1
+      restMovementInTurn: 0
+  hero:
+    heroIndex: 0
+    heroStats:
       level: 0
       agility: 0
       strength: 0
       intelligence: 0
       talent: 0
       speed: 0
-      dodge: 0
       vitality: 0
+      dodge: 0
       currentHealth: 0
-  multiClick: {fileID: 0}
+    customization:
+      raceId: 0
+      classId: 0
+      beardId: 0
+      otherCosmeticId: 0
+      skinColorId: 0
+      designIsSet: 0
+      customizationDone: 0
+    mapTile:
+      canBeEntered: 1
+      discovered: 0
+      canBePermanantlyOccupied: 1
+    restMovementInTurn: 0

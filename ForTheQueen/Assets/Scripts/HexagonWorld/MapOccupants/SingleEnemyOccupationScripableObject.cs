@@ -11,6 +11,6 @@ public class SingleEnemyOccupationScripableObject : BaseEnemyOccupationScriptabl
 
     public bool hasSupportRange;
 
-    public Inventory items;
+    public EquipableInventory items;
 
 }

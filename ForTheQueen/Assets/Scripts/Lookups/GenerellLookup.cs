@@ -9,8 +9,13 @@ public class GenerellLookup : MonoBehaviour
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-        instance = this;
+        if (instance != null)
+            Destroy(this);
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            instance = this;
+        }
     }
 
     public CustomizationLookup customizationLookup;

@@ -27,4 +27,6 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
     public int Speed  => stats.speed;
 
     public abstract void StartTurn();
+
+    public virtual void OnTurnEnded() { }
 }

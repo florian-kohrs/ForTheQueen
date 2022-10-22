@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
 
     public PlayerMapMovement mapMovement;
 
-    public MouseToHoveredMapTile mouseTileHover;
+    public MouseWorldEvents mouseTileHover;
 
     public static bool IsMyTurn => LocalPlayer.isMyTurn;
 
@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
         get
         {
             if (LocalPlayer.currentActiveHero == null)
-                LocalPlayer.currentActiveHero = Heroes.GetCurrentActiveHero();
+                LocalPlayer.currentActiveHero = Heroes.GetHeroWithActiveTurn();
             return LocalPlayer.currentActiveHero;
         }
     }
@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
 
     public void ContinueHerosTurn()
     {
-        currentActiveHero = Heroes.GetCurrentActiveHero();
+        currentActiveHero = Heroes.GetHeroWithActiveTurn();
         isMyTurn = currentActiveHero.IsMine;
         if (isMyTurn)
         {

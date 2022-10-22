@@ -49,7 +49,7 @@ public class Kingdom
             MapTile t = Rand.PickOne(townFieldOfKingdom, rand);
             Town town = new Town(townObject);
             t.AddTileOccupation(town);
-            foreach (var item in HexagonWorld.MapTilesFromIndices(HexagonPathfinder.GetNeighboursInDistance(t.Coordinates, MIN_DISTANCE_BETWEEN_TOWNS)))
+            foreach (var item in HexagonWorld.instance.MapTilesFromIndices(HexagonPathfinder.GetNeighboursInDistance(t.Coordinates, MIN_DISTANCE_BETWEEN_TOWNS)))
             {
                 townFieldOfKingdom.Remove(item);
             }
@@ -111,7 +111,7 @@ public class Kingdom
     protected void PreventPathBlockageBetweenImportantSettlements(MapTile from, MapTile to)
     {
         IEnumerable<Vector2Int> path = HexagonPathfinder.GetPath(from.Coordinates, to.Coordinates, false, PathAccuracy.Decent);
-        BlockTilesForMapOccupation(HexagonWorld.MapTilesFromIndices(path));
+        BlockTilesForMapOccupation(HexagonWorld.instance.MapTilesFromIndices(path));
     }
 
     protected void BlockTilesForMapOccupation(IEnumerable<MapTile> mapTile)

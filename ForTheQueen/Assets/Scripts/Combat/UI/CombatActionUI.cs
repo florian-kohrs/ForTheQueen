@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CombatActionUI : AdaptableInterfaceMask<EquipableWeapon>
+public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
 {
 
     public GameObject actionPrefab;
@@ -14,36 +14,80 @@ public class CombatActionUI : AdaptableInterfaceMask<EquipableWeapon>
     [SerializeField]
     protected Transform uiPrefabParent;
 
-    protected List<GameObject> currentCombatActions = new List<GameObject>();
+    protected List<GameObject> currentCombatActionsUIs = new List<GameObject>();
 
-    protected EquipableWeapon weapon;
+    protected List<CombatAction> currentCombatActions;
 
-    protected override void AdaptUITo(EquipableWeapon weapon, Vector3 pos)
+    protected HeroCombat currentHero;
+
+    protected Vector2Int targetField;
+
+    protected CombatAction choosenAction;
+
+    protected override void AdaptUITo(HeroCombat heroCombat, Vector3 pos)
     {
-        this.weapon = weapon;
+        DeleteOldMarkers();
+        currentCombatActions = new List<CombatAction>();
+        currentCombatActionsUIs = new List<GameObject>();
+        currentHero = heroCombat;
+        EquipableWeapon weapon = heroCombat.EquippedWeapon;
         CreateActionUI(CombatAction.fleeAction, SkillCheck.Skill.Speed);
-        foreach (var action in weapon.actions)
+        if (weapon == null)
         {
-            CreateActionUI(action, weapon.handlingType, weapon.canFocus);
+            CreateActionUI(CombatAction.unarmedStrikeAction, SkillCheck.Skill.Strength, true);
         }
+        else
+        {
+            foreach (var action in currentHero.inventory.availableCombatActions)
+            {
+                CreateActionUI(action, weapon.handlingType, weapon.canFocus);
+            }
+        }
+    }
+
+    protected void DeleteOldMarkers()
+    {
+        if (currentCombatActionsUIs != null)
+        {
+            currentCombatActionsUIs.ForEach(a => { if (a != null) Destroy(a); });
+        } 
     }
 
     protected GameObject CreateActionUI(CombatAction a, SkillCheck.Skill skill, bool canFocus = true)
     {
-        SkillCheck skillCheck = new SkillCheck() { canFocus = canFocus, skill = skill, }
+        SkillCheck skillCheck = new SkillCheck(currentHero.Hero) { canFocus = canFocus, skill = skill, numberSkillChecks = a.numberSkillChecks };
         GameObject actionUI = Instantiate(actionPrefab, uiPrefabParent);
         SkillCheckButton b = actionUI.GetComponent<SkillCheckButton>();
+        b.skillCheck = skillCheck;
+        b.Hero = HeroCombat.CurrentActiveHeroInCombat;
         int i = currentCombatActions.Count;
         b.leftClickAction = delegate { PunBroadcastCommunication.StartCombatAction(i); };
         ApplyActionToUI(actionUI, a);
-        currentCombatActions.Add(actionUI);
+        currentCombatActionsUIs.Add(actionUI);
+        currentCombatActions.Add(a);
         return actionUI;
     }
     
 
     public void StartAction(int index)
     {
-        InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUI(weapon[index].  SkillCheckUI.
+        choosenAction = currentCombatActions[index];
+        InterfaceController.GetInterfaceMask<SkillCheckUI>().EvaluateSkillCheck(OnSkillCheckDone);
+    }
+
+    protected void OnSkillCheckDone(SkillCheckResult r)
+    {
+        if (r.CritFail)
+        {
+             if(currentHero.inventory.HasWeaponEquipped && currentHero.EquippedWeapon.brakesOnCritFail)
+                Debug.Log("Destroy weapon here");
+            Debug.Log($"Crit fail");
+
+        }
+        else
+        {
+            Debug.Log($"{r.numberSuccessfull} successes with action {choosenAction.name}");
+        }
     }
 
     protected void ApplyActionToUI(GameObject ui, CombatAction action)

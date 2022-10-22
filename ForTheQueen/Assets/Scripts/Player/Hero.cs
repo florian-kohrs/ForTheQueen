@@ -182,7 +182,7 @@ public class Hero : ITileOccupation, IBattleOccupation, IItemEquipper
 
     public IBattleParticipant GetParticipant()
     {
-        GameObject hero = customization.SpawnPlayer(null, this);
+        GameObject hero = Customization.SpawnPlayer(null, this);
         HeroCombat h = hero.GetComponent<HeroCombat>();
         h.Hero = this;
         return h;

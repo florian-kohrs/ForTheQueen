@@ -14,6 +14,8 @@ public class HeroClass : ApplyableAssets
 
     public override GameObject Apply(Transform target, Hero h)
     {
+        if (h.inventory == null)
+            h.inventory = new EquipableInventory();
         h.inventory.InitializeInventoryWithItems(startItems);
         h.heroStats = classStartStats;
         return null;

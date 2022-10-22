@@ -16,9 +16,12 @@ MonoBehaviour:
   startItems: []
   classDescription: Super class
   classStartStats:
-    speed: 0
-    health: 0
-    intelligence: 999
-    dodge: 0
-    strength: 0
-    talent: 0
+    level: 1
+    agility: 51
+    strength: 43
+    intelligence: 55
+    talent: 72
+    speed: 51
+    vitality: 59
+    dodge: 12
+    currentHealth: 0

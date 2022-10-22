@@ -13,6 +13,8 @@ public class EquipableInventory : Inventory
 
     public bool HasWeaponEquipped => equippedWeapon != null;
 
+    public EquipableWeapon EquippedWeapon => equippedWeapon?.RuntimeRef;
+
     public List<CombatAction> availableCombatActions => HasWeaponEquipped ? equippedWeapon.RuntimeRef.actions : new List<CombatAction>() { CombatAction.unarmedStrikeAction };
 
     public void EquipWeapon(EquipableWeapon w)

@@ -15,7 +15,7 @@ public class MultiClickButton : MonoBehaviour, IPointerClickHandler, IPointerEnt
 
     public UnityEvent onEndHover;
 
-    public bool interactable;
+    public bool interactable = true;
 
     public void OnPointerClick(PointerEventData eventData)
     {

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
+public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback<MapTile>
 {
 
     public int RestMovementInTurn => Hero.restMovementInTurn;
     public Hero Hero => Player.CurrentActiveHero;
 
-    public MouseToHoveredMapTile mouseToHovoredMapTile;
+    public MouseWorldEvents mouseToHovoredMapTile;
 
-    protected CallbackSet<IMouseTileSelectionCallback> MouseCallbackSet => mouseToHovoredMapTile.subscribers;
+    protected CallbackSet<IMouseTileSelectionCallback<MapTile>> MouseCallbackSet => mouseToHovoredMapTile.subscribers;
 
     protected List<Vector2Int> pathToCurrentHovoredTile;
 
@@ -24,7 +24,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
 
     protected MarkerMapping mapMovementMarker;
 
-    public void BeginTileHover(MapTile tile)
+    public void BeginTileHover(Vector2Int v2, MapTile tile)
     {
         if (!GameManager.AllowPlayerMovement || !tile.CanBeEntered(Hero.CanEnterWater))
             return;
@@ -33,7 +33,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
         DisplayPath(Hero.MapTile.Coordinates, tile.Coordinates);
     }
 
-    public void ExitTileHovered(MapTile tile)
+    public void ExitTileHovered(Vector2Int v2, MapTile tile)
     {
         if (isInAnimation)
             return;
@@ -64,7 +64,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
     protected void OnEndMovement()
     {
         isInAnimation = false;
-        ExitTileHovered(currentHoveredTile);
+        ExitTileHovered(default, currentHoveredTile);
     }
 
     private void Update()
@@ -123,4 +123,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback
         }
     }
 
+    public void OnMouseStay(Vector2Int v2, MapTile tile)
+    {
+    }
 }

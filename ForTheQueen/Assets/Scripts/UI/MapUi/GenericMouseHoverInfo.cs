@@ -29,7 +29,7 @@ public class GenericMouseHoverInfo : AdaptableInterfaceMask<TileOccupationIntera
         descriptionText.text = value.description;
         Vector3 newPos = pos;
         newPos.y += 0.5f;
-        newPos.z += rect.sizeDelta.y * rect.localScale.z + HexagonWorld.HEX_DIAMETER / 2;
+        newPos.z += rect.sizeDelta.y * rect.localScale.z + HexagonWorld.instance.HexDiameter / 2;
         newPos.x -= rect.sizeDelta.x / 2 * rect.localScale.x;
         transform.position = newPos;
     }

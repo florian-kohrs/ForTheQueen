@@ -136,6 +136,11 @@ public class GamePersistence
 
     public SaveableGame GetCurrentGame()
     {
+        if (currentGame == null)
+        {
+            Debug.Log("Entered running game");
+            EnterRunningGame();
+        }
         return currentGame;
     }
 

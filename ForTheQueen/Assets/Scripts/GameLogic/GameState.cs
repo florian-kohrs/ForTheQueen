@@ -12,7 +12,7 @@ public class GameState : MonoBehaviour
 
     private void Start()
     {
-        Hero currentActive = Heroes.GetCurrentActiveHero();
+        Hero currentActive = Heroes.GetHeroWithActiveTurn();
         if(currentActive == null)
         {
             activeHeroId = 0;
@@ -37,7 +37,7 @@ public class GameState : MonoBehaviour
 
     public void EndCurrentHerosTurn()
     {
-        Heroes.GetCurrentActiveHero().EndHerosTurn();
+        Heroes.GetHeroWithActiveTurn().EndHerosTurn();
         ProgressInitiativeTimeline();
         StartHerosTurn();
     }
