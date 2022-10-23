@@ -25,6 +25,12 @@ public class CombatState : MonoBehaviourPun
 
     protected IBattleParticipant activeParticipant;
 
+    public GameObject enemyUIPrefab;
+
+    public Transform enemyUIParent;
+
+    public MouseToHovoredBattleMapTile mouseMapTileEvent;
+
     private void Start()
     {
         if (participants == null)
@@ -49,9 +55,19 @@ public class CombatState : MonoBehaviourPun
     public void StartCombat(BattleParticipants participants)
     {
         battleParticipants = battleMap.BeginBattle(participants);
+        foreach (var e in battleMap.activeParticipants)
+            if (!e.OnPlayersSide)
+                CreateEnemyUI(e);
+
         actionTimeline = new SortedList<float, IBattleParticipant>();
         CreateTimeLine(0);
         NextTurn();
+    }
+
+    protected void CreateEnemyUI(IBattleParticipant p)
+    {
+        GameObject g = Instantiate(enemyUIPrefab, enemyUIParent);
+        g.GetComponent<EnemyBattleInfoUI>().ApplySingleEnemy(p);
     }
 
     protected void CreateTimeLine(int startIndex)
@@ -90,6 +106,39 @@ public class CombatState : MonoBehaviourPun
         activeParticipant = actionTimeline.Values[0];
         actionTimeline.RemoveAt(0);
         activeParticipant.StartTurn();
+    }
+
+    public void BeginHoverMapTile(Vector2Int v2)
+    {
+        Broadcast.SafeRPC(photonView, nameof(RPCBeginHoverMapTile), RpcTarget.All, ()=>RPCBeginHoverMapTile(v2), v2);
+    }
+
+    [PunRPC]
+    public void RPCBeginHoverMapTile(Vector2Int v2)
+    {
+        battleMap.MarkActionOnMap(v2, HeroCombat.currentHeroTurnInCombat.SelectedCombatAction);
+    }
+
+    public void StopHoveredTile(Vector2Int v2)
+    {
+        Broadcast.SafeRPC(photonView, nameof(RPCStopHoveredTile), RpcTarget.All, () => RPCStopHoveredTile(v2), v2);
+    }
+
+    [PunRPC]
+    public void RPCStopHoveredTile(Vector2Int v2)
+    {
+        battleMap.RemovePreviousMarkers();
+    }
+
+    public void SelectHoveredMapTile(Vector2Int v2)
+    {
+        Broadcast.SafeRPC(photonView, nameof(RPCSelectHoveredMapTile), RpcTarget.All, () => RPCSelectHoveredMapTile(v2), v2);
+    }
+
+    [PunRPC]
+    public void RPCSelectHoveredMapTile(Vector2Int v2)
+    {
+        HeroCombat.currentHeroTurnInCombat.ExecuteSelectedAction(v2);
     }
 
 }

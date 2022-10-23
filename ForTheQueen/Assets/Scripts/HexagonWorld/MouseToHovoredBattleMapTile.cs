@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MouseToHovoredBattleMapTile : MonoBehaviour
+public class MouseToHovoredBattleMapTile : MonoBehaviourPun
 {
 
     public BattleMap map;
@@ -14,10 +15,15 @@ public class MouseToHovoredBattleMapTile : MonoBehaviour
 
     public CallbackSet<IMouseTileSelectionCallback<IBattleParticipant>> subscribers => mouseEvents.subscribers;
 
-
     private void Awake()
     {
         mouseEvents = new MouseToHovoredMapTile<IBattleParticipant>(map);
         mouseEvents.rayLayerId = WORLD_LAYER_ID;
     }
+
+    private void Update()
+    {
+        mouseEvents.Update();
+    }
+
 }

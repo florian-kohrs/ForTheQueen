@@ -240,6 +240,11 @@ public class MapTile
         }
     }
 
+    public static Vector3 GetCenterPosForCoord<T>(Vector2Int coord, HexagonGrid<T> grid)
+    {
+        return GetCenterPosForCoord(coord, grid.SpaceBetweenHexes, grid.HexXSpacing, grid.HexYSpacing);
+    }
+
     public static Vector3 GetCenterPosForCoord(Vector2Int coord, float spaceBetweenHexes, float xSpacing, float ySpacing)
     {
         return new Vector3(GetXPosForCoord(coord, spaceBetweenHexes, xSpacing, ySpacing), 0, GetZPosForCoord(coord, spaceBetweenHexes, xSpacing, ySpacing));

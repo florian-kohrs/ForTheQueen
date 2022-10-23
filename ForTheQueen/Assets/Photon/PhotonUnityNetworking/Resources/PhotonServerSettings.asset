@@ -62,6 +62,9 @@ MonoBehaviour:
   - UseFocus
   - StartSkillCheckRPC
   - StartCombatActionRPC
+  - RPCBeginHoverMapTile
+  - RPCSelectHoveredMapTile
+  - RPCStopHoveredTile
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -23,6 +23,8 @@ public class Hero : ITileOccupation, IBattleOccupation, IItemEquipper
 
     public CreatureStats heroStats;
 
+    public string heroName;
+
     public bool CanEnterWater => false;
 
     public HeroCustomization Customization

@@ -25,7 +25,6 @@ public abstract class HexagonGrid<T> : MonoBehaviourPun
 
     public float TotalHexSpace => SpaceBetweenHexes + HexDiameter;
 
-
     public abstract Vector2Int Size { get; }
 
     public abstract T[,] GridData { get; }

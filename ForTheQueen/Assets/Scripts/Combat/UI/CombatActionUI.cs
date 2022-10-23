@@ -72,7 +72,7 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
     public void StartAction(int index)
     {
         choosenAction = currentCombatActions[index];
-        InterfaceController.GetInterfaceMask<SkillCheckUI>().EvaluateSkillCheck(OnSkillCheckDone);
+        HeroCombat.currentHeroTurnInCombat.OnSelectedAction(choosenAction);
     }
 
     protected void OnSkillCheckDone(SkillCheckResult r)

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum ActionTarget
 {
-    Self, Single, SpreadOne, SpreadTwo, All, Line, Row, Cross, Cone
+    Self, Single, SpreadOne, SpreadTwo, All, Line, Row, ConeOne, ConeTwo
 }

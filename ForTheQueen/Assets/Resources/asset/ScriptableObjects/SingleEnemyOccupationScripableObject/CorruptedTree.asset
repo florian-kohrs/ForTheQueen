@@ -31,7 +31,11 @@ MonoBehaviour:
     intelligence: 0
     talent: 0
     speed: 0
-    dodge: 0
     vitality: 0
+    dodge: 0
     currentHealth: 0
+    armor: 0
+    magicResist: 0
   hasSupportRange: 0
+  armor: 0
+  magicResist: 0

@@ -10,7 +10,9 @@ public class SkillCheckResult
     public int numberSuccessfull;
 
     public bool WasPerfect => skillCheck.numberSkillChecks == numberSuccessfull;
+
     public bool CritFail => skillCheck.numberSkillChecks == 0;
 
+    public float SucessRate => numberSuccessfull / (float)skillCheck.numberSkillChecks; 
 
 }

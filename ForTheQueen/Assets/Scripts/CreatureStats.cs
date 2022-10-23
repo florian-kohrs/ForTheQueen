@@ -33,6 +33,10 @@ public class CreatureStats
 
     public int currentHealth;
 
+    public int armor;
+
+    public int magicResist;
+
     public int MaxHealth => Mathf.RoundToInt(vitality / 10f * level);
 
     public int GetStatsOfSkill(SkillCheck.Skill skill)

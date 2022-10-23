@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleMap : HexagonGrid<IBattleParticipant>
 {
@@ -22,6 +24,56 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
     public override Vector2Int Size => battleMapSize;
 
     public override IBattleParticipant[,] GridData => battleMapParticipant;
+
+    public List<IBattleParticipant> activeParticipants = new List<IBattleParticipant>();
+
+
+    protected List<GameObject> currentMapMarkers = new List<GameObject>();
+
+    public Transform mapMarkerParent;
+
+    public GameObject mapMarkerPrefab;
+
+    public float mapMarkerScale;
+
+    public void MarkActionOnMap(Vector2Int v2, CombatAction action)
+    {
+        RemovePreviousMarkers();
+        foreach (var v in action.GetTargetFieldsFromAction(HeroCombat.currentHeroTurnInCombat.CurrentTile, v2, action.target, IsInBounds))
+            AddCurrentMarkerAt(v, !action.targetEnemies);
+    }
+
+    protected void AddCurrentMarkerAt(Vector2Int v2, bool actionTargetSelf)
+    {
+        GameObject marker = Instantiate(mapMarkerPrefab, mapMarkerParent);
+        marker.transform.localScale = new Vector3(mapMarkerScale, mapMarkerScale, mapMarkerScale);
+        currentMapMarkers.Add(marker);
+        marker.transform.position = MapTile.GetCenterPosForCoord(v2, this) + Vector3.up * 0.001f;
+        IBattleParticipant part = GridData[v2.x, v2.y];
+        if(part != null)
+        {
+            marker.GetComponent<Image>().color = actionTargetSelf ? Color.green : Color.red;
+        }
+    }
+
+
+    public IEnumerable<IBattleParticipant> GetAfflictedParticipants(Vector2Int selectedField, CombatAction a)
+    {
+        return a.GetTargetFieldsFromAction(selectedField, selectedField, a.target, IsInBounds).
+            Select(DataFromIndex).
+            Where(b => b != null);
+    }
+
+
+    public void RemovePreviousMarkers()
+    {
+        foreach (var item in currentMapMarkers)
+        {
+            Destroy(item);
+        }
+        currentMapMarkers.Clear();
+    }
+
 
     //TODO: Let players choose their start position (save selection)
     public ICollection<IBattleParticipant> BeginBattle(BattleParticipants participants)
@@ -53,6 +105,8 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
         return ps;
     }
 
+
+
     protected Transform SetParticipantAt(int x, int z, IBattleOccupation occ)
     {
         return SetParticipantAt(x,z,occ.GetParticipant());
@@ -60,6 +114,7 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
 
     protected Transform SetParticipantAt(int x, int z, IBattleParticipant part)
     {
+        activeParticipants.Add(part);
         part.gameObject.transform.position = GetCenterPos(x, z);
         battleMapParticipant[x, z] = part;
         return part.gameObject.transform;

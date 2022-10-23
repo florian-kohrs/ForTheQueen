@@ -23,5 +23,7 @@ public class SingleEnemyOccupation : BaseEnemyOccupation<SingleEnemyOccupationSc
     {
         p.inventory = OccupationObject.items;
         p.stats = OccupationObject.stats;
+        p.npcName = OccupationObject.occupationName;
+        p.isOnPlayersSide = false;
     }
 }

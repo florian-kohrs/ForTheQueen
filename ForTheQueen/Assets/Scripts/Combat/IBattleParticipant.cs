@@ -15,8 +15,20 @@ public interface IBattleParticipant
 
     int CurrentHealth { get; set; }
 
+    int Armor { get; }
+
+    int MagicResist { get; }
+
     int Speed { get; }
 
     CombatState CombatState { set; }
+
+    string Name { get; }
+
+    bool OnPlayersSide { get; }
+
+    Vector2Int CurrentTile { get; set; }
+
+    void ApplyEffect(ActionEffect effect);
 
 }
