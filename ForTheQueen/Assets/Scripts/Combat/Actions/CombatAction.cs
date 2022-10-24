@@ -24,9 +24,24 @@ public class CombatAction/* : ScriptableObject*/
     [Tooltip("If target enemies is false, damage will heal instead")]
     public int damage;
 
-    public static CombatAction fleeAction => new CombatAction() { name = "Flee", accuracy = 80, damage = 0, targetEnemies = false, target = ActionTarget.Self, numberSkillChecks = 2, effects = new List<ActionEffect>() };
+    public bool overrideSkillCheck;
+
+    public SkillCheck.Skill skillOverride;
+
+    public static CombatAction fleeAction = new CombatAction() { overrideSkillCheck = true, skillOverride = SkillCheck.Skill.Speed,  name = "Flee", accuracy = 80, damage = 0, targetEnemies = false, target = ActionTarget.Self, numberSkillChecks = 2, effects = new List<ActionEffect>() };
     
-    public static CombatAction unarmedStrikeAction = new CombatAction() { name = "Unarmed Strike", accuracy = 100, damage = 5, numberSkillChecks = 2, target = ActionTarget.Single, targetEnemies = true, effects = new List<ActionEffect>() };
+    public static CombatAction unarmedStrikeAction = new CombatAction() { overrideSkillCheck = true, skillOverride = SkillCheck.Skill.Strength, name = "Unarmed Strike", accuracy = 100, damage = 5, numberSkillChecks = 2, target = ActionTarget.Single, targetEnemies = true, effects = new List<ActionEffect>() };
+
+    public SkillCheck GetSkillCheck(CreatureStats s, EquipableWeapon w)
+    {
+        if (w == null && !overrideSkillCheck)
+            throw new Exception("Cant create skill check if action doesnt override needed skill");
+
+        SkillCheck c = new SkillCheck(s);
+        c.numberSkillChecks = numberSkillChecks;
+        c.skill = overrideSkillCheck ? skillOverride : w.handlingType;
+        return c;
+    }
 
     public void ApplyActionToTarget(IBattleParticipant p, SkillCheckResult r)
     {

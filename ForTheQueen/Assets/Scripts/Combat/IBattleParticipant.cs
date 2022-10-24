@@ -29,6 +29,13 @@ public interface IBattleParticipant
 
     Vector2Int CurrentTile { get; set; }
 
+
     void ApplyEffect(ActionEffect effect);
+
+    //HashSet<IParticipantUIReference> UIReferences { get; }
+
+    void AddUIReference(IParticipantUIReference uiReference);
+
+    void ExecuteAction(int index, Vector2Int target);
 
 }

@@ -13,8 +13,6 @@ public class SingleEnemyOccupationScripableObject : BaseEnemyOccupationScriptabl
 
     public EquipableInventory items;
 
-    public int armor;
-
-    public int magicResist;
+    public List<CombatAction> creatureActions;
 
 }

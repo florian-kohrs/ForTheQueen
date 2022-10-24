@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class SingleEnemyOccupation : BaseEnemyOccupation<SingleEnemyOccupationScripableObject>
 {
 
+    protected CreatureStats statsClone;
+
     public SingleEnemyOccupation() { }
 
     public SingleEnemyOccupation(SingleEnemyOccupationScripableObject e) : base(e) { }
@@ -21,8 +23,11 @@ public class SingleEnemyOccupation : BaseEnemyOccupation<SingleEnemyOccupationSc
 
     protected override void ApplyParticipantStats(NPCBattleParticipant p)
     {
+        statsClone = (CreatureStats)OccupationObject.stats.Clone();
+        statsClone.currentHealth = statsClone.MaxHealth;
         p.inventory = OccupationObject.items;
-        p.stats = OccupationObject.stats;
+        p.Actions = new List<CombatAction>(OccupationObject.creatureActions);
+        p.stats = statsClone;
         p.npcName = OccupationObject.occupationName;
         p.isOnPlayersSide = false;
     }

@@ -25,17 +25,25 @@ MonoBehaviour:
   description: This chicken is pissed. At you.
   level: 1
   stats:
-    level: 0
+    level: 1
     agility: 0
     strength: 75
     intelligence: 0
     talent: 0
     speed: 65
-    vitality: 0
+    vitality: 90
     dodge: 5
     currentHealth: 0
     armor: 0
     magicResist: 0
   hasSupportRange: 0
-  armor: 0
-  magicResist: 0
+  creatureActions:
+  - name: Pick Attack
+    targetEnemies: 1
+    numberSkillChecks: 2
+    target: 1
+    effects: 00000000
+    accuracy: 100
+    damage: 6
+    overrideSkillCheck: 1
+    skillOverride: 0

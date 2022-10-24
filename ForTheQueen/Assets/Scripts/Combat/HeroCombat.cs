@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<IBattleParticipant>
+public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<IBattleParticipant>, IHealthDisplayer
 {
 
     protected Hero hero;
@@ -28,6 +28,10 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<I
 
     public override bool OnPlayersSide => true;
 
+    protected override IHealthDisplayer HealthDisplayer => this;
+
+    protected override List<CombatAction> AllCombatActions => throw new System.NotImplementedException();
+
     private void Start()
     {
         enabled = false;
@@ -45,15 +49,28 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<I
         this.selectedCombatAction = a;
         if (a.target == ActionTarget.Self)
         {
-            currentSelectedCoord = CurrentTile;
-            ExecuteSelectedAction(currentSelectedCoord);
+            currentSelectedCoord = new Maybe<Vector2Int>(CurrentTile);
+            ExecuteSelectedAction(CurrentTile);
         }
         else 
         {
             CombatState.mouseMapTileEvent.subscribers.AddSubscriber(this);
             this.DoDelayed(0.1f, delegate { enabled = true; });
+            InterfaceController.GetInterfaceMask<CombatActionUI>().Close();
             InterfaceController.GetInterfaceMask<CombatInfoText>().AdaptUIAndOpen("Select target field");
         }
+    }
+
+    protected override void AfterActionLockedIn()
+    {
+        CombatState.mouseMapTileEvent.subscribers.RemoveSubscriber(this);
+        enabled = false;
+    }
+
+    protected override void AfterActionExecuted()
+    {
+        selectedCombatAction = null;
+        enabled = true;
     }
 
     public override void OnTurnEnded()
@@ -63,17 +80,17 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<I
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0) && IsCurrentSelectedCoordValid())
+        if(Input.GetMouseButtonDown(0) && SelectedCombatAction != null && IsCurrentSelectedCoordValid())
         {
-            CombatState.SelectHoveredMapTile(currentSelectedCoord);
+            CombatState.SelectHoveredMapTile(currentSelectedCoord.Value);
         }
     }
 
 
     public void BeginTileHover(Vector2Int coord, IBattleParticipant tile)
     {
-        currentSelectedCoord = coord;
-        CombatState.BeginHoverMapTile(currentSelectedCoord);
+        currentSelectedCoord = new Maybe<Vector2Int>(coord);
+        CombatState.BeginHoverMapTile(currentSelectedCoord.Value);
     }
 
     public void OnMouseStay(Vector2Int coord, IBattleParticipant tile)
@@ -82,13 +99,22 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<I
 
     public void ExitTileHovered(Vector2Int coord, IBattleParticipant tile)
     {
-        currentSelectedCoord = new Vector2Int(-1,-1);
-        CombatState.StopHoveredTile(currentSelectedCoord);
+        currentSelectedCoord.RemoveValue();
+        CombatState.StopHoveredTile();
     }
 
     protected bool IsCurrentSelectedCoordValid()
     {
-        return currentSelectedCoord != default;
+        return currentSelectedCoord != null && currentSelectedCoord.HasValue;
     }
 
+    protected override void OnDeath()
+    {
+        Debug.Log($"Player {hero.heroName} died");
+    }
+
+    public void UpdateHealthDisplay(int value)
+    {
+        Debug.Log($"Player {hero.heroName} is on {value} health");
+    }
 }

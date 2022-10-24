@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyBattleInfoUI : MonoBehaviour
+public class EnemyBattleInfoUI : MonoBehaviour, IHealthDisplayer, IParticipantUIReference
 {
 
     public TextMeshProUGUI enemyName;
@@ -23,6 +23,15 @@ public class EnemyBattleInfoUI : MonoBehaviour
 
     protected int currentHealth;
 
+    public Image backgroundImage;
+
+    public Image ImageReference => backgroundImage;
+
+
+    public HashSet<IParticipantUIReference> registeredInSet;
+
+    public HashSet<IParticipantUIReference> RegisteredInSet { set => registeredInSet = value; }
+
     public void ApplySingleEnemy(IBattleParticipant e)
     {
         enemyName.text = e.Name;
@@ -37,6 +46,12 @@ public class EnemyBattleInfoUI : MonoBehaviour
     {
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth,0,maxHealth);
+        UpdateHealth();
+    }
+
+    public void UpdateHealthDisplay(int value)
+    {
+        currentHealth = value;
         UpdateHealth();
     }
 

@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class CreatureStats
+public class CreatureStats : ICloneable
 {
 
     [Range(0,95)]
@@ -24,7 +25,7 @@ public class CreatureStats
     [Range(0, 95)]
     public int speed;
 
-    [Range(0, 95)]
+    [Range(0, 195)]
     public int vitality;
 
     [Range(0, 95)]
@@ -38,6 +39,11 @@ public class CreatureStats
     public int magicResist;
 
     public int MaxHealth => Mathf.RoundToInt(vitality / 10f * level);
+
+    public object Clone()
+    {
+        return this.MemberwiseClone();
+    }
 
     public int GetStatsOfSkill(SkillCheck.Skill skill)
     {

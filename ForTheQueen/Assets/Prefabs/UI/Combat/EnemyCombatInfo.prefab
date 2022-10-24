@@ -1121,6 +1121,7 @@ MonoBehaviour:
   magicResist: {fileID: 1318372137601136242}
   maxHealthImage: {fileID: 3245128417966311780}
   buffParent: {fileID: 4620536889621213327}
+  backgroundImage: {fileID: 1505373202086366356}
 --- !u!1 &8074192563350491707
 GameObject:
   m_ObjectHideFlags: 0

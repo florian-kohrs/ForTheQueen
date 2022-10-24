@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,36 @@ public class CombatState : MonoBehaviourPun
 
     public BattleParticipants testParticipants = new BattleParticipants();
 
+    protected Queue<GameObject> timelineObjects = new Queue<GameObject>();
+
     public SingleEnemyOccupationScripableObject enemy;
 
     protected IBattleParticipant activeParticipant;
+
+    public List<Vector2Int> FieldsWithHeroes => battleParticipants.Where(b => b.OnPlayersSide).Select(b => b.CurrentTile).ToList();
+
+    [SerializeField]
+    protected Transform timelineParent;
+
+    [SerializeField]
+    protected GameObject timeLinePrefab;
+
+    public void ParticipantDied(IBattleParticipant participant)
+    {
+        FilterTimeline(participant);
+    }
+
+    protected void FilterTimeline(IBattleParticipant p)
+    {
+        for (int i = 0; i < actionTimeline.Count; i++)
+        {
+            if (actionTimeline.Values[i] == p)
+            { 
+                actionTimeline.RemoveAt(i);
+                i--;
+            }
+        }
+    }
 
     public GameObject enemyUIPrefab;
 
@@ -57,17 +85,20 @@ public class CombatState : MonoBehaviourPun
         battleParticipants = battleMap.BeginBattle(participants);
         foreach (var e in battleMap.activeParticipants)
             if (!e.OnPlayersSide)
-                CreateEnemyUI(e);
+                CreateEnemyUI(e as NPCBattleParticipant);
 
         actionTimeline = new SortedList<float, IBattleParticipant>();
         CreateTimeLine(0);
+        SpawnTimeLine();
         NextTurn();
     }
 
-    protected void CreateEnemyUI(IBattleParticipant p)
+    protected void CreateEnemyUI(NPCBattleParticipant p)
     {
         GameObject g = Instantiate(enemyUIPrefab, enemyUIParent);
-        g.GetComponent<EnemyBattleInfoUI>().ApplySingleEnemy(p);
+        EnemyBattleInfoUI e = g.GetComponent<EnemyBattleInfoUI>();
+        p.enemyUI = e;
+        e.ApplySingleEnemy(p);
     }
 
     protected void CreateTimeLine(int startIndex)
@@ -84,6 +115,23 @@ public class CombatState : MonoBehaviourPun
             }
             keyExtra += 0.1f;
         }
+    }
+
+    protected void SpawnTimeLine()
+    {
+        ClearTimeLine();
+        foreach (var kv in actionTimeline)
+        {
+            GameObject uiObject = Instantiate(timeLinePrefab, timelineParent);
+            kv.Value.AddUIReference(uiObject.GetComponent<TimelineUI>());
+            timelineObjects.Enqueue(uiObject);
+        }
+    }
+
+    protected void ClearTimeLine()
+    {
+        while (timelineObjects.Count > 0)
+            Destroy(timelineObjects.Dequeue());
     }
 
     protected int CombatSpeedCost(IBattleParticipant p) => 150 - p.Speed;
@@ -104,6 +152,7 @@ public class CombatState : MonoBehaviourPun
         if (activeParticipant != null)
             activeParticipant.OnTurnEnded();
         activeParticipant = actionTimeline.Values[0];
+        Destroy(timelineObjects.Dequeue());
         actionTimeline.RemoveAt(0);
         activeParticipant.StartTurn();
     }
@@ -119,13 +168,13 @@ public class CombatState : MonoBehaviourPun
         battleMap.MarkActionOnMap(v2, HeroCombat.currentHeroTurnInCombat.SelectedCombatAction);
     }
 
-    public void StopHoveredTile(Vector2Int v2)
+    public void StopHoveredTile()
     {
-        Broadcast.SafeRPC(photonView, nameof(RPCStopHoveredTile), RpcTarget.All, () => RPCStopHoveredTile(v2), v2);
+        Broadcast.SafeRPC(photonView, nameof(RPCStopHoveredTile), RpcTarget.All, RPCStopHoveredTile);
     }
 
     [PunRPC]
-    public void RPCStopHoveredTile(Vector2Int v2)
+    public void RPCStopHoveredTile()
     {
         battleMap.RemovePreviousMarkers();
     }
@@ -141,4 +190,14 @@ public class CombatState : MonoBehaviourPun
         HeroCombat.currentHeroTurnInCombat.ExecuteSelectedAction(v2);
     }
 
+    public void NPCAttack(int actionIndex, Vector2Int v2)
+    {
+        Broadcast.SafeRPC(photonView, nameof(NPCAttackRPC), RpcTarget.All, () => NPCAttackRPC(actionIndex, v2), actionIndex, v2);
+    }
+
+    [PunRPC]
+    public void NPCAttackRPC(int actionIndex, Vector2Int v2)
+    {
+        activeParticipant.ExecuteAction(actionIndex, v2);
+    }
 }

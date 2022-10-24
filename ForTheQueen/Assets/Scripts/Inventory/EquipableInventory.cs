@@ -15,7 +15,9 @@ public class EquipableInventory : Inventory
 
     public EquipableWeapon EquippedWeapon => equippedWeapon?.RuntimeRef;
 
-    public List<CombatAction> availableCombatActions => HasWeaponEquipped ? equippedWeapon.RuntimeRef.actions : new List<CombatAction>() { CombatAction.unarmedStrikeAction };
+    public List<CombatAction> AvailableCombatActions => HasWeaponEquipped ? equippedWeapon.RuntimeRef.actions : new List<CombatAction>() { CombatAction.unarmedStrikeAction };
+    
+    public List<CombatAction> AvailableWeaponActions => HasWeaponEquipped ? equippedWeapon.RuntimeRef.actions : new List<CombatAction>() { };
 
     public void EquipWeapon(EquipableWeapon w)
     {

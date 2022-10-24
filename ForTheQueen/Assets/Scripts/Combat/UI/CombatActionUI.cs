@@ -38,7 +38,7 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
         }
         else
         {
-            foreach (var action in currentHero.inventory.availableCombatActions)
+            foreach (var action in currentHero.inventory.AvailableCombatActions)
             {
                 CreateActionUI(action, weapon.handlingType, weapon.canFocus);
             }

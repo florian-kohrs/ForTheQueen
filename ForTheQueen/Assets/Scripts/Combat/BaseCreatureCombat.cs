@@ -16,28 +16,46 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
 
     public CombatAction SelectedCombatAction => selectedCombatAction;
 
-    protected Vector2Int currentSelectedCoord;
+    protected abstract List<CombatAction> AllCombatActions { get;}
+
+    protected Maybe<Vector2Int> currentSelectedCoord = new Maybe<Vector2Int>();
 
     protected Dictionary<ActionEffect, ActionEffectInstance> activeEffects = new Dictionary<ActionEffect, ActionEffectInstance>();
     
     protected abstract IHealthDisplayer HealthDisplayer { get; }
 
+    public HashSet<IParticipantUIReference> UIReferences { get; private set; } = new HashSet<IParticipantUIReference>();
+
     protected abstract void OnDeath();
+
+
+    public void ExecuteAction(int index, Vector2Int target)
+    {
+        selectedCombatAction = AllCombatActions[index];
+        InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(selectedCombatAction.GetSkillCheck(stats, null));
+        ExecuteSelectedAction(target);
+    }
 
     public void ExecuteSelectedAction(Vector2Int v2)
     {
-        currentSelectedCoord = v2;
+        currentSelectedCoord = new Maybe<Vector2Int>(v2);
         InterfaceController.GetInterfaceMask<CombatInfoText>().Close();
         InterfaceController.GetInterfaceMask<CombatActionUI>().Close();
         InterfaceController.GetInterfaceMask<SkillCheckUI>().EvaluateSkillCheck(OnActionEvaluated);
+        AfterActionLockedIn();
     }
+
+    protected virtual void AfterActionLockedIn() { }
+
+    protected virtual void AfterActionExecuted() { }
 
     protected void OnActionEvaluated(SkillCheckResult r)
     {
-        foreach(var b in CombatState.battleMap.GetAfflictedParticipants(currentSelectedCoord, SelectedCombatAction))
+        foreach(var b in CombatState.battleMap.GetAfflictedParticipants(currentSelectedCoord.Value, SelectedCombatAction))
         {
             selectedCombatAction.ApplyActionToTarget(b, r);
         }
+        AfterActionExecuted();
     }
 
 
@@ -50,7 +68,7 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
         set
         {
             stats.currentHealth = value;
-            HealthDisplayer.ChangeHealth(value);
+            HealthDisplayer.UpdateHealthDisplay(value);
             if (value <= 0)
                 OnDeath();
         }
@@ -81,4 +99,11 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
         }
         e.stackAmount++;
     }
+
+    public void AddUIReference(IParticipantUIReference uiReference)
+    {
+        UIReferences.Add(uiReference);
+        uiReference.RegisteredInSet = UIReferences;
+    }
+
 }

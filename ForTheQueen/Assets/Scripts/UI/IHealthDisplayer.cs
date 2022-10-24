@@ -6,6 +6,6 @@ using UnityEngine;
 public interface IHealthDisplayer 
 {
 
-    void ChangeHealth(int value);
+    void UpdateHealthDisplay(int value);
 
 }

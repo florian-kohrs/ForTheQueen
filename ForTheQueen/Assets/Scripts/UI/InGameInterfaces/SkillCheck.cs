@@ -6,9 +6,14 @@ using UnityEngine;
 public class SkillCheck
 {
 
-    public SkillCheck(Hero h) 
+    public SkillCheck(Hero h) : this(h.heroStats)
     {
         hero = h;
+    }
+
+    public SkillCheck(CreatureStats c)
+    {
+        stats = c;
     }
 
     public static SkillCheck GetMovementSkillCheckForHero(Hero h)
@@ -33,8 +38,10 @@ public class SkillCheck
 
     public Hero hero;
 
-    public bool CanAddFocus => canFocus && numberFocusUsed < numberSkillChecks && hero.CanSpendFocus;
+    public CreatureStats stats;
 
-    public CreatureStats Stats => hero.heroStats;
+    public bool CanAddFocus => hero != null && canFocus && numberFocusUsed < numberSkillChecks && hero.CanSpendFocus;
+
+    public CreatureStats Stats => stats;
 
 }
