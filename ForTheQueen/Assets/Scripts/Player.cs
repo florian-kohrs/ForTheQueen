@@ -13,9 +13,7 @@ public class Player : MonoBehaviour
 
     public MouseWorldEvents mouseTileHover;
 
-    public static bool IsMyTurn => LocalPlayer.isMyTurn;
-
-    protected bool isMyTurn;
+    public static bool IsMyTurn => LocalPlayer.currentActiveHero.IsMine;
 
     protected Hero currentActiveHero;
 
@@ -43,8 +41,7 @@ public class Player : MonoBehaviour
     public void ContinueHerosTurn()
     {
         currentActiveHero = Heroes.GetHeroWithActiveTurn();
-        isMyTurn = currentActiveHero.IsMine;
-        if (isMyTurn)
+        if (IsMyTurn)
         {
             GameManager.blockPlayerActiveAction.Remove(this);
             GameManager.blockPlayerMovement.Remove(this);

@@ -28,7 +28,7 @@ public class NewGameMenue : MenueInterfaceMask
             return;
         }
 
-        if(GamePersistence.HasGameWithName(name))
+        if(GameSaveData.HasGameWithName(name))
         {
             Debug.LogWarning("Game with name exists already");
         }

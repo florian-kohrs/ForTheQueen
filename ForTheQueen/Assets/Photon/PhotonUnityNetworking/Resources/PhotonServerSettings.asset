@@ -66,6 +66,8 @@ MonoBehaviour:
   - RPCSelectHoveredMapTile
   - RPCStopHoveredTile
   - NPCAttackRPC
+  - BeginHoverSkillCheckBtnRPC
+  - OnBeginnHoverRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

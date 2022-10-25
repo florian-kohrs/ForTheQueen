@@ -19,6 +19,7 @@ public abstract class BaseEnemyOccupation<T> : TileInteractableOccupation<T>, IB
 
     public abstract bool HelpsInFight { get; }
 
+    [System.NonSerialized]
     protected MarkerMapping battleMarkers;
 
     public void Despawn()
@@ -55,7 +56,7 @@ public abstract class BaseEnemyOccupation<T> : TileInteractableOccupation<T>, IB
         IEnumerable<MapTile> tiles = HexagonWorld.instance.MapTilesFromIndices(neighbours);
 
         battleMarkers = HexagonMarker.Instance.MarkHexagons(tiles, HexagonMarker.Instance.battleParticipantMarker);
-        BattleParticipants b = new BattleParticipants(MapTile, tiles);
+        //BattleParticipants b = new BattleParticipants(MapTile, tiles);
         HexagonMarker.Instance.MarkHexagons(tiles, HexagonMarker.Instance.battleParticipantMarker, battleMarkers);
 
         InterfaceController.GetInterfaceMask<GenericMouseHoverInfo>().AdaptUIAndOpen(OccupationObject, mapTile.CenterPos);

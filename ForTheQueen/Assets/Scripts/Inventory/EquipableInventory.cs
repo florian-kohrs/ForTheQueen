@@ -1,17 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class EquipableInventory : Inventory
 {
 
+    [NonSerialized]
     public IItemEquipper equipper;
 
     protected AssetPolyRef<EquipableWeapon> equippedWeapon;
 
+    [NonSerialized]
     protected GameObject equippedWeaponInstance;
 
-    public bool HasWeaponEquipped => equippedWeapon != null;
+    public bool HasWeaponEquipped => equippedWeapon != null && equippedWeapon.RuntimeRef != null;
 
     public EquipableWeapon EquippedWeapon => equippedWeapon?.RuntimeRef;
 

@@ -18,6 +18,8 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
 
     protected List<CombatAction> currentCombatActions;
 
+    protected List<SkillCheckButton> currentSkillCheckButtons;
+
     protected HeroCombat currentHero;
 
     protected Vector2Int targetField;
@@ -27,6 +29,7 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
     protected override void AdaptUITo(HeroCombat heroCombat, Vector3 pos)
     {
         DeleteOldMarkers();
+        currentSkillCheckButtons = new List<SkillCheckButton>();
         currentCombatActions = new List<CombatAction>();
         currentCombatActionsUIs = new List<GameObject>();
         currentHero = heroCombat;
@@ -62,12 +65,18 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
         b.Hero = HeroCombat.CurrentActiveHeroInCombat;
         int i = currentCombatActions.Count;
         b.leftClickAction = delegate { PunBroadcastCommunication.StartCombatAction(i); };
+        b.onMouseHover = delegate { PunBroadcastCommunication.BeginHoverSkillCheckBtn(i); };
         ApplyActionToUI(actionUI, a);
+        currentSkillCheckButtons.Add(b);
         currentCombatActionsUIs.Add(actionUI);
         currentCombatActions.Add(a);
         return actionUI;
     }
-    
+
+    public void BeginHoverSkillCheckBtn(int index)
+    {
+        InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(currentSkillCheckButtons[index].skillCheck);
+    }
 
     public void StartAction(int index)
     {

@@ -9,7 +9,10 @@ public class SkillCheckButton : MultiClickButton
 
     public SkillCheck skillCheck;
 
+    public Action onMouseHover;
+
     protected Hero hero;
+
     public Hero Hero
     {
         set
@@ -57,7 +60,7 @@ public class SkillCheckButton : MultiClickButton
         if (activated)
             return;
 
-        InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(skillCheck);
+        onMouseHover();
     }
 
     public void OnEndHover()

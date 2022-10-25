@@ -159,13 +159,13 @@ public class CombatState : MonoBehaviourPun
 
     public void BeginHoverMapTile(Vector2Int v2)
     {
-        Broadcast.SafeRPC(photonView, nameof(RPCBeginHoverMapTile), RpcTarget.All, ()=>RPCBeginHoverMapTile(v2), v2);
+        Broadcast.SafeRPC(photonView, nameof(RPCBeginHoverMapTile), RpcTarget.All, ()=>RPCBeginHoverMapTile(v2.x,v2.y), v2.x,v2.y);
     }
 
     [PunRPC]
-    public void RPCBeginHoverMapTile(Vector2Int v2)
+    public void RPCBeginHoverMapTile(int x, int y)
     {
-        battleMap.MarkActionOnMap(v2, HeroCombat.currentHeroTurnInCombat.SelectedCombatAction);
+        battleMap.MarkActionOnMap(new Vector2Int(x,y), HeroCombat.currentHeroTurnInCombat.SelectedCombatAction);
     }
 
     public void StopHoveredTile()
@@ -181,23 +181,23 @@ public class CombatState : MonoBehaviourPun
 
     public void SelectHoveredMapTile(Vector2Int v2)
     {
-        Broadcast.SafeRPC(photonView, nameof(RPCSelectHoveredMapTile), RpcTarget.All, () => RPCSelectHoveredMapTile(v2), v2);
+        Broadcast.SafeRPC(photonView, nameof(RPCSelectHoveredMapTile), RpcTarget.All, () => RPCSelectHoveredMapTile(v2.x,v2.y), v2.x,v2.y);
     }
 
     [PunRPC]
-    public void RPCSelectHoveredMapTile(Vector2Int v2)
+    public void RPCSelectHoveredMapTile(int x, int y)
     {
-        HeroCombat.currentHeroTurnInCombat.ExecuteSelectedAction(v2);
+        HeroCombat.currentHeroTurnInCombat.ExecuteSelectedAction(new Vector2Int(x,y));
     }
 
     public void NPCAttack(int actionIndex, Vector2Int v2)
     {
-        Broadcast.SafeRPC(photonView, nameof(NPCAttackRPC), RpcTarget.All, () => NPCAttackRPC(actionIndex, v2), actionIndex, v2);
+        Broadcast.SafeRPC(photonView, nameof(NPCAttackRPC), RpcTarget.All, () => NPCAttackRPC(actionIndex, v2.x, v2.y), actionIndex, v2.x,v2.y);
     }
 
     [PunRPC]
-    public void NPCAttackRPC(int actionIndex, Vector2Int v2)
+    public void NPCAttackRPC(int actionIndex, int x, int y)
     {
-        activeParticipant.ExecuteAction(actionIndex, v2);
+        activeParticipant.ExecuteAction(actionIndex, new Vector2Int(x,y));
     }
 }

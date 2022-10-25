@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,12 +10,18 @@ public class InGameMenue : InterfaceMask
 
     public void SaveGame()
     {
-        SaveLoad.Save();
+        if (!GameSaveData.HasCurrentGame)
+            GameSaveData.Instance.CreateNewGame("TestSave");
+        GameSaveData.Instance.Save();
     }
 
     public void LoadGame()
     {
-        SaveLoad.Load();
+        if (GameSaveData.HasCurrentGame)
+            GameSaveData.Instance.LoadLastSaveOfCurrentGame();
+        else
+            GameSaveData.Instance.LoadGame("TestSave");
+        PhotonNetwork.LoadLevel(StartGame.GAME_SCENE_NAME);
     }
 
     public void Continue()

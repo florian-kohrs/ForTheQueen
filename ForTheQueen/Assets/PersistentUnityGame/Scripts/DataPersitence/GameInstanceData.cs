@@ -32,12 +32,20 @@ public class GameInstanceData
 
     protected static int GameInstanceSeed => CurrentGameInstanceData.gameInstanceSeed;
 
-    public static GameInstanceData CurrentGameInstanceData => GamePersistence.GetCurrentGameInstanceData();
+    public static GameInstanceData CurrentGameInstanceData => GameSaveData.CurrentGameData;
+
+
+    public static void SetCurrentGameInstanceData(GameInstanceData d) => GameSaveData.Instance.AddGameInstanceData(d);
 
     public WorldData worldData = new WorldData();
 
     public GameTime timeData = new GameTime();
 
-    public int startSeed;
+    public int StartSeed => gameInstanceSeed;
+
+    public void SetSeed(int seed)
+    {
+        gameInstanceSeed = seed;
+    }
 
 }

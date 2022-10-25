@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum ActionEffect
 {
-    Pierce, Blind, Slow, Bleed, Poison, Stun, SpeedUp, ArmorUp, ArmorDown, MagicArmorUp, MagicArmorDown, Taunt
+    Blind, Slow, Bleed, Poison, Stun, SpeedUp, ArmorUp, ArmorDown, MagicArmorUp, MagicArmorDown, Taunt
 }
 
 public class ActionEffectInstance

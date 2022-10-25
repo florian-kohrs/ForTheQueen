@@ -115,6 +115,7 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
     protected Transform SetParticipantAt(int x, int z, IBattleParticipant part)
     {
         activeParticipants.Add(part);
+        part.CurrentTile = new Vector2Int(x, z);
         part.gameObject.transform.position = GetCenterPos(x, z);
         battleMapParticipant[x, z] = part;
         return part.gameObject.transform;

@@ -95,6 +95,7 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
         ActionEffectInstance e;
         if(!activeEffects.TryGetValue(effect, out e))
         {
+            e = new ActionEffectInstance();
             activeEffects.Add(effect, e);
         }
         e.stackAmount++;

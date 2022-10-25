@@ -60,7 +60,7 @@ public class MapMovementAnimation : MapAnimation
 
     public void Backstep()
     {
-        path = new List<Vector2Int>() { movingHero.MapTile.Coordinates, path[currentPathIndex - 1] };
+        path = new List<Vector2Int>() { movingHero.MapTile.Coordinates, path[currentPathIndex - 2] };
         currentPathIndex = 1;
         ContinuePath();
     }

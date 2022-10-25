@@ -48,7 +48,7 @@ public class GameTime
 
     protected void CreateTempOccupations()
     {
-        System.Random rand = new System.Random(GameInstanceData.CurrentGameInstanceData.startSeed * playerRoundsDone);
+        System.Random rand = new System.Random(GameInstanceData.CurrentGameInstanceData.StartSeed * playerRoundsDone);
         GameInstanceData.CurrentGameInstanceData.worldData.contintents.ForEach(c =>
         c.RespawnEnemies(rand));
     }

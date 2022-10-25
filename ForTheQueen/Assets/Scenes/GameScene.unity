@@ -1089,7 +1089,6 @@ GameObject:
   - component: {fileID: 281338049}
   - component: {fileID: 281338048}
   - component: {fileID: 281338047}
-  - component: {fileID: 281338050}
   - component: {fileID: 281338051}
   m_Layer: 7
   m_Name: HexagonWorld
@@ -1245,18 +1244,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 281338044}
   m_Mesh: {fileID: 0}
---- !u!114 &281338050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 281338044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63b85916aaec5554d8e39982652dbaa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &281338051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1547,7 +1534,6 @@ GameObject:
   m_Component:
   - component: {fileID: 388220483}
   - component: {fileID: 388220490}
-  - component: {fileID: 388220488}
   - component: {fileID: 388220487}
   - component: {fileID: 388220486}
   - component: {fileID: 388220491}
@@ -1600,18 +1586,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseToHovoredMapTile: {fileID: 388220491}
---- !u!114 &388220488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388220481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63b85916aaec5554d8e39982652dbaa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &388220490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2899,6 +2873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 927eb5bfc6c14874f8f31599ff9951aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  world: {fileID: 0}
 --- !u!114 &1643148090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2967,7 +2942,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1679396267}
   - component: {fileID: 1679396266}
-  - component: {fileID: 1679396269}
   - component: {fileID: 1679396268}
   m_Layer: 0
   m_Name: Camera
@@ -3028,18 +3002,6 @@ MonoBehaviour:
     v: {x: 0, y: 0, z: 0}
   scale:
     v: {x: 0, y: 0, z: 0}
---- !u!114 &1679396269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1679396265}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63b85916aaec5554d8e39982652dbaa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1682099883
 GameObject:
   m_ObjectHideFlags: 0

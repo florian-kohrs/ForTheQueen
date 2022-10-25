@@ -80,4 +80,15 @@ public class PunBroadcastCommunication : MonoBehaviourPun
         SafeRPC(nameof(StartCombatActionRPC), RpcTarget.All,()=>Instance.StartCombatActionRPC(index), index);
     }
 
+    [PunRPC]
+    public void BeginHoverSkillCheckBtnRPC(int index)
+    {
+        InterfaceController.GetInterfaceMask<CombatActionUI>().BeginHoverSkillCheckBtn(index);
+    }
+
+    public static void BeginHoverSkillCheckBtn(int index)
+    {
+        SafeRPC(nameof(BeginHoverSkillCheckBtnRPC), RpcTarget.All, () => Instance.BeginHoverSkillCheckBtnRPC(index), index);
+    }
+
 }

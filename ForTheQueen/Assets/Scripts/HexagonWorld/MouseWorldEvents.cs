@@ -12,12 +12,19 @@ public class MouseWorldEvents : MonoBehaviour, IMouseTileSelectionCallback<MapTi
 
     private void Awake()
     {
+        HexagonWorld.instance.onWorldCreated.Add(OnWorldCreated);
+        enabled = false;
+    }
+
+
+    protected void OnWorldCreated()
+    {
         mouseEvents = new MouseToHovoredMapTile<MapTile>(world);
         mouseEvents.timeBeforeCallOnMouseStay = TIME_BEFORE_MOUSE_STAY_EVENT;
         mouseEvents.rayLayerId = WORLD_LAYER_ID;
         mouseEvents.subscribers.AddSubscriber(this);
+        enabled = true;
     }
-
 
 
     protected const float TIME_BEFORE_MOUSE_STAY_EVENT = 0.5f;

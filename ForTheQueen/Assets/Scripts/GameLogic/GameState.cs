@@ -10,7 +10,14 @@ public class GameState : MonoBehaviour
 
     public CallbackSet<IPlayerTurnStateListener> turnListener;
 
-    private void Start()
+    public HexagonWorld world;
+
+    private void Awake()
+    {
+        HexagonWorld.instance.onWorldCreated.Add(OnWorldCreated);
+    }
+
+    protected void OnWorldCreated()
     {
         Hero currentActive = Heroes.GetHeroWithActiveTurn();
         if(currentActive == null)

@@ -19,15 +19,13 @@ public class HexagonWorld : HexagonGrid<MapTile>
 
     public const float TILE_IS_WATER_BELOW_VALUE = 40;
 
-    protected System.Random seedGenerator;
-
     public Transform mapOccupationParent;
 
-    public static MapTile[,] World => GamePersistence.GetCurrentGameInstanceData().worldData.world;
+    public static MapTile[,] World => GameInstanceData.CurrentGameInstanceData.worldData.world;
 
-    public static List<Continent> Continents => GamePersistence.GetCurrentGameInstanceData().worldData.contintents;
+    public static List<Continent> Continents => GameInstanceData.CurrentGameInstanceData.worldData.contintents;
 
-    public static WorldData WorldData => GamePersistence.GetCurrentGameInstanceData().worldData;
+    public static WorldData WorldData => GameInstanceData.CurrentGameInstanceData.worldData;
 
     protected bool IsWorldEmpty => Continents.Count == 0;
 
@@ -38,6 +36,8 @@ public class HexagonWorld : HexagonGrid<MapTile>
     public Transform tileMarkerParent;
 
     public static HexagonWorld instance;
+
+    public List<Action> onWorldCreated = new List<Action>();
 
     public static float GetWorldTotalWidth => instance.WorldTotalWidth;
     public static float GetWorldTotalHeigth => instance.WorldTotalHeight;
@@ -134,6 +134,8 @@ public class HexagonWorld : HexagonGrid<MapTile>
     {
         if(IsWorldEmpty)
         {
+            if(GameInstanceData.CurrentGameInstanceData.StartSeed == 0)
+                GameInstanceData.CurrentGameInstanceData.ShuffleGameInstanceSeed();
             CreateWorld();
         }
         else
@@ -165,13 +167,15 @@ public class HexagonWorld : HexagonGrid<MapTile>
 
     protected void LoadGame(GameInstanceData gameInstance)
     {
-        GamePersistence.SetCurrentGameInstanceData(gameInstance);
+        if(!PhotonNetwork.IsMasterClient)
+            GameInstanceData.SetCurrentGameInstanceData(gameInstance);
         BuildWorld();
     }
 
     protected void BuildWorld()
     {
         BuildWorldMeshAndMapObjects();
+        onWorldCreated.ForEach(x => x());
     }
 
     protected void InitializeWorld()
@@ -189,27 +193,18 @@ public class HexagonWorld : HexagonGrid<MapTile>
 
     public void CreateWorld()
     {
-        int seed = UnityEngine.Random.Range(0, 99999999);
-        CreateWorld(seed);
-    }
-
-    public void CreateWorld(int seed)
-    {
         if (!PhotonNetworkExtension.IsMasterClient)
             return;
 
         Broadcast.SafeRPC(photonView, 
             nameof(CreateWorldWithSeed), 
             RpcTarget.All, 
-            ()=>CreateWorldWithSeed(seed),
-            seed);
+            CreateWorldWithSeed);
     }
 
     [PunRPC]
-    public void CreateWorldWithSeed(int seed)
+    public void CreateWorldWithSeed()
     {
-        GameInstanceData.CurrentGameInstanceData.startSeed = seed;
-        seedGenerator = new System.Random(seed);
         InitializeWorld();
         CreateContinentAt(new Vector2Int(5,5), new Vector2Int(50, 50));
         BuildWorld();
@@ -234,7 +229,7 @@ public class HexagonWorld : HexagonGrid<MapTile>
         Assert.IsTrue(endX <= WORLD_WIDTH);
         Assert.IsTrue(endY <= WORLD_HEIGHT);
 
-        Continent continent = new Continent(this, seedGenerator.Next(), saveableBioms, startPos, size, distanceNoiseWeighting);
+        Continent continent = new Continent(this, GameInstanceData.Rand.Next(), saveableBioms, startPos, size, distanceNoiseWeighting);
         Continents.Add(continent);
     }
 
