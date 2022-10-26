@@ -11,13 +11,13 @@ public class MouseToHovoredBattleMapTile : MonoBehaviourPun
     protected static int WORLD_LAYER_ID = 7;
 
 
-    public MouseToHovoredMapTile<IBattleParticipant> mouseEvents;
+    public MouseToHovoredMapTile<BattleMapTile> mouseEvents;
 
-    public CallbackSet<IMouseTileSelectionCallback<IBattleParticipant>> subscribers => mouseEvents.subscribers;
+    public CallbackSet<IMouseTileSelectionCallback<BattleMapTile>> subscribers => mouseEvents.subscribers;
 
     private void Awake()
     {
-        mouseEvents = new MouseToHovoredMapTile<IBattleParticipant>(map);
+        mouseEvents = new MouseToHovoredMapTile<BattleMapTile>(map);
         mouseEvents.rayLayerId = WORLD_LAYER_ID;
     }
 

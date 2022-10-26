@@ -185,7 +185,7 @@ public class HexagonWorld : HexagonGrid<MapTile>
         {
             for (int y = 0; y < WORLD_HEIGHT; y++)
             {
-                MapTile t = new MapTile(new Vector2Int(x, y));
+                MapTile t = new MapTile(new Vector2Int(x, y), this);
                 World[x, y] = t;
             }
         }
@@ -270,7 +270,7 @@ public class HexagonWorld : HexagonGrid<MapTile>
         MeshCollider.sharedMesh = m;
     }
 
-    public static bool IsInBounds(Vector2Int point)
+    public static new bool IsInBounds(Vector2Int point)
     {
         return point.x >= 0 && point.y >= 0 && point.x < WORLD_WIDTH && point.y < WORLD_HEIGHT;
     }

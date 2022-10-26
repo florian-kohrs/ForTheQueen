@@ -24,7 +24,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback<M
 
     protected MarkerMapping mapMovementMarker;
 
-    public void BeginTileHover(Vector2Int v2, MapTile tile)
+    public void BeginTileHover(MapTile tile)
     {
         if (!GameManager.AllowPlayerMovement || !tile.CanBeEntered(Hero.CanEnterWater))
             return;
@@ -33,7 +33,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback<M
         DisplayPath(Hero.MapTile.Coordinates, tile.Coordinates);
     }
 
-    public void ExitTileHovered(Vector2Int v2, MapTile tile)
+    public void ExitTileHovered(MapTile tile)
     {
         if (isInAnimation)
             return;
@@ -64,7 +64,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback<M
     protected void OnEndMovement()
     {
         isInAnimation = false;
-        ExitTileHovered(default, currentHoveredTile);
+        ExitTileHovered(currentHoveredTile);
     }
 
     private void Update()
@@ -97,7 +97,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback<M
     public void DisplayPath(Vector2Int start, Vector2Int end)
     {
         pathToCurrentHovoredTile = HexagonPathfinder.GetPath(start, end, false);
-        mapMovementMarker = HexagonMarker.Instance.MarkHexagons(pathToCurrentHovoredTile, HexagonMarker.Instance.mapMovementMarker);
+        mapMovementMarker = HexagonMarker.Instance.MarkHexagons(HexagonWorld.instance, pathToCurrentHovoredTile, HexagonMarker.Instance.mapMovementMarker);
 
         int count = 1;
         foreach (GameObject marker in mapMovementMarker.markerMapping.Values)
@@ -123,7 +123,7 @@ public class PlayerMapMovement : MonoBehaviourPun, IMouseTileSelectionCallback<M
         }
     }
 
-    public void OnMouseStay(Vector2Int v2, MapTile tile)
+    public void OnMouseStay(MapTile tile)
     {
     }
 }

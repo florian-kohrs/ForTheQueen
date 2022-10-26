@@ -40,16 +40,16 @@ public class MouseWorldEvents : MonoBehaviour, IMouseTileSelectionCallback<MapTi
         mouseEvents.Update();
     }
 
-    public void BeginTileHover(Vector2Int coord, MapTile tile)
+    public void BeginTileHover(MapTile tile)
     {
     }
 
-    public void OnMouseStay(Vector2Int coord, MapTile tile)
+    public void OnMouseStay(MapTile tile)
     {
         tile.OnMouseStay(Heroes.GetHeroWithActiveTurn());
     }
 
-    public void ExitTileHovered(Vector2Int coord, MapTile tile)
+    public void ExitTileHovered(MapTile tile)
     {
         tile.OnMouseExit(Heroes.GetHeroWithActiveTurn());
     }

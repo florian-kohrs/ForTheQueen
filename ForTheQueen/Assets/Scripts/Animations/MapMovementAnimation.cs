@@ -14,7 +14,9 @@ public class MapMovementAnimation : MapAnimation
 
     protected int currentPathIndex;
 
-    public bool IsPathDone => currentPathIndex >= path.Count - 1; 
+    public bool IsPathDone => currentPathIndex >= path.Count - 1;
+
+    public BaseHexagonGrid hexGrid;
 
     public void AnimateMovement(List<Vector2Int> path, Hero h, Action onAnimationEnded = null)
     {

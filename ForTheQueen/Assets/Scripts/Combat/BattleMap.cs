@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BattleMap : HexagonGrid<IBattleParticipant>
+public class BattleMap : HexagonGrid<BattleMapTile>
 {
 
     public const int CENTER_AREA = 2;
@@ -19,11 +19,11 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
     [SerializeField]
     protected GameObject battleMapTilePrefab;
 
-    protected IBattleParticipant[,] battleMapParticipant;
+    protected BattleMapTile[,] battleMapContent;
 
     public override Vector2Int Size => battleMapSize;
 
-    public override IBattleParticipant[,] GridData => battleMapParticipant;
+    public override BattleMapTile[,] GridData => battleMapContent;
 
     public List<IBattleParticipant> activeParticipants = new List<IBattleParticipant>();
 
@@ -48,9 +48,9 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
         GameObject marker = Instantiate(mapMarkerPrefab, mapMarkerParent);
         marker.transform.localScale = new Vector3(mapMarkerScale, mapMarkerScale, mapMarkerScale);
         currentMapMarkers.Add(marker);
-        marker.transform.position = MapTile.GetCenterPosForCoord(v2, this) + Vector3.up * 0.001f;
-        IBattleParticipant part = GridData[v2.x, v2.y];
-        if(part != null)
+        BattleMapTile part = GridData[v2.x, v2.y];
+        marker.transform.position = part.CenterPos + Vector3.up * 0.001f;
+        if(part.participant != null)
         {
             marker.GetComponent<Image>().color = actionTargetSelf ? Color.green : Color.red;
         }
@@ -60,7 +60,7 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
     public IEnumerable<IBattleParticipant> GetAfflictedParticipants(Vector2Int selectedField, CombatAction a)
     {
         return a.GetTargetFieldsFromAction(selectedField, selectedField, a.target, IsInBounds).
-            Select(DataFromIndex).
+            Select(v2 => DataFromIndex(v2).participant).
             Where(b => b != null);
     }
 
@@ -79,7 +79,6 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
     public ICollection<IBattleParticipant> BeginBattle(BattleParticipants participants)
     {
         CreateMap();
-        battleMapParticipant = new IBattleParticipant[battleMapSize.x, battleMapSize.y];
 
         int i = 0;
         foreach (var item in participants.onPlayersSide)
@@ -97,10 +96,10 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
         }
 
         List<IBattleParticipant> ps = new List<IBattleParticipant>();
-        foreach (var item in battleMapParticipant)
+        foreach (var item in battleMapContent)
         {
-            if (item != null)
-                ps.Add(item);
+            if (item.participant != null)
+                ps.Add(item.participant);
         }
         return ps;
     }
@@ -117,17 +116,19 @@ public class BattleMap : HexagonGrid<IBattleParticipant>
         activeParticipants.Add(part);
         part.CurrentTile = new Vector2Int(x, z);
         part.gameObject.transform.position = GetCenterPos(x, z);
-        battleMapParticipant[x, z] = part;
+        battleMapContent[x, z].participant = part;
         return part.gameObject.transform;
     }
 
     protected void CreateMap()
     {
+        battleMapContent = new BattleMapTile[battleMapSize.x, battleMapSize.y];
 
         for (int x = 0; x < battleMapSize.x; x++)
         {
             for (int y = 0; y < battleMapSize.y; y++)
             {
+                battleMapContent[x, y] = new BattleMapTile(new Vector2Int(x, y), this);
                 SpawnTileAt(x, y);
             }
         }

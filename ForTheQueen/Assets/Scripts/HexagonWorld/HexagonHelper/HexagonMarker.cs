@@ -23,17 +23,17 @@ public class HexagonMarker : MonoBehaviour
     [SerializeField]
     protected GameObject markerEnvirenment;
 
-    public MarkerMapping MarkHexagons(IEnumerable<Vector2Int> tiles, GameObject markerPrefab, MarkerMapping mapping = null)
+    public MarkerMapping MarkHexagons(BaseHexagonGrid grid, IEnumerable<Vector2Int> tiles, GameObject markerPrefab, MarkerMapping mapping = null)
     {
-        return MarkHexagons(HexagonWorld.instance.MapTilesFromIndices(tiles), markerPrefab, mapping);
+        return MarkHexagons(grid, grid.BaseMapTilesFromIndices(tiles), markerPrefab, mapping);
     }
 
-    public MarkerMapping MarkHexagons(IEnumerable<MapTile> tiles, GameObject markerPrefab, MarkerMapping mapping = null)
+    public MarkerMapping MarkHexagons(BaseHexagonGrid grid, IEnumerable<BaseMapTile> tiles, GameObject markerPrefab, MarkerMapping mapping = null)
     {
         if(mapping == null)
             mapping = new MarkerMapping();
 
-        mapping.newTiles = new List<MapTile>();
+        mapping.newTiles = new List<BaseMapTile>();
 
         currentMarkerPrefab = markerPrefab;
         if (currentMarkerPrefab == null)
@@ -47,7 +47,7 @@ public class HexagonMarker : MonoBehaviour
         return mapping;
     }
 
-    protected GameObject SpawnMarkerAt(MapTile tile)
+    protected GameObject SpawnMarkerAt(BaseMapTile tile)
     {
         GameObject marker = Instantiate(currentMarkerPrefab, markerEnvirenment.transform);
         marker.transform.position = tile.CenterPos + Vector3.up * 0.05f;

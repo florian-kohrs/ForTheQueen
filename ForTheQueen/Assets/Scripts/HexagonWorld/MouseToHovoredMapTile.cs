@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MouseToHovoredMapTile<T>
+public class MouseToHovoredMapTile<T> where T : BaseMapTile
 {
 
     public MouseToHovoredMapTile(HexagonGrid<T> grid)
@@ -56,7 +56,7 @@ public class MouseToHovoredMapTile<T>
             if (tile.HasValue && timeOnHoveredTile > timeBeforeCallOnMouseStay && !calledTileHover)
             {
                 calledTileHover = true;
-                subscribers.CallForEachSubscriber(s => s.OnMouseStay(coord.Value, lastHoveredTile));
+                subscribers.CallForEachSubscriber(s => s.OnMouseStay(lastHoveredTile));
             }
         }
         else
@@ -65,12 +65,12 @@ public class MouseToHovoredMapTile<T>
 
             if (lastHoveredTile != null)
             {
-                subscribers.CallForEachSubscriber(s => s.ExitTileHovered(lastHoveredTileCoord,lastHoveredTile));
+                subscribers.CallForEachSubscriber(s => s.ExitTileHovered(lastHoveredTile));
             }
 
             if (tile.HasValue)
             {
-                subscribers.CallForEachSubscriber(s => s.BeginTileHover(coord.Value, tile.Value));
+                subscribers.CallForEachSubscriber(s => s.BeginTileHover(tile.Value));
             }
             lastHoveredTile = tile.Value;
             if(coord.HasValue)

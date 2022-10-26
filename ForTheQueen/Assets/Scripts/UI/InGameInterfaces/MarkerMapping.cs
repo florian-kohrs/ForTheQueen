@@ -5,11 +5,11 @@ using UnityEngine;
 public class MarkerMapping
 {
 
-    public Dictionary<MapTile, GameObject> markerMapping = new Dictionary<MapTile, GameObject>();
+    public Dictionary<BaseMapTile, GameObject> markerMapping = new Dictionary<BaseMapTile, GameObject>();
 
-    public List<MapTile> newTiles = new List<MapTile>();
+    public List<BaseMapTile> newTiles = new List<BaseMapTile>();
 
-    public void Add(MapTile tile, GameObject g)
+    public void Add(BaseMapTile tile, GameObject g)
     {
         markerMapping[tile] = g;
     }

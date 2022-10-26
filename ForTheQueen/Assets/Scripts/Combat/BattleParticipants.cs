@@ -50,13 +50,13 @@ public class BattleParticipants
 
     public void MarkBattleParticipants(MarkerMapping mapping)
     {
-        HexagonMarker.Instance.MarkHexagons(onPlayersSide.Select(e => e.MapTile), HexagonMarker.Instance.battleParticipantMarker);
+        HexagonMarker.Instance.MarkHexagons(HexagonWorld.instance, onPlayersSide.Select(e => e.MapTile), HexagonMarker.Instance.battleParticipantMarker);
         foreach (var item in mapping.newTiles)
         {
             item.CurrentMarkerOnMapTile.GetComponent<Image>().color = Color.green;
         }
 
-        HexagonMarker.Instance.MarkHexagons(onEnemiesSide.Select(e => e.MapTile), HexagonMarker.Instance.battleParticipantMarker);
+        HexagonMarker.Instance.MarkHexagons(HexagonWorld.instance, onEnemiesSide.Select(e => e.MapTile), HexagonMarker.Instance.battleParticipantMarker);
         foreach (var item in mapping.newTiles)
         {
             item.CurrentMarkerOnMapTile.GetComponent<Image>().color = Color.red;

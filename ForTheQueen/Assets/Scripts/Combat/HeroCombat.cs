@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<IBattleParticipant>, IHealthDisplayer
+public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<BattleMapTile>, IHealthDisplayer
 {
+
+    public static int MAX_MOVEMENT_PER_TURN = 5;
+
+    protected int currentMovementInTurn;
 
     protected Hero hero;
 
@@ -41,6 +45,7 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<I
     {
         currentHeroTurnInCombat = this;
         Debug.Log("Player started turn");
+        currentMovementInTurn = MAX_MOVEMENT_PER_TURN;
         InterfaceController.GetInterfaceMask<CombatActionUI>().AdaptUIAndOpen(this);
     }
 
@@ -80,24 +85,25 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<I
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0) && SelectedCombatAction != null && IsCurrentSelectedCoordValid())
-        {
-            CombatState.SelectHoveredMapTile(currentSelectedCoord.Value);
-        }
+        if(Input.GetMouseButtonDown(0))
+            if(SelectedCombatAction != null && IsCurrentSelectedCoordValid())
+            {
+                CombatState.SelectHoveredMapTile(currentSelectedCoord.Value);
+            }
     }
 
 
-    public void BeginTileHover(Vector2Int coord, IBattleParticipant tile)
+    public void BeginTileHover(BattleMapTile tile)
     {
-        currentSelectedCoord = new Maybe<Vector2Int>(coord);
-        CombatState.BeginHoverMapTile(currentSelectedCoord.Value);
+        currentSelectedCoord = new Maybe<Vector2Int>(tile.Coordinates);
+        CombatState.BeginHoverMapTile(tile.Coordinates);
     }
 
-    public void OnMouseStay(Vector2Int coord, IBattleParticipant tile)
+    public void OnMouseStay(BattleMapTile tile)
     {
     }
 
-    public void ExitTileHovered(Vector2Int coord, IBattleParticipant tile)
+    public void ExitTileHovered(BattleMapTile tile)
     {
         currentSelectedCoord.RemoveValue();
         CombatState.StopHoveredTile();
