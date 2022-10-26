@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class BaseMapTile
+public abstract class BaseMapTile
 {
 
     public BaseMapTile() { }
@@ -42,17 +42,7 @@ public class BaseMapTile
         currentMarkerOnMapTile = tile;
     }
 
-
-    public Vector3 CenterPos
-    {
-        get
-        {
-            if (center == default)
-                center = GetCenterPosForCoord(Coordinates);
-            return center;
-        }
-    }
-
+    public Vector3 CenterPos => center;
 
     public static Vector3 GetCenterPosForCoord(Vector2Int coord, BaseHexagonGrid grid)
     {
@@ -64,13 +54,6 @@ public class BaseMapTile
         return new Vector3(GetXPosForCoord(coord, spaceBetweenHexes, xSpacing, ySpacing), 0, GetZPosForCoord(coord, spaceBetweenHexes, xSpacing, ySpacing));
     }
 
-    public static Vector3 GetCenterPosForCoord(Vector2Int coord)
-    {
-        return new Vector3(
-            GetXPosForCoord(coord, HexagonWorld.instance.SpaceBetweenHexes, HexagonWorld.instance.HexXSpacing, HexagonWorld.instance.HexYSpacing),
-            0,
-            GetZPosForCoord(coord, HexagonWorld.instance.SpaceBetweenHexes, HexagonWorld.instance.HexXSpacing, HexagonWorld.instance.HexYSpacing));
-    }
 
     protected static float GetZPosForCoord(Vector2Int coord, float spaceBetweenHexes, float xSpacing, float ySpacing)
     {
@@ -89,6 +72,8 @@ public class BaseMapTile
         return anchorX;
     }
 
+    public abstract bool CanBeEntered(bool allowWater);
 
+    public abstract bool IsValidMovementTarget(bool allowWater);
 
 }

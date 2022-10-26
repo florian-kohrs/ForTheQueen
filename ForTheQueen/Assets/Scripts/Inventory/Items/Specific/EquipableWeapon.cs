@@ -19,4 +19,7 @@ public class EquipableWeapon : EquipableItem
 
     public bool brakesOnCritFail;
 
+    [Min(1)]
+    public int standartWeaponRange = 1;
+
 }

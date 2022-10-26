@@ -9,4 +9,8 @@ public interface IMovementAgent
 
     Vector2Int CurrentTile { get; set; }
 
+    bool CanEnterWater { get; }
+
+    Transform RuntimeHeroObject { get; } 
+
 }

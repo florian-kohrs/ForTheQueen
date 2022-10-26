@@ -52,7 +52,7 @@ public abstract class BaseEnemyOccupation<T> : TileInteractableOccupation<T>, IB
 
     public override void OnPlayerMouseHover(Hero p)
     {
-        IEnumerable<Vector2Int> neighbours = HexagonPathfinder.GetAccessableNeighboursInDistance(MapTile.Coordinates, MapTile.kingdomOfMapTile.KingdomBiom.fightAssistRange, false);
+        IEnumerable<Vector2Int> neighbours = HexagonPathfinder.GetAccessableNeighboursInDistance(HexagonWorld.instance,MapTile.Coordinates, MapTile.kingdomOfMapTile.KingdomBiom.fightAssistRange, false);
         IEnumerable<MapTile> tiles = HexagonWorld.instance.MapTilesFromIndices(neighbours);
 
         battleMarkers = HexagonMarker.Instance.MarkHexagons(HexagonWorld.instance, tiles, HexagonMarker.Instance.battleParticipantMarker);

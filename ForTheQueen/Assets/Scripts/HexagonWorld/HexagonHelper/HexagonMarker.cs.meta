@@ -3,7 +3,14 @@ guid: 21a4baf5bc48c9448aa14626c6eeb45e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - defaultMarkerPrefab: {fileID: 409033850938715626, guid: 8bb0792a776a8a54b80184533bee48ae,
+      type: 3}
+  - battleParticipantMarker: {fileID: 6428310350532770901, guid: f3317f490b41a8a409bf364f58befb4a,
+      type: 3}
+  - mapMovementMarker: {fileID: 829648238163383343, guid: 0a6743bfeaa3b2e4eb62d37c9455ec5b,
+      type: 3}
+  - markerEnvirenment: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

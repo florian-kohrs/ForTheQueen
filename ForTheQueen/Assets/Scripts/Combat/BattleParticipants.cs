@@ -17,7 +17,7 @@ public class BattleParticipants
     public BattleParticipants(MapTile startTile) : 
         this(startTile, 
             HexagonWorld.instance.MapTilesFromIndices(
-                HexagonPathfinder.GetAccessableNeighboursInDistance(startTile.Coordinates, startTile.kingdomOfMapTile.KingdomBiom.fightAssistRange, false)))
+                HexagonPathfinder.GetAccessableNeighboursInDistance(HexagonWorld.instance, startTile.Coordinates, startTile.kingdomOfMapTile.KingdomBiom.fightAssistRange, false)))
     { }
 
 

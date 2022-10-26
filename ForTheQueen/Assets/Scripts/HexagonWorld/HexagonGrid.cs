@@ -16,7 +16,7 @@ public abstract class HexagonGrid<T> : BaseHexagonGrid where T : BaseMapTile
 
     public override BaseMapTile[,] BaseMapData => GridData;
 
-    public T DataFromIndex(Vector2Int index) => GridData[index.x, index.y];
+    public new T DataFromIndex(Vector2Int index) => GridData[index.x, index.y];
 
     public T DataFromIndex(int x, int y) => GridData[x, y];
 

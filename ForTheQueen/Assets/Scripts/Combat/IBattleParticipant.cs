@@ -27,6 +27,8 @@ public interface IBattleParticipant
 
     bool OnPlayersSide { get; }
 
+    int RestMovementInTurn { get; set; }
+
     Vector2Int CurrentTile { get; set; }
 
 

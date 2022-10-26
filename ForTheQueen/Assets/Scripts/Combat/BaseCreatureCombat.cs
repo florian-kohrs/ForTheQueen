@@ -9,6 +9,8 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
 
     public CombatState CombatState { protected get; set; }
 
+    public abstract int MovementInTurn { get; }
+
     public int MaxHealth => stats.MaxHealth;
 
 
@@ -85,8 +87,17 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
     public abstract bool OnPlayersSide { get; }
 
     public Vector2Int CurrentTile { get ; set; }
+    public int RestMovementInTurn { get => restMovement; set => restMovement = value; }
 
-    public abstract void StartTurn();
+    protected int restMovement;
+
+    public void StartTurn()
+    {
+        RestMovementInTurn = MovementInTurn;
+        OnStartTurn();
+    }
+
+    public abstract void OnStartTurn();
 
     public virtual void OnTurnEnded() { }
 

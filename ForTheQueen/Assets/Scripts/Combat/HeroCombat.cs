@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<BattleMapTile>, IHealthDisplayer
+public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<BattleMapTile>, IHealthDisplayer, IMovementAgent
 {
 
     public static int MAX_MOVEMENT_PER_TURN = 5;
@@ -16,6 +16,8 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<B
     public static EquipableWeapon CurrentHeroEquippedWeapon => currentHeroTurnInCombat.inventory.EquippedWeapon;
 
     public EquipableWeapon EquippedWeapon => inventory.EquippedWeapon;
+
+    protected int currentSelectedCombatAction = 1;
 
     public Hero Hero
     {
@@ -34,14 +36,37 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<B
 
     protected override IHealthDisplayer HealthDisplayer => this;
 
-    protected override List<CombatAction> AllCombatActions => throw new System.NotImplementedException();
+
+    protected List<CombatAction> allCombatActions;
+
+    protected override List<CombatAction> AllCombatActions
+    {
+        get
+        {
+            if (allCombatActions == null)
+            {
+                allCombatActions = new List<CombatAction>();
+                allCombatActions.Add(CombatAction.fleeAction);
+                allCombatActions.AddRange(currentHeroTurnInCombat.inventory.AvailableCombatActions);
+            }
+            return allCombatActions;
+        }
+    }
+
+    public override int MovementInTurn => MAX_MOVEMENT_PER_TURN;
+
+    public int MovementRemaining { get => restMovement; set => restMovement = value; }
+
+    public bool CanEnterWater => false;
+
+    public Transform RuntimeHeroObject => transform;
 
     private void Start()
     {
         enabled = false;
     }
 
-    public override void StartTurn()
+    public override void OnStartTurn()
     {
         currentHeroTurnInCombat = this;
         Debug.Log("Player started turn");

@@ -18,7 +18,7 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
 
     protected List<CombatAction> currentCombatActions;
 
-    protected List<SkillCheckButton> currentSkillCheckButtons;
+    protected List<CombatActionButton> currentSkillCheckButtons;
 
     protected HeroCombat currentHero;
 
@@ -29,7 +29,7 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
     protected override void AdaptUITo(HeroCombat heroCombat, Vector3 pos)
     {
         DeleteOldMarkers();
-        currentSkillCheckButtons = new List<SkillCheckButton>();
+        currentSkillCheckButtons = new List<CombatActionButton>();
         currentCombatActions = new List<CombatAction>();
         currentCombatActionsUIs = new List<GameObject>();
         currentHero = heroCombat;
@@ -60,14 +60,17 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
     {
         SkillCheck skillCheck = new SkillCheck(currentHero.Hero) { canFocus = canFocus, skill = skill, numberSkillChecks = a.numberSkillChecks };
         GameObject actionUI = Instantiate(actionPrefab, uiPrefabParent);
-        SkillCheckButton b = actionUI.GetComponent<SkillCheckButton>();
+        CombatActionButton c = actionUI.GetComponent<CombatActionButton>();
+        SkillCheckButton b = c.skillCheckBtn;
         b.skillCheck = skillCheck;
         b.Hero = HeroCombat.CurrentActiveHeroInCombat;
         int i = currentCombatActions.Count;
         b.leftClickAction = delegate { PunBroadcastCommunication.StartCombatAction(i); };
         b.onMouseHover = delegate { PunBroadcastCommunication.BeginHoverSkillCheckBtn(i); };
         ApplyActionToUI(actionUI, a);
-        currentSkillCheckButtons.Add(b);
+        c.combatAction = a;
+        c.Display();
+        currentSkillCheckButtons.Add(c);
         currentCombatActionsUIs.Add(actionUI);
         currentCombatActions.Add(a);
         return actionUI;
@@ -75,7 +78,7 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
 
     public void BeginHoverSkillCheckBtn(int index)
     {
-        InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(currentSkillCheckButtons[index].skillCheck);
+        InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(currentSkillCheckButtons[index].skillCheckBtn.skillCheck);
     }
 
     public void StartAction(int index)

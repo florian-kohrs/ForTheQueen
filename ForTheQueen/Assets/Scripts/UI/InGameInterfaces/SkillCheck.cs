@@ -44,4 +44,8 @@ public class SkillCheck
 
     public CreatureStats Stats => stats;
 
+    public int StandartSuccessPercentage => stats.GetStatsOfSkill(skill);
+
+    public int PerfectRate => Mathf.RoundToInt(100 * (Mathf.Pow(StandartSuccessPercentage / 100f, numberSkillChecks)));
+
 }

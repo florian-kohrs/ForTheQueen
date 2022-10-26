@@ -93,12 +93,14 @@ public abstract class BaseHexagonGrid : MonoBehaviourPun
 
     public Maybe<BaseMapTile> GetBaseWorldTileFromPosition(Vector3 pos) => GetIndexFromPosition(pos).ApplyValueToFunction(DataFromIndex);
 
-    private BaseMapTile DataFromIndex(Vector2Int index) => BaseMapData[index.x, index.y];
+    public BaseMapTile DataFromIndex(Vector2Int index) => BaseMapData[index.x, index.y];
 
 
     public IEnumerable<BaseMapTile> BaseMapTilesFromIndices(IEnumerable<Vector2Int> indices)
     {
         return indices.Select(DataFromIndex);
     }
+
+
 
 }

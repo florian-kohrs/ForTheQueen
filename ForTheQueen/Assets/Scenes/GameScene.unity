@@ -1586,6 +1586,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseToHovoredMapTile: {fileID: 388220491}
+  world: {fileID: 281338046}
+  anim: {fileID: 1643148087}
 --- !u!114 &388220490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2846,6 +2848,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f11188161a246f469f7a7e83132d203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hexGrid: {fileID: 281338046}
 --- !u!4 &1643148088
 Transform:
   m_ObjectHideFlags: 0
@@ -2873,7 +2876,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 927eb5bfc6c14874f8f31599ff9951aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  world: {fileID: 0}
+  world: {fileID: 281338046}
 --- !u!114 &1643148090
 MonoBehaviour:
   m_ObjectHideFlags: 0

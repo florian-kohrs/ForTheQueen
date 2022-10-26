@@ -8,10 +8,29 @@ public class HexagonPathfinder : INavigatable<Vector2Int, Vector2Int>
 
     protected bool allowWater = false;
 
-    public static List<Vector2Int> GetPath(Vector2Int start, Vector2Int end, bool allowWater, PathAccuracy pathAccuracy = PathAccuracy.Perfect)
+    protected BaseHexagonGrid grid;
+
+    protected Vector2Int start;
+    protected Vector2Int end;
+
+    protected Func<HexagonPathfinder, Vector2Int, Vector2Int, bool> hasReachedTargetOverride;
+
+    private HexagonPathfinder(BaseHexagonGrid grid, bool allowWater)
     {
-        HexagonPathfinder pathfinder = new HexagonPathfinder();
-        pathfinder.allowWater = allowWater;
+        this.grid = grid;
+        this.allowWater = allowWater;
+    }
+
+    private HexagonPathfinder(BaseHexagonGrid grid, Vector2Int start, Vector2Int end, bool allowWater) : this(grid, allowWater)
+    {
+        this.start = start;
+        this.end = end; 
+    }
+
+    public static List<Vector2Int> GetPath(BaseHexagonGrid grid, Vector2Int start, Vector2Int end, bool allowWater, PathAccuracy pathAccuracy = PathAccuracy.Perfect, Func<HexagonPathfinder, Vector2Int, Vector2Int, bool> hasReachedTargetOverride = null)
+    {
+        HexagonPathfinder pathfinder = new HexagonPathfinder(grid, start, end, allowWater);
+        pathfinder.hasReachedTargetOverride = hasReachedTargetOverride;
         return Pathfinder<Vector2Int, Vector2Int>.FindPath(pathfinder, start, end, pathAccuracy);
     }
 
@@ -19,8 +38,8 @@ public class HexagonPathfinder : INavigatable<Vector2Int, Vector2Int>
     {
         ///if a field cant be crossed (but may still be entered, e.g. enemies on map)
         ///no neighbours will be available for this field
-        if (!HexagonWorld.World[field.x, field.y].CanBeCrossed(allowWater))
-            return Array.Empty<Vector2Int>();
+        //if (!grid.BaseMapData[field.x, field.y].CanBeEntered(allowWater))
+        //    return Array.Empty<Vector2Int>();
 
         return GetCircumjacent(field, IsFieldAvailableForPathfinder);
     }
@@ -54,8 +73,16 @@ public class HexagonPathfinder : INavigatable<Vector2Int, Vector2Int>
 
     public float DistanceToTarget(Vector2Int from, Vector2Int to)
     {
+        int x = from.x;
+        int bonus = 0;
+   
+
         int xDiff = Mathf.Abs(from.x - to.x);
-        int yDiff = Mathf.Max(0, Mathf.Abs(from.y - to.y) - xDiff / 2 - (xDiff % 2));
+
+        if (xDiff % 2 != 0 && (x % 2 == 0 && to.y < from.y || x % 2 == 1 && to.y > from.y))
+            bonus = 1;
+
+        int yDiff = Mathf.Max(0, Mathf.Abs(from.y - to.y) - Mathf.FloorToInt(xDiff / 2f) - bonus);
         return xDiff + yDiff;
     }
 
@@ -64,10 +91,11 @@ public class HexagonPathfinder : INavigatable<Vector2Int, Vector2Int>
         return GetNeighboursInDistance(start, distance, _=>true);
     }
 
-    public static IEnumerable<Vector2Int> GetAccessableNeighboursInDistance(Vector2Int start, int distance, bool includeStart = true)
+    public static IEnumerable<Vector2Int> GetAccessableNeighboursInDistance(BaseHexagonGrid grid, Vector2Int start, int distance, bool allowWater, bool includeStart = true)
     {
+        HexagonPathfinder pathfinder = new HexagonPathfinder(grid, allowWater);
         return GetNeighboursInDistance(start, distance, 
-            (p)=> HexagonWorld.IsInBounds(p) && FieldCanBeEntered(p, HexagonWorld.MapTileFromIndex(p).IsWater), includeStart);
+            (p)=> grid.IsInBounds(p) && pathfinder.FieldCanBeEntered(p, allowWater), includeStart);
     }
 
     public static IEnumerable<Vector2Int> GetNeighboursInDistance(Vector2Int start, int distance, Predicate<Vector2Int> p, bool includeStart = true)
@@ -99,12 +127,12 @@ public class HexagonPathfinder : INavigatable<Vector2Int, Vector2Int>
 
     protected bool IsFieldAvailableForPathfinder(Vector2Int point)
     {
-        return HexagonWorld.IsInBounds(point) && FieldCanBeEntered(point);
+        return grid.IsInBounds(point) && FieldCanBeEntered(point);
     }
 
-    public static bool FieldCanBeEntered(Vector2Int point, bool allowWater)
+    public bool FieldCanBeEntered(Vector2Int point, bool allowWater)
     {
-        return HexagonWorld.MapTileFromIndex(point).CanBeEntered(allowWater);
+        return grid.DataFromIndex(point).CanBeEntered(allowWater);
     }
 
     public bool FieldCanBeEntered(Vector2Int point)
@@ -120,7 +148,10 @@ public class HexagonPathfinder : INavigatable<Vector2Int, Vector2Int>
 
     public bool ReachedTarget(Vector2Int current, Vector2Int destination)
     {
-        return current == destination;
+        if(hasReachedTargetOverride == null)
+            return current == destination;
+        else
+            return hasReachedTargetOverride(this, current, destination);
     }
 
     public bool IsEqual(Vector2Int t1, Vector2Int t2)

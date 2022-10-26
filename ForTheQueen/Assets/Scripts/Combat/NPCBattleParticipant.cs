@@ -37,7 +37,9 @@ public class NPCBattleParticipant : InventoryCreatureCombat
 
     protected override List<CombatAction> AllCombatActions => Actions;
 
-    public override void StartTurn()
+    public override int MovementInTurn => 3;
+
+    public override void OnStartTurn()
     {
         Debug.Log("Enemy starts turn. attack then end turn");
         Attack();

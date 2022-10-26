@@ -24,6 +24,9 @@ public class CombatAction/* : ScriptableObject*/
     [Tooltip("If target enemies is false, damage will heal instead")]
     public int damage;
 
+    [Range(-3,3)]
+    public int actionRangeModifier;
+
     public bool overrideSkillCheck;
 
     public SkillCheck.Skill skillOverride;

@@ -13,7 +13,15 @@ public class BattleMapTile : BaseMapTile
 
     public IBattleParticipant participant;
 
-    public bool CanBeEntered => participant == null;
+    public bool IsOccupied => participant != null;
 
+    public override bool CanBeEntered(bool allowWater)
+    {
+        return participant == null;
+    }
 
+    public override bool IsValidMovementTarget(bool allowWater)
+    {
+        return true;
+    }
 }

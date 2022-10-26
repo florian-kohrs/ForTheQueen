@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Hero : ITileOccupation, IBattleOccupation, IItemEquipper
+public class Hero : ITileOccupation, IBattleOccupation, IItemEquipper, IMovementAgent
 {
 
     public Hero() 
@@ -106,6 +106,12 @@ public class Hero : ITileOccupation, IBattleOccupation, IItemEquipper
     public Transform HelmetParent => heroObject.transform;
 
     public Transform WeaponParent => heroObject.transform;
+
+    public int MovementRemaining { get => restMovementInTurn; set => restMovementInTurn = value; }
+
+    public Vector2Int CurrentTile { get => mapTile.Coordinates; set => mapTile = HexagonWorld.instance.DataFromIndex(value); }
+
+    public Transform RuntimeHeroObject => runtimeHeroObject;
 
     public void StartHerosTurn()
     {

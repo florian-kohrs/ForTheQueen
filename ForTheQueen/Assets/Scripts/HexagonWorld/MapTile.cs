@@ -58,7 +58,7 @@ public class MapTile : BaseMapTile
 
     public bool canBeEntered  = true;
 
-    public bool CanBeEntered(bool allowWaterTiles) => canBeEntered && (!IsWater || allowWaterTiles);
+    public override bool CanBeEntered(bool allowWaterTiles) => canBeEntered && (!IsWater || allowWaterTiles);
 
 
     public bool discovered = false;
@@ -202,5 +202,8 @@ public class MapTile : BaseMapTile
         }
     }
 
-
+    public override bool IsValidMovementTarget(bool allowWater)
+    {
+        return CanBeEntered(allowWater);
+    }
 }
