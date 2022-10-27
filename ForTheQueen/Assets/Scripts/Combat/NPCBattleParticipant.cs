@@ -35,9 +35,11 @@ public class NPCBattleParticipant : InventoryCreatureCombat
 
     protected override IHealthDisplayer HealthDisplayer => enemyUI;
 
-    protected override List<CombatAction> AllCombatActions => Actions;
+    public override List<CombatAction> AllCombatActions => Actions;
 
     public override int MovementInTurn => 3;
+
+    public override bool IsMine => false;
 
     public override void OnStartTurn()
     {

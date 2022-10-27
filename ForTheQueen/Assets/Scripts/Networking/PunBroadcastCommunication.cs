@@ -70,14 +70,14 @@ public class PunBroadcastCommunication : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void StartCombatActionRPC(int index)
+    public void SelectCombatActionRPC(int index)
     {
-        InterfaceController.GetInterfaceMask<CombatActionUI>().StartAction(index);
+        InterfaceController.GetInterfaceMask<CombatActionUI>().SelectAction(index);
     }
 
-    public static void StartCombatAction(int index)
+    public static void SelectCombatAction(int index)
     {
-        SafeRPC(nameof(StartCombatActionRPC), RpcTarget.All,()=>Instance.StartCombatActionRPC(index), index);
+        SafeRPC(nameof(SelectCombatActionRPC), RpcTarget.All,()=>Instance.SelectCombatActionRPC(index), index);
     }
 
     [PunRPC]

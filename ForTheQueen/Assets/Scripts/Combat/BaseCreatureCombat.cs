@@ -14,11 +14,18 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
     public int MaxHealth => stats.MaxHealth;
 
 
-    protected CombatAction selectedCombatAction;
+    public CombatAction SelectedCombatAction
+    {
+        get
+        {
+            if (currentSelectedCombatActionIndex < 0)
+                return null;
 
-    public CombatAction SelectedCombatAction => selectedCombatAction;
+            return AllCombatActions[currentSelectedCombatActionIndex];
+        }
+    }
 
-    protected abstract List<CombatAction> AllCombatActions { get;}
+    public abstract List<CombatAction> AllCombatActions { get;}
 
     protected Maybe<Vector2Int> currentSelectedCoord = new Maybe<Vector2Int>();
 
@@ -30,11 +37,25 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
 
     protected abstract void OnDeath();
 
+    public int CurrentAttackRange
+    {
+        get
+        {
+            if (SelectedCombatAction == null)
+                return 0;
+            else
+                return Mathf.Max(1, SelectedCombatAction.actionRangeModifier + ExtraAttackRange);
+        }
+    }
+
+    public int currentSelectedCombatActionIndex = -1;
+
+    protected virtual int ExtraAttackRange => 0;
 
     public void ExecuteAction(int index, Vector2Int target)
     {
-        selectedCombatAction = AllCombatActions[index];
-        InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(selectedCombatAction.GetSkillCheck(stats, null));
+        currentSelectedCombatActionIndex = index;
+        InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(SelectedCombatAction.GetSkillCheck(stats, null));
         ExecuteSelectedAction(target);
     }
 
@@ -55,7 +76,7 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
     {
         foreach(var b in CombatState.battleMap.GetAfflictedParticipants(currentSelectedCoord.Value, SelectedCombatAction))
         {
-            selectedCombatAction.ApplyActionToTarget(b, r);
+            SelectedCombatAction.ApplyActionToTarget(b, r);
         }
         AfterActionExecuted();
     }
@@ -88,6 +109,8 @@ public abstract class BaseCreatureCombat : MonoBehaviour, IBattleParticipant
 
     public Vector2Int CurrentTile { get ; set; }
     public int RestMovementInTurn { get => restMovement; set => restMovement = value; }
+
+    public abstract bool IsMine { get; }
 
     protected int restMovement;
 

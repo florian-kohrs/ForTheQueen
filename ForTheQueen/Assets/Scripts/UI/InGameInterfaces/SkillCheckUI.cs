@@ -11,11 +11,13 @@ public class SkillCheckUI : AdaptableInterfaceMask<SkillCheck>
 
     public Transform skillCheckParent;
 
-    protected List<Image> skillCheckInstances;
+    protected List<Image> skillCheckInstances = new List<Image>();
 
     protected SkillCheck currentSkillCheck;
 
     protected Action<SkillCheckResult> onEvaluationDone;
+
+    public bool blockMovement = true;
 
     public static readonly Color FOCUS_COLOR = (Color.yellow + Color.red) / 2;
     public static readonly Color UNCLEAR_COLOR = new Color(.5f,.5f,.5f,.5f);
@@ -28,7 +30,7 @@ public class SkillCheckUI : AdaptableInterfaceMask<SkillCheck>
 
     public override bool BlockCameraMovement => false;
 
-    public override bool BlockPlayerMovement => true;
+    public override bool BlockPlayerMovement => blockMovement;
 
     public override bool BlockPlayerActiveAction => true;
 
@@ -36,8 +38,9 @@ public class SkillCheckUI : AdaptableInterfaceMask<SkillCheck>
 
     protected override void AdaptUITo(SkillCheck value, Vector3 pos)
     {
+        ClearSkillCheck();
         currentSkillCheck = value;
-        skillCheckInstances = new List<Image>(value.numberSkillChecks);
+        //skillCheckInstances = new List<Image>(value.numberSkillChecks);
         for (int i = 0; i < value.numberSkillChecks; i++)
         {
             SpawnMarker(value.numberFocusUsed > i);
@@ -74,10 +77,16 @@ public class SkillCheckUI : AdaptableInterfaceMask<SkillCheck>
 
     protected override void OnClose()
     {
+        ClearSkillCheck();
+    }
+
+    protected void ClearSkillCheck()
+    {
         foreach (var item in skillCheckInstances)
         {
             Destroy(item.gameObject);
         }
+        skillCheckInstances.Clear();
     }
 
     protected void StartSkillCheck()

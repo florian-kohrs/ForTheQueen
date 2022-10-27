@@ -98,6 +98,7 @@ public class Pathfinder<T, J>
         else
         {
             Debug.Log("no valid path found");
+            result = new List<T>();
         }
         return result;
     }

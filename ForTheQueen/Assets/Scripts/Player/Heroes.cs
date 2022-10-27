@@ -57,7 +57,7 @@ public class Heroes
         //GameInstanceData.CurrentGameInstanceData.ShuffleGameInstanceSeed();
         for (int i = 0; i < NUMBER_HEROES; i++)
         {
-            heroes[i] = new Hero() { heroIndex = i };
+            heroes[i] = new Hero() { heroIndex = i, maxFocus = 5, currentFocus = 5 };
             heroClass.Apply(null, heroes[i]);
         }
     }

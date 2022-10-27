@@ -67,11 +67,11 @@ public class Hero : ITileOccupation, IBattleOccupation, IItemEquipper, IMovement
     [NonSerialized]
     public bool interuptMovement;
 
-    protected int maxFocus;
+    public int maxFocus;
 
     public int MaxFocus => maxFocus;
 
-    protected int currentFocus;
+    public int currentFocus;
 
     public int CurrentFocus => currentFocus;
 

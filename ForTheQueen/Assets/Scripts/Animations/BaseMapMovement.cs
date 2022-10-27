@@ -25,15 +25,16 @@ public abstract class BaseMapMovement<Agent, MapTileType> : MonoBehaviourPun, IM
 
     protected MarkerMapping mapMovementMarker;
 
-    protected bool IsCurrentHovoredTileInRange => pathToCurrentHovoredTile.Count <= RestMovementInTurn;
+    protected virtual bool IsCurrentHovoredTileInRange => pathToCurrentHovoredTile.Count <= RestMovementInTurn;
 
     protected abstract HexagonGrid<MapTileType> Grid { get; }
 
     protected virtual Func<HexagonPathfinder, Vector2Int, Vector2Int, bool> ReachTargetOverride => null;
 
     [PunRPC]
-    public void BeginTileHoverRPC(Vector2Int coord)
+    public void BeginTileHoverRPC(int x, int y)
     {
+        Vector2Int coord = new Vector2Int(x, y);
         MapTileType mapTile = Grid.DataFromIndex(coord);
         if (!GameManager.AllowPlayerMovement || !mapTile.IsValidMovementTarget(CurrentAgent.CanEnterWater))
             return;
@@ -41,6 +42,8 @@ public abstract class BaseMapMovement<Agent, MapTileType> : MonoBehaviourPun, IM
         currentHoveredTile = mapTile;
         DisplayPath(CurrentAgent.CurrentTile, mapTile.Coordinates);
     }
+
+    protected virtual void OnBeginTileHover(Vector2Int coord) { }
 
     protected void ClearPathDisplay()
     {
@@ -86,7 +89,12 @@ public abstract class BaseMapMovement<Agent, MapTileType> : MonoBehaviourPun, IM
 
     public void BeginTileHover(MapTileType tile)
     {
-        Broadcast.SafeRPC(photonView, nameof(BeginTileHoverRPC), RpcTarget.All, ()=>BeginTileHoverRPC(tile.Coordinates), tile.Coordinates);   
+        if (isInAnimation)
+            return;
+        int x = tile.Coordinates.x;
+        int y = tile.Coordinates.y;
+        Broadcast.SafeRPC(photonView, nameof(BeginTileHoverRPC), RpcTarget.All, ()=>BeginTileHoverRPC(x,y), x,y);
+        OnBeginTileHover(tile.Coordinates);
     }
 
 
@@ -118,19 +126,24 @@ public abstract class BaseMapMovement<Agent, MapTileType> : MonoBehaviourPun, IM
         ExitTileHovered(currentHoveredTile);
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (Input.GetMouseButtonDown(0) && currentHoveredTile != null && IsCurrentHovoredTileInRange && GameManager.AllowPlayerMovement)
         {
-            isInAnimation = true;
-            object[] pathParam = PhotonNetworkExtension.ToObjectArray(VectorExtension.ToVector2Array(pathToCurrentHovoredTile));
-            Broadcast.SafeRPC(
-                photonView,
-                nameof(MoveTowardsClickedTile),
-                RpcTarget.All,
-                () => MoveTowardsClickedTile(pathParam),
-                pathParam);
+            OnClickOnValidField(currentHoveredTile.Coordinates);
         }
+    }
+
+    protected virtual void OnClickOnValidField(Vector2Int v2)
+    {
+        isInAnimation = true;
+        object[] pathParam = PhotonNetworkExtension.ToObjectArray(VectorExtension.ToVector2Array(pathToCurrentHovoredTile));
+        Broadcast.SafeRPC(
+            photonView,
+            nameof(MoveTowardsClickedTile),
+            RpcTarget.All,
+            () => MoveTowardsClickedTile(pathParam),
+            pathParam);
     }
 
     private void Start()

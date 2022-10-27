@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<BattleMapTile>, IHealthDisplayer, IMovementAgent
+public class HeroCombat : InventoryCreatureCombat/*, IMouseTileSelectionCallback<BattleMapTile>*/, IHealthDisplayer, IMovementAgent
 {
 
     public static int MAX_MOVEMENT_PER_TURN = 5;
@@ -17,7 +17,6 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<B
 
     public EquipableWeapon EquippedWeapon => inventory.EquippedWeapon;
 
-    protected int currentSelectedCombatAction = 1;
 
     public Hero Hero
     {
@@ -39,15 +38,15 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<B
 
     protected List<CombatAction> allCombatActions;
 
-    protected override List<CombatAction> AllCombatActions
+    public override List<CombatAction> AllCombatActions
     {
         get
         {
             if (allCombatActions == null)
             {
                 allCombatActions = new List<CombatAction>();
-                allCombatActions.Add(CombatAction.fleeAction);
                 allCombatActions.AddRange(currentHeroTurnInCombat.inventory.AvailableCombatActions);
+                allCombatActions.Add(CombatAction.fleeAction);
             }
             return allCombatActions;
         }
@@ -61,10 +60,7 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<B
 
     public Transform RuntimeHeroObject => transform;
 
-    private void Start()
-    {
-        enabled = false;
-    }
+    public override bool IsMine => hero.IsMine;
 
     public override void OnStartTurn()
     {
@@ -76,68 +72,53 @@ public class HeroCombat : InventoryCreatureCombat, IMouseTileSelectionCallback<B
 
     public void OnSelectedAction(CombatAction a)
     {
-        this.selectedCombatAction = a;
-        if (a.target == ActionTarget.Self)
-        {
-            currentSelectedCoord = new Maybe<Vector2Int>(CurrentTile);
-            ExecuteSelectedAction(CurrentTile);
-        }
-        else 
-        {
-            CombatState.mouseMapTileEvent.subscribers.AddSubscriber(this);
-            this.DoDelayed(0.1f, delegate { enabled = true; });
-            InterfaceController.GetInterfaceMask<CombatActionUI>().Close();
-            InterfaceController.GetInterfaceMask<CombatInfoText>().AdaptUIAndOpen("Select target field");
-        }
+        //this.selectedCombatAction = a;
+        //if (a.target == ActionTarget.Self)
+        //{
+        //    currentSelectedCoord = new Maybe<Vector2Int>(CurrentTile);
+        //    ExecuteSelectedAction(CurrentTile);
+        //}
+        //else 
+        //{
+        //    CombatState.mouseMapTileEvent.subscribers.AddSubscriber(this);
+        //    this.DoDelayed(0.1f, delegate { enabled = true; });
+        //    InterfaceController.GetInterfaceMask<CombatActionUI>().Close();
+        //    InterfaceController.GetInterfaceMask<CombatInfoText>().AdaptUIAndOpen("Select target field");
+        //}
     }
 
-    protected override void AfterActionLockedIn()
-    {
-        CombatState.mouseMapTileEvent.subscribers.RemoveSubscriber(this);
-        enabled = false;
-    }
+    //protected override void AfterActionLockedIn()
+    //{
+    //    CombatState.mouseMapTileEvent.subscribers.RemoveSubscriber(this);
+    //    enabled = false;
+    //}
 
-    protected override void AfterActionExecuted()
-    {
-        selectedCombatAction = null;
-        enabled = true;
-    }
+    //protected override void AfterActionExecuted()
+    //{
+    //    //selectedCombatAction = null;
+    //    enabled = true;
+    //}
 
-    public override void OnTurnEnded()
-    {
-        enabled = false;
-    }
+    //public void BeginTileHover(BattleMapTile tile)
+    //{
+    //    currentSelectedCoord = new Maybe<Vector2Int>(tile.Coordinates);
+    //    CombatState.BeginHoverMapTile(tile.Coordinates);
+    //}
 
-    private void Update()
-    {
-        if(Input.GetMouseButtonDown(0))
-            if(SelectedCombatAction != null && IsCurrentSelectedCoordValid())
-            {
-                CombatState.SelectHoveredMapTile(currentSelectedCoord.Value);
-            }
-    }
+    //public void OnMouseStay(BattleMapTile tile)
+    //{
+    //}
 
+    //public void ExitTileHovered(BattleMapTile tile)
+    //{
+    //    currentSelectedCoord.RemoveValue();
+    //    CombatState.StopHoveredTile();
+    //}
 
-    public void BeginTileHover(BattleMapTile tile)
-    {
-        currentSelectedCoord = new Maybe<Vector2Int>(tile.Coordinates);
-        CombatState.BeginHoverMapTile(tile.Coordinates);
-    }
-
-    public void OnMouseStay(BattleMapTile tile)
-    {
-    }
-
-    public void ExitTileHovered(BattleMapTile tile)
-    {
-        currentSelectedCoord.RemoveValue();
-        CombatState.StopHoveredTile();
-    }
-
-    protected bool IsCurrentSelectedCoordValid()
-    {
-        return currentSelectedCoord != null && currentSelectedCoord.HasValue;
-    }
+    //protected bool IsCurrentSelectedCoordValid()
+    //{
+    //    return currentSelectedCoord != null && currentSelectedCoord.HasValue;
+    //}
 
     protected override void OnDeath()
     {

@@ -69,6 +69,7 @@ MonoBehaviour:
   - BeginHoverSkillCheckBtnRPC
   - OnBeginnHoverRPC
   - BeginTileHoverRPC
+  - SelectCombatActionRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

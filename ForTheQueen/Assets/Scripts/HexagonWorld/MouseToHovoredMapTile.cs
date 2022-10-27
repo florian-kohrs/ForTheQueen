@@ -50,7 +50,7 @@ public class MouseToHovoredMapTile<T> where T : BaseMapTile
     protected void NotifySubscriberOnChange(Maybe<Vector2Int> coord, Maybe<T> tile)
     {
         ///increase tile mouse hover time if old and new hover is the same
-        if (Equals(coord.Value, lastHoveredTileCoord))
+        if (coord.HasValue && Equals(coord.Value, lastHoveredTileCoord))
         {
             timeOnHoveredTile += Time.deltaTime;
             if (tile.HasValue && timeOnHoveredTile > timeBeforeCallOnMouseStay && !calledTileHover)
@@ -81,6 +81,7 @@ public class MouseToHovoredMapTile<T> where T : BaseMapTile
     protected void ResetTileMouseHover()
     {
         timeOnHoveredTile = 0;
+        lastHoveredTileCoord = new Vector2Int(int.MinValue, int.MinValue);  
         calledTileHover = false;
     }
 

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CombatState : MonoBehaviourPun
 {
@@ -28,6 +29,8 @@ public class CombatState : MonoBehaviourPun
 
     protected IBattleParticipant activeParticipant;
 
+    public IBattleParticipant ActiveParticipant => activeParticipant;
+
     public List<Vector2Int> FieldsWithHeroes => battleParticipants.Where(b => b.OnPlayersSide).Select(b => b.CurrentTile).ToList();
 
     [SerializeField]
@@ -35,6 +38,9 @@ public class CombatState : MonoBehaviourPun
 
     [SerializeField]
     protected GameObject timeLinePrefab;
+
+    [SerializeField]
+    protected Button endTurnBtn;
 
     public void ParticipantDied(IBattleParticipant participant)
     {
@@ -152,6 +158,7 @@ public class CombatState : MonoBehaviourPun
         if (activeParticipant != null)
             activeParticipant.OnTurnEnded();
         activeParticipant = actionTimeline.Values[0];
+        endTurnBtn.interactable = activeParticipant.IsMine;
         Destroy(timelineObjects.Dequeue());
         actionTimeline.RemoveAt(0);
         activeParticipant.StartTurn();

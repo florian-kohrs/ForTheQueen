@@ -7,4 +7,15 @@ public abstract class InventoryCreatureCombat : BaseCreatureCombat
 
     public EquipableInventory inventory;
 
+    protected override int ExtraAttackRange
+    {
+        get
+        {
+            if (inventory != null && inventory.EquippedWeapon != null)
+                return inventory.EquippedWeapon.standartWeaponRange;
+            else
+                return 0;
+        }
+    }
+
 }

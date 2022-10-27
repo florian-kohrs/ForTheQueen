@@ -18,6 +18,8 @@ public class HexagonMarker : MonoBehaviour
 
     public GameObject mapMovementMarker; 
 
+    //public GameObject damageMarker;
+
     protected GameObject currentMarkerPrefab;
 
     [SerializeField]

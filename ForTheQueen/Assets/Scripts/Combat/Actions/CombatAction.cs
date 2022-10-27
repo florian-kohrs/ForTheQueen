@@ -31,9 +31,13 @@ public class CombatAction/* : ScriptableObject*/
 
     public SkillCheck.Skill skillOverride;
 
-    public static CombatAction fleeAction = new CombatAction() { overrideSkillCheck = true, skillOverride = SkillCheck.Skill.Speed,  name = "Flee", accuracy = 80, damage = 0, targetEnemies = false, target = ActionTarget.Self, numberSkillChecks = 2, effects = new List<ActionEffect>() };
+    public bool overrideCanFocus = true;
+
+    public static CombatAction fleeAction = new CombatAction() { overrideSkillCheck = true, overrideCanFocus = true, skillOverride = SkillCheck.Skill.Speed,  name = "Flee", accuracy = 80, damage = 0, targetEnemies = false, target = ActionTarget.Self, numberSkillChecks = 2, effects = new List<ActionEffect>() };
     
-    public static CombatAction unarmedStrikeAction = new CombatAction() { overrideSkillCheck = true, skillOverride = SkillCheck.Skill.Strength, name = "Unarmed Strike", accuracy = 100, damage = 5, numberSkillChecks = 2, target = ActionTarget.Single, targetEnemies = true, effects = new List<ActionEffect>() };
+    public static CombatAction unarmedStrikeAction = new CombatAction() { overrideSkillCheck = true, overrideCanFocus = true, skillOverride = SkillCheck.Skill.Strength, name = "Unarmed Strike", accuracy = 100, damage = 5, numberSkillChecks = 2, target = ActionTarget.Single, targetEnemies = true, effects = new List<ActionEffect>() };
+    
+    //public static CombatAction moveAction = new CombatAction() { overrideSkillCheck = true, overrideCanFocus = false, skillOverride = SkillCheck.Skill.Speed, name = "Movement Action", accuracy = 100, damage = 5, numberSkillChecks = 2, target = ActionTarget.Self, targetEnemies = false, effects = new List<ActionEffect>() };
 
     public SkillCheck GetSkillCheck(CreatureStats s, EquipableWeapon w)
     {
@@ -43,7 +47,30 @@ public class CombatAction/* : ScriptableObject*/
         SkillCheck c = new SkillCheck(s);
         c.numberSkillChecks = numberSkillChecks;
         c.skill = overrideSkillCheck ? skillOverride : w.handlingType;
+        c.canFocus = overrideSkillCheck ? overrideCanFocus : w.canFocus;
         return c;
+    }
+
+    public bool IsValidTarget(IBattleParticipant caster, IBattleParticipant target)
+    {
+        switch(this.target)
+        {
+            case ActionTarget.SpreadOne:
+            case ActionTarget.SpreadTwo:
+            case ActionTarget.All:
+            case ActionTarget.ConeOne:
+            case ActionTarget.ConeTwo:
+                return true;
+            case ActionTarget.Single:
+                return target != null && caster.OnPlayersSide != target.OnPlayersSide;
+            case ActionTarget.Self:
+                if (caster != target)
+                    Debug.Log("Self casts are not allowed to have a target");
+                return true;
+            default:
+                Debug.LogWarning($"Unhandled target validation {this.target}");
+                return true;
+        }
     }
 
     public void ApplyActionToTarget(IBattleParticipant p, SkillCheckResult r)

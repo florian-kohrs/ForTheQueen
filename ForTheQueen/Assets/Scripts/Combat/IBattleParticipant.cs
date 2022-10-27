@@ -21,6 +21,8 @@ public interface IBattleParticipant
 
     int Speed { get; }
 
+    bool IsMine { get; }
+
     CombatState CombatState { set; }
 
     string Name { get; }
@@ -39,5 +41,7 @@ public interface IBattleParticipant
     void AddUIReference(IParticipantUIReference uiReference);
 
     void ExecuteAction(int index, Vector2Int target);
+
+    int CurrentAttackRange { get; }
 
 }

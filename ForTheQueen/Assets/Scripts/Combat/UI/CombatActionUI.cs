@@ -20,11 +20,24 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
 
     protected List<CombatActionButton> currentSkillCheckButtons;
 
+    protected CombatActionButton SelectedSkillCheckButton
+    {
+        get
+        {
+            if (ChoosenActionIndex < 0)
+                return null;
+            else
+                return currentSkillCheckButtons[ChoosenActionIndex];
+        }
+    }
+
     protected HeroCombat currentHero;
 
     protected Vector2Int targetField;
 
-    protected CombatAction choosenAction;
+    protected CombatAction ChoosenAction => currentCombatActions[ChoosenActionIndex];
+
+    protected int ChoosenActionIndex => HeroCombat.currentHeroTurnInCombat.currentSelectedCombatActionIndex;
 
     protected override void AdaptUITo(HeroCombat heroCombat, Vector3 pos)
     {
@@ -34,18 +47,12 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
         currentCombatActionsUIs = new List<GameObject>();
         currentHero = heroCombat;
         EquipableWeapon weapon = heroCombat.EquippedWeapon;
-        CreateActionUI(CombatAction.fleeAction, SkillCheck.Skill.Speed);
-        if (weapon == null)
+        
+        foreach (var action in currentHero.AllCombatActions)
         {
-            CreateActionUI(CombatAction.unarmedStrikeAction, SkillCheck.Skill.Strength, true);
+            CreateActionUI(action, weapon);
         }
-        else
-        {
-            foreach (var action in currentHero.inventory.AvailableCombatActions)
-            {
-                CreateActionUI(action, weapon.handlingType, weapon.canFocus);
-            }
-        }
+        SelectAction(0, true);
     }
 
     protected void DeleteOldMarkers()
@@ -56,20 +63,21 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
         } 
     }
 
-    protected GameObject CreateActionUI(CombatAction a, SkillCheck.Skill skill, bool canFocus = true)
+    protected GameObject CreateActionUI(CombatAction a, EquipableWeapon equipedWeapon)
     {
-        SkillCheck skillCheck = new SkillCheck(currentHero.Hero) { canFocus = canFocus, skill = skill, numberSkillChecks = a.numberSkillChecks };
+        SkillCheck skillCheck = a.GetSkillCheck(currentHero.stats, equipedWeapon);// new SkillCheck(currentHero.Hero) { canFocus = canFocus, skill = skill, numberSkillChecks = a.numberSkillChecks };
         GameObject actionUI = Instantiate(actionPrefab, uiPrefabParent);
         CombatActionButton c = actionUI.GetComponent<CombatActionButton>();
         SkillCheckButton b = c.skillCheckBtn;
-        b.skillCheck = skillCheck;
+        b.SetSkillCheck(skillCheck);
         b.Hero = HeroCombat.CurrentActiveHeroInCombat;
         int i = currentCombatActions.Count;
-        b.leftClickAction = delegate { PunBroadcastCommunication.StartCombatAction(i); };
+        b.leftClickAction = delegate { PunBroadcastCommunication.SelectCombatAction(i); };
         b.onMouseHover = delegate { PunBroadcastCommunication.BeginHoverSkillCheckBtn(i); };
         ApplyActionToUI(actionUI, a);
         c.combatAction = a;
         c.Display();
+        c.Unselect();
         currentSkillCheckButtons.Add(c);
         currentCombatActionsUIs.Add(actionUI);
         currentCombatActions.Add(a);
@@ -78,13 +86,27 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
 
     public void BeginHoverSkillCheckBtn(int index)
     {
-        InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(currentSkillCheckButtons[index].skillCheckBtn.skillCheck);
+        //HeroCombat.currentHeroTurnInCombat.currentSelectedCombatActionIndex = index;
+        //InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(currentSkillCheckButtons[index].skillCheckBtn.skillCheck);
     }
 
-    public void StartAction(int index)
+    public void SelectAction(int index, bool forceSelect = false)
     {
-        choosenAction = currentCombatActions[index];
-        HeroCombat.currentHeroTurnInCombat.OnSelectedAction(choosenAction);
+        SelectedSkillCheckButton?.Unselect();
+        if (index == ChoosenActionIndex && !forceSelect)
+        {
+            index = -1;
+            HeroCombat.currentHeroTurnInCombat.currentSelectedCombatActionIndex = index;
+            InterfaceController.GetInterfaceMask<SkillCheckUI>().RemoveMask();
+
+        }
+        else
+        {
+            HeroCombat.currentHeroTurnInCombat.currentSelectedCombatActionIndex = index;
+            SelectedSkillCheckButton.Select();
+            InterfaceController.GetInterfaceMask<SkillCheckUI>().AdaptUIAndOpen(currentSkillCheckButtons[index].skillCheckBtn.SkillCheck);
+            HeroCombat.currentHeroTurnInCombat.OnSelectedAction(ChoosenAction);
+        }
     }
 
     protected void OnSkillCheckDone(SkillCheckResult r)
@@ -98,7 +120,7 @@ public class CombatActionUI : AdaptableInterfaceMask<HeroCombat>
         }
         else
         {
-            Debug.Log($"{r.numberSuccessfull} successes with action {choosenAction.name}");
+            Debug.Log($"{r.numberSuccessfull} successes with action {ChoosenAction.name}");
         }
     }
 
